@@ -1,4 +1,22 @@
+# Playing around with WASM
+
+Kidnapping this repository to just play around with WASM for a bit. Notes:
+
+In the "example" directory, run:
+
+```
+GOOS=js GOARCH=wasm go build -o main.wasm
+```
+
+Then from the top-level, run
+
+```
+go run server/server.go --dir example
+```
+
 # thegrid
+
+(Maybe someday...)
 
 The Grid is a video game concept playground I'm messing with. I have no idea
 what it will become over time, but for now I'm just... messing around.
@@ -18,3 +36,4 @@ the four directions.
 
 From here... can I move things around enough to make a tower defense game? A
 manufactoria type game? I don't know.
+
