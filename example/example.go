@@ -1,7 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"syscall/js"
+)
 
 func main() {
-	fmt.Println("Hello, WebAssembly!")
+	fmt.Println("hi") // console.log
+	document := js.Global().Get("document")
+	document.Call("write", "hello, world!")
 }
