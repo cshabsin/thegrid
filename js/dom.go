@@ -15,14 +15,44 @@ func (document DOMDocument) Body() DOMElement {
 	return DOMElement{document.Get("body")}
 }
 
-func (document DOMDocument) CreateElement(tagName string) DOMElement {
-	return DOMElement{document.Call("createElement", tagName)}
+type Attr struct {
+	Name  string
+	Value interface{}
+}
+
+func (document DOMDocument) CreateElement(tagName string, attrs ...Attr) DOMElement {
+	elem := document.Call("createElement", tagName)
+	for _, attr := range attrs {
+		elem.Set(attr.Name, attr.Value)
+	}
+	return DOMElement{elem}
+}
+
+func (document DOMDocument) CreateElementNS(ns string, tagName string, attrs ...Attr) DOMElement {
+	elem := document.Call("createElementNS", ns, tagName)
+	for _, attr := range attrs {
+		elem.Set(attr.Name, attr.Value)
+	}
+	return DOMElement{elem}
+}
+
+func (document DOMDocument) CreateSVG(attrs ...Attr) SVG {
+	elem := document.CreateElementNS("http://www.w3.org/2000/svg", "svg", attrs...)
+	return SVG(elem)
 }
 
 type DOMElement struct {
 	js.Value
 }
 
-func (el DOMElement) Append(child DOMElement) {
-	el.Call("append", child.Value)
+type elementer interface {
+	AsDOM() DOMElement
+}
+
+func (el DOMElement) AsDOM() DOMElement {
+	return el
+}
+
+func (el DOMElement) Append(child elementer) {
+	el.Call("append", child.AsDOM().Value)
 }

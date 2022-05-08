@@ -9,4 +9,6 @@ func main() {
 	p := document.CreateElement("p")
 	p.Set("innerHTML", "hi")
 	document.Body().Append(p)
+	svg := document.CreateSVG()
+	document.Body().Append(svg)
 }
