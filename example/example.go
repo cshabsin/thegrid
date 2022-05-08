@@ -1,12 +1,12 @@
 package main
 
 import (
-	"fmt"
-	"syscall/js"
+	"github.com/cshabsin/thegrid/js"
 )
 
 func main() {
-	fmt.Println("hi") // console.log
-	document := js.Global().Get("document")
-	document.Call("write", "hello, world!")
+	document := js.Document()
+	p := document.CreateElement("p")
+	p.Set("innerHTML", "hi")
+	document.Body().Append(p)
 }
