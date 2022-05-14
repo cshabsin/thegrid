@@ -10,10 +10,10 @@ func main() {
 	// p := document.CreateElement("p")
 	// p.Set("innerHTML", "hi")
 	// document.Body().Append(p)
-	svg := document.CreateSVG()
 	hm := hexmap.NewHexMap(10, 11, 70, false)
-	svg.AddPath(hm.GridMesh(), js.Class("map-mesh"))
-	svg.SetAttr("height", hm.GetPixHeight()+10)
-	svg.SetAttr("width", hm.GetPixWidth()+10)
-	document.Body().Append(svg)
+	mapGroup := document.CreateSVG("g", js.MakeAttr("class", "map-anchor-group"), js.MakeAttr("transform", "translate(10,10)"))
+	mapGroup.Append(hm.GridMesh().MakeSVG(document, js.Class("map-mesh")))
+
+	document.GetElementByID("map-contents").Append(
+		document.CreateSVG("svg", js.MakeAttr("height", hm.GetPixHeight()+20), js.MakeAttr("width", hm.GetPixWidth()+20)).Append(mapGroup))
 }
