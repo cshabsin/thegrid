@@ -25,24 +25,24 @@ func Class(value string) Attr {
 }
 
 func (document DOMDocument) CreateElement(tagName string, attrs ...Attr) DOMElement {
-	elem := document.Call("createElement", tagName)
+	elem := DOMElement{document.Call("createElement", tagName), document}
 	for _, attr := range attrs {
-		elem.Call("setAttribute", attr.Name, attr.Value)
+		elem.SetAttr(attr.Name, attr.Value)
 	}
-	return DOMElement{elem, document}
+	return elem
 }
 
 func (document DOMDocument) CreateElementNS(ns string, tagName string, attrs ...Attr) DOMElement {
-	elem := document.Call("createElementNS", ns, tagName)
+	elem := DOMElement{document.Call("createElementNS", ns, tagName), document}
 	for _, attr := range attrs {
-		elem.Call("setAttribute", attr.Name, attr.Value)
+		elem.SetAttr(attr.Name, attr.Value)
 	}
-	return DOMElement{elem, document}
+	return elem
 }
 
 func (document DOMDocument) CreateSVG(attrs ...Attr) SVG {
 	elem := document.CreateElementNS("http://www.w3.org/2000/svg", "svg", attrs...)
-	return SVG(elem)
+	return SVG{elem}
 }
 
 type DOMElement struct {
@@ -60,4 +60,8 @@ func (el DOMElement) AsDOM() DOMElement {
 
 func (el DOMElement) Append(child elementer) {
 	el.Call("append", child.AsDOM().Value)
+}
+
+func (el DOMElement) SetAttr(name string, value interface{}) {
+	el.Call("setAttribute", name, value)
 }

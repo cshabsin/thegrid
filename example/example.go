@@ -11,7 +11,7 @@ func main() {
 	// p.Set("innerHTML", "hi")
 	// document.Body().Append(p)
 	svg := document.CreateSVG()
-	hm := hexmap.NewHexMap(2, 2, 70, false)
+	hm := hexmap.NewHexMap(10, 11, 70, false)
 	svg.AddPath(hm.GridMesh(), js.Class("map-mesh"))
 	svg.SetAttr("height", hm.GetPixHeight()+10)
 	svg.SetAttr("width", hm.GetPixWidth()+10)

@@ -2,18 +2,16 @@ package js
 
 import (
 	"fmt"
-	"syscall/js"
 )
 
 const svgNS = "http://www.w3.org/2000/svg"
 
 type SVG struct {
-	js.Value
-	document DOMDocument
+	DOMElement
 }
 
 func (s SVG) AsDOM() DOMElement {
-	return DOMElement(s)
+	return s.DOMElement
 }
 
 func (s SVG) CreatePath(path SVGPath, attrs ...Attr) DOMElement {
@@ -23,12 +21,8 @@ func (s SVG) CreatePath(path SVGPath, attrs ...Attr) DOMElement {
 
 func (s SVG) AddPath(path SVGPath, attrs ...Attr) DOMElement {
 	pathElem := s.CreatePath(path, attrs...)
-	s.AsDOM().Append(pathElem)
+	s.Append(pathElem)
 	return pathElem
-}
-
-func (s SVG) SetAttr(name string, value interface{}) {
-	s.Call("setAttribute", name, value)
 }
 
 type SVGCoord struct {
