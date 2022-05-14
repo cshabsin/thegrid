@@ -12,7 +12,7 @@ func Document() DOMDocument {
 }
 
 func (document DOMDocument) Body() DOMElement {
-	return DOMElement{document.Get("body")}
+	return DOMElement{document.Get("body"), document}
 }
 
 type Attr struct {
@@ -23,17 +23,17 @@ type Attr struct {
 func (document DOMDocument) CreateElement(tagName string, attrs ...Attr) DOMElement {
 	elem := document.Call("createElement", tagName)
 	for _, attr := range attrs {
-		elem.Set(attr.Name, attr.Value)
+		elem.Call("setAttribute", attr.Name, attr.Value)
 	}
-	return DOMElement{elem}
+	return DOMElement{elem, document}
 }
 
 func (document DOMDocument) CreateElementNS(ns string, tagName string, attrs ...Attr) DOMElement {
 	elem := document.Call("createElementNS", ns, tagName)
 	for _, attr := range attrs {
-		elem.Set(attr.Name, attr.Value)
+		elem.Call("setAttribute", attr.Name, attr.Value)
 	}
-	return DOMElement{elem}
+	return DOMElement{elem, document}
 }
 
 func (document DOMDocument) CreateSVG(attrs ...Attr) SVG {
@@ -43,6 +43,7 @@ func (document DOMDocument) CreateSVG(attrs ...Attr) SVG {
 
 type DOMElement struct {
 	js.Value
+	document DOMDocument
 }
 
 type elementer interface {
