@@ -2,10 +2,10 @@
 
 Kidnapping this repository to just play around with WASM for a bit. Notes:
 
-In the "example" directory, run:
+To compile "example", run:
 
 ```
-GOOS=js GOARCH=wasm go build -o main.wasm
+GOOS=js GOARCH=wasm go1.18 build -o example/main.wasm github.com/cshabsin/thegrid/example
 ```
 
 Then from the top-level, run
@@ -13,6 +13,9 @@ Then from the top-level, run
 ```
 go run server/server.go --dir example
 ```
+
+(You can just keep this server running and recompile... might need to
+shift-reload)
 
 # thegrid
 
