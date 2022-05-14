@@ -20,6 +20,10 @@ type Attr struct {
 	Value interface{}
 }
 
+func Class(value string) Attr {
+	return Attr{Name: "class", Value: value}
+}
+
 func (document DOMDocument) CreateElement(tagName string, attrs ...Attr) DOMElement {
 	elem := document.Call("createElement", tagName)
 	for _, attr := range attrs {
