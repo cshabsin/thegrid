@@ -20,6 +20,10 @@ type Attr struct {
 	Value interface{}
 }
 
+func MakeAttr(name string, value interface{}) Attr {
+	return Attr{Name: name, Value: value}
+}
+
 func Class(value string) Attr {
 	return Attr{Name: "class", Value: value}
 }
@@ -40,9 +44,13 @@ func (document DOMDocument) CreateElementNS(ns string, tagName string, attrs ...
 	return elem
 }
 
-func (document DOMDocument) CreateSVG(attrs ...Attr) SVG {
-	elem := document.CreateElementNS("http://www.w3.org/2000/svg", "svg", attrs...)
-	return SVG{elem}
+func (document DOMDocument) CreateSVG(tag string, attrs ...Attr) DOMElement {
+	return document.CreateElementNS("http://www.w3.org/2000/svg", tag, attrs...)
+}
+
+func (document DOMDocument) GetElementByID(id string) DOMElement {
+	elem := document.Call("getElementById", id)
+	return DOMElement{elem, document}
 }
 
 type DOMElement struct {
@@ -58,8 +66,9 @@ func (el DOMElement) AsDOM() DOMElement {
 	return el
 }
 
-func (el DOMElement) Append(child elementer) {
+func (el DOMElement) Append(child elementer) DOMElement {
 	el.Call("append", child.AsDOM().Value)
+	return el
 }
 
 func (el DOMElement) SetAttr(name string, value interface{}) {
