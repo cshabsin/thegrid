@@ -1,6 +1,7 @@
 package hexmap
 
 import (
+	"fmt"
 	"math"
 
 	"github.com/cshabsin/thegrid/js"
@@ -107,6 +108,24 @@ func (h HexMap) GridMesh() js.SVGPath {
 		}
 	}
 	return path
+}
+
+func (h HexMap) HexPath(document js.DOMDocument, col, row int, cls string) js.DOMElement {
+	hexagon := h.HexagonPath()
+	return document.CreateSVG("path", js.MakeAttr("class", cls),
+		js.MakeAttr("d", string(hexagon)), js.MakeAttr("transform", fmt.Sprintf("translate(%f,%f)", h.grid[col][row].centerX, h.grid[col][row].centerY)))
+}
+
+func (h HexMap) HexagonPath() js.SVGPath {
+	var p js.SVGPath
+	for i, coord := range Hexagon(h.radius) {
+		if i == 0 {
+			p = p + js.SVGPath(fmt.Sprintf("m%f,%f", coord.DX, coord.DY))
+		} else {
+			p = p + js.SVGPath(fmt.Sprintf("l%f,%f", coord.DX, coord.DY))
+		}
+	}
+	return p
 }
 
 func (h HexMap) showMesh(col, row int) bool {
