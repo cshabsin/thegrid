@@ -15,7 +15,6 @@ type SVGVector struct {
 type SVGPath string
 
 func (p SVGPath) MakeSVG(document DOMDocument, attrs ...Attr) DOMElement {
-	fmt.Println(p)
 	return document.CreateSVG("path", append([]Attr{{Name: "d", Value: string(p)}}, attrs...)...)
 }
 
