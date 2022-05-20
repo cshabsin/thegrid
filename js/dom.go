@@ -74,3 +74,11 @@ func (el DOMElement) Append(child elementer) DOMElement {
 func (el DOMElement) SetAttr(name string, value interface{}) {
 	el.Call("setAttribute", name, value)
 }
+
+func (el DOMElement) AddEventListener(eventName string, fn func(el DOMElement, e js.Value)) {
+	el.Call("addEventListener", eventName, js.FuncOf(
+		func(this js.Value, args []js.Value) interface{} {
+			fn(el, args[0])
+			return nil
+		}))
+}

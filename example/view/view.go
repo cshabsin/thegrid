@@ -8,14 +8,24 @@ import (
 )
 
 type Parsec struct {
-	Anchor js.DOMElement
+	Anchor  js.DOMElement
+	hexagon js.DOMElement
 }
 
 func NewParsec(document js.DOMDocument, hm *hexmap.HexMap, col, row int) *Parsec {
 	hexAnchor := document.CreateSVG("a", js.MakeAttr("class", "map-anchor"), hm.CellTranslate(col, row))
-	hexAnchor.Append(hm.HexPath(document, col, row, "map-hexagon-hilite")) // TODO: just hexagon, but tweak the class with events
+	hexagon := hm.HexPath(document, col, row, "map-hexagon")
+	hexAnchor.Append(hexagon) // TODO: just hexagon, but tweak the class with events
 	t := document.CreateSVG("text", js.MakeAttr("y", 20), js.MakeAttr("class", "map-name"))
 	t.Value.Set("textContent", fmt.Sprintf("%d, %d", col, row))
 	hexAnchor.Append(t)
-	return &Parsec{Anchor: hexAnchor}
+	return &Parsec{Anchor: hexAnchor, hexagon: hexagon}
+}
+
+func (p Parsec) Hilite(v bool) {
+	cls := "map-hexagon"
+	if v {
+		cls = "map-hexagon-hilite"
+	}
+	p.hexagon.SetAttr("class", cls)
 }
