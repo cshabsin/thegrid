@@ -26,9 +26,7 @@ type HexMap struct {
 	grid [][]gridEntry
 }
 
-var (
-	SinPiOver3 = math.Sin(math.Pi / 3)
-)
+var SinPiOver3 = math.Sin(math.Pi / 3)
 
 func NewHexMap(width, height int, radius float64, staggerUp bool) *HexMap {
 	hexmap := &HexMap{
@@ -113,7 +111,12 @@ func (h HexMap) GridMesh() js.SVGPath {
 func (h HexMap) HexPath(document js.DOMDocument, col, row int, cls string) js.DOMElement {
 	hexagon := h.HexagonPath()
 	return document.CreateSVG("path", js.MakeAttr("class", cls),
-		js.MakeAttr("d", string(hexagon)), js.MakeAttr("transform", fmt.Sprintf("translate(%f,%f)", h.grid[col][row].centerX, h.grid[col][row].centerY)))
+		js.MakeAttr("d", string(hexagon)),
+	)
+}
+
+func (h HexMap) CellTranslate(col, row int) js.Attr {
+	return js.MakeAttr("transform", fmt.Sprintf("translate(%f,%f)", h.grid[col][row].centerX, h.grid[col][row].centerY))
 }
 
 func (h HexMap) HexagonPath() js.SVGPath {
