@@ -19,13 +19,11 @@ func NewParsec(document js.DOMDocument, hm *hexmap.HexMap, col, row int) *Parsec
 	t := document.CreateSVG("text", js.MakeAttr("y", 20), js.MakeAttr("class", "map-name"))
 	t.Value.Set("textContent", fmt.Sprintf("%d, %d", col, row))
 	hexAnchor.Append(t)
+	hexAnchor.AddEventListener("mouseenter", func(js.DOMElement, js.DOMEvent) {
+		hexagon.SetAttr("class", "map-hexagon-hilite")
+	})
+	hexAnchor.AddEventListener("mouseleave", func(_ js.DOMElement, ev js.DOMEvent) {
+		hexagon.SetAttr("class", "map-hexagon")
+	})
 	return &Parsec{Anchor: hexAnchor, hexagon: hexagon}
-}
-
-func (p Parsec) Hilite(v bool) {
-	cls := "map-hexagon"
-	if v {
-		cls = "map-hexagon-hilite"
-	}
-	p.hexagon.SetAttr("class", cls)
 }

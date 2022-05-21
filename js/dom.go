@@ -75,10 +75,18 @@ func (el DOMElement) SetAttr(name string, value interface{}) {
 	el.Call("setAttribute", name, value)
 }
 
-func (el DOMElement) AddEventListener(eventName string, fn func(el DOMElement, e js.Value)) {
+func (el DOMElement) AddEventListener(eventName string, fn func(el DOMElement, e DOMEvent)) {
 	el.Call("addEventListener", eventName, js.FuncOf(
 		func(this js.Value, args []js.Value) interface{} {
-			fn(el, args[0])
+			fn(el, DOMEvent{args[0]})
 			return nil
 		}))
+}
+
+type DOMEvent struct {
+	js.Value
+}
+
+func (el DOMEvent) GetEventType() string {
+	return el.Value.Get("type").String()
 }
