@@ -108,7 +108,7 @@ func (h HexMap) GridMesh() js.SVGPath {
 	return path
 }
 
-func (h HexMap) HexPath(document js.DOMDocument, col, row int, cls string) js.DOMElement {
+func (h HexMap) HexPath(document js.DOMDocument, cls string) js.DOMElement {
 	hexagon := h.HexagonPath()
 	return document.CreateSVG("path", js.MakeAttr("class", cls),
 		js.MakeAttr("d", string(hexagon)),
