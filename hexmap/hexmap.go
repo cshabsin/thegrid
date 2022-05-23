@@ -5,6 +5,7 @@ import (
 	"math"
 
 	"github.com/cshabsin/thegrid/js"
+	"github.com/cshabsin/thegrid/js/svg"
 )
 
 type gridEntry struct {
@@ -63,13 +64,13 @@ func (h HexMap) isCellDown(col, row int) bool {
 	return col%2 == 0
 }
 
-func (h HexMap) calculateCenter(col, row int) js.SVGCoord {
+func (h HexMap) calculateCenter(col, row int) svg.Coord {
 	x := h.dx*float64(col) + h.radius
 	y := h.dy*float64(row) + h.radius*SinPiOver3
 	if h.isCellDown(col, row) {
 		y += h.dy / 2
 	}
-	return js.SVGCoord{X: x, Y: y}
+	return svg.Coord{X: x, Y: y}
 }
 
 // GetPixHeight returns the height of the full hexmap in pixels.
@@ -84,13 +85,13 @@ func (h HexMap) GetPixWidth() float64 {
 }
 
 // GridMesh returns the SVG path for the grid starting with the top-left corner of the (0, 0) hex.
-func (h HexMap) GridMesh() js.SVGPath {
+func (h HexMap) GridMesh() svg.Path {
 	hexagon := Hexagon(h.radius)
 	// drawn[0] = top left, going clockwise. 0, 1, 2, and 5 are
 	// always true, while 3 and 4 are recalculated per cell to
 	// avoid double-drawing any edges.
 	drawn := []bool{true, true, true, true, true, true}
-	var path js.SVGPath
+	var path svg.Path
 
 	for col := 0; col < h.width; col++ {
 		for row := 0; row < h.height; row++ {
@@ -108,9 +109,9 @@ func (h HexMap) GridMesh() js.SVGPath {
 	return path
 }
 
-func (h HexMap) HexPath(document js.DOMDocument, cls string) js.DOMElement {
+func (h HexMap) HexPath(svg svg.SVG, cls string) svg.Element {
 	hexagon := h.HexagonPath()
-	return document.CreateSVG("path", js.MakeAttr("class", cls),
+	return svg.CreateElement("path", js.MakeAttr("class", cls),
 		js.MakeAttr("d", string(hexagon)),
 	)
 }
@@ -119,14 +120,10 @@ func (h HexMap) CellTranslate(col, row int) js.Attr {
 	return js.MakeAttr("transform", fmt.Sprintf("translate(%f,%f)", h.grid[col][row].centerX, h.grid[col][row].centerY))
 }
 
-func (h HexMap) HexagonPath() js.SVGPath {
-	var p js.SVGPath
+func (h HexMap) HexagonPath() svg.Path {
+	var p svg.Path
 	for i, coord := range Hexagon(h.radius) {
-		if i == 0 {
-			p = p + js.SVGPath(fmt.Sprintf("m%f,%f", coord.DX, coord.DY))
-		} else {
-			p = p + js.SVGPath(fmt.Sprintf("l%f,%f", coord.DX, coord.DY))
-		}
+		p = p.MoveRel(coord, i != 0)
 	}
 	return p
 }
@@ -157,13 +154,13 @@ func (h HexMap) isDownShown(col, row int) bool {
 // pointer originally started.
 
 // Origin point for each relative coordinate.
-func Hexagon(radius float64) []js.SVGVector {
+func Hexagon(radius float64) []svg.Vector {
 	var x0, y0 float64
-	var coords []js.SVGVector
+	var coords []svg.Vector
 	for i := 0; i < 7; i++ {
 		angle := math.Pi * (0.5 + float64(i)/3)
 		x1, y1 := math.Sin(angle)*radius, -math.Cos(angle)*radius
-		coords = append(coords, js.SVGVector{DX: x1 - x0, DY: y1 - y0})
+		coords = append(coords, svg.Vector{DX: x1 - x0, DY: y1 - y0})
 		x0, y0 = x1, y1
 	}
 	return coords
