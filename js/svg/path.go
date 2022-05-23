@@ -3,13 +3,13 @@ package svg
 import (
 	"fmt"
 
-	"github.com/cshabsin/thegrid/js"
+	"github.com/cshabsin/thegrid/js/attr"
 )
 
 type Path string
 
-func (p Path) ToElement(svg SVG, attrs ...js.Attr) Element {
-	return svg.CreateElement("path", append(attrs, js.Attr{Name: "d", Value: string(p)})...)
+func (p Path) ToElement(svg SVG, attrs ...attr.Attr) Element {
+	return svg.CreateElement("path", append(attrs, attr.Attr{Name: "d", Value: string(p)})...)
 }
 
 func (p Path) MoveAbs(pt Coord, drawn bool) Path {

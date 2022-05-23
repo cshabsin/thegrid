@@ -1,10 +1,9 @@
 package hexmap
 
 import (
-	"fmt"
 	"math"
 
-	"github.com/cshabsin/thegrid/js"
+	"github.com/cshabsin/thegrid/js/attr"
 	"github.com/cshabsin/thegrid/js/svg"
 )
 
@@ -110,14 +109,11 @@ func (h HexMap) GridMesh() svg.Path {
 }
 
 func (h HexMap) HexPath(svg svg.SVG, cls string) svg.Element {
-	hexagon := h.HexagonPath()
-	return svg.CreateElement("path", js.MakeAttr("class", cls),
-		js.MakeAttr("d", string(hexagon)),
-	)
+	return h.HexagonPath().ToElement(svg, attr.Class(cls))
 }
 
-func (h HexMap) CellTranslate(col, row int) js.Attr {
-	return js.MakeAttr("transform", fmt.Sprintf("translate(%f,%f)", h.grid[col][row].centerX, h.grid[col][row].centerY))
+func (h HexMap) CellTranslate(col, row int) attr.Attr {
+	return attr.Translate(h.grid[col][row].centerX, h.grid[col][row].centerY)
 }
 
 func (h HexMap) HexagonPath() svg.Path {

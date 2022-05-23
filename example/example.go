@@ -6,6 +6,7 @@ import (
 	"github.com/cshabsin/thegrid/example/view"
 	"github.com/cshabsin/thegrid/hexmap"
 	"github.com/cshabsin/thegrid/js"
+	"github.com/cshabsin/thegrid/js/attr"
 	"github.com/cshabsin/thegrid/js/svg"
 	"github.com/cshabsin/thegrid/model"
 )
@@ -16,8 +17,8 @@ func main() {
 
 	svg := svg.GetSVGById(document, "map-svg")
 
-	mapGroup := svg.CreateElement("g", js.MakeAttr("class", "map-anchor-group"), js.MakeAttr("transform", "translate(10,10)"))
-	mapGroup.Append(hm.GridMesh().ToElement(svg, js.Class("map-mesh")))
+	mapGroup := svg.CreateElement("g", attr.Make("class", "map-anchor-group"), attr.Make("transform", "translate(10,10)"))
+	mapGroup.Append(hm.GridMesh().ToElement(svg, attr.Class("map-mesh")))
 
 	data := model.ExplorersMapData()
 	fmt.Println(len(data.HexGrid), len(data.HexGrid[0]))

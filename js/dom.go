@@ -1,6 +1,10 @@
 package js
 
-import "syscall/js"
+import (
+	"syscall/js"
+
+	"github.com/cshabsin/thegrid/js/attr"
+)
 
 type DOMDocument struct {
 	js.Value
@@ -15,20 +19,7 @@ func (document DOMDocument) Body() DOMElement {
 	return DOMElement{document.Get("body"), document}
 }
 
-type Attr struct {
-	Name  string
-	Value interface{}
-}
-
-func MakeAttr(name string, value interface{}) Attr {
-	return Attr{Name: name, Value: value}
-}
-
-func Class(value string) Attr {
-	return Attr{Name: "class", Value: value}
-}
-
-func (document DOMDocument) CreateElement(tagName string, attrs ...Attr) DOMElement {
+func (document DOMDocument) CreateElement(tagName string, attrs ...attr.Attr) DOMElement {
 	elem := DOMElement{document.Call("createElement", tagName), document}
 	for _, attr := range attrs {
 		elem.SetAttr(attr.Name, attr.Value)
@@ -36,7 +27,7 @@ func (document DOMDocument) CreateElement(tagName string, attrs ...Attr) DOMElem
 	return elem
 }
 
-func (document DOMDocument) CreateElementNS(ns string, tagName string, attrs ...Attr) DOMElement {
+func (document DOMDocument) CreateElementNS(ns string, tagName string, attrs ...attr.Attr) DOMElement {
 	elem := DOMElement{document.Call("createElementNS", ns, tagName), document}
 	for _, attr := range attrs {
 		elem.SetAttr(attr.Name, attr.Value)

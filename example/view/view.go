@@ -5,6 +5,7 @@ import (
 
 	"github.com/cshabsin/thegrid/hexmap"
 	"github.com/cshabsin/thegrid/js"
+	"github.com/cshabsin/thegrid/js/attr"
 	"github.com/cshabsin/thegrid/js/svg"
 )
 
@@ -29,14 +30,14 @@ func NewMapView(svg svg.SVG, hexMap *hexmap.HexMap) *MapView {
 }
 
 func (mv *MapView) NewParsec(col, row int, e Entity) *Parsec {
-	hexAnchor := mv.svg.CreateElement("a", js.Class("map-anchor"), mv.hexMap.CellTranslate(col, row))
+	hexAnchor := mv.svg.CreateElement("a", attr.Class("map-anchor"), mv.hexMap.CellTranslate(col, row))
 	hexagon := mv.hexMap.HexPath(mv.svg, "map-hexagon")
 	hexAnchor.Append(hexagon) // TODO: just hexagon, but tweak the class with events
-	hexAnchor.Append(mv.svg.Text(e.Label(), js.MakeAttr("y", 50), js.Class("map-coord")))
-	hexAnchor.Append(mv.svg.Text(e.Name(), js.MakeAttr("y", 20), js.Class("map-name")))
+	hexAnchor.Append(mv.svg.Text(e.Label(), attr.Make("y", 50), attr.Class("map-coord")))
+	hexAnchor.Append(mv.svg.Text(e.Name(), attr.Make("y", 20), attr.Class("map-name")))
 
 	if e.HasCircle() {
-		hexAnchor.Append(mv.svg.Circle(5, js.Class("map-planet")))
+		hexAnchor.Append(mv.svg.Circle(5, attr.Class("map-planet")))
 	}
 
 	hexAnchor.AddEventListener("mouseenter", func(js.DOMElement, js.DOMEvent) {

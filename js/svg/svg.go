@@ -2,6 +2,7 @@ package svg
 
 import (
 	"github.com/cshabsin/thegrid/js"
+	"github.com/cshabsin/thegrid/js/attr"
 )
 
 type Coord struct {
@@ -18,7 +19,7 @@ type SVG struct {
 	document js.DOMDocument
 }
 
-func MakeSVG(document js.DOMDocument, attrs ...js.Attr) SVG {
+func MakeSVG(document js.DOMDocument, attrs ...attr.Attr) SVG {
 	return SVG{
 		DOMElement: document.CreateElementNS("http://www.w3.org/2000/svg",
 			"svg", attrs...),
@@ -33,18 +34,18 @@ func GetSVGById(document js.DOMDocument, id string) SVG {
 	}
 }
 
-func (svg SVG) CreateElement(tagName string, attrs ...js.Attr) Element {
+func (svg SVG) CreateElement(tagName string, attrs ...attr.Attr) Element {
 	return Element{
 		DOMElement: svg.document.CreateElementNS("http://www.w3.org/2000/svg", tagName, attrs...),
 		document:   svg.document,
 	}
 }
 
-func (svg SVG) Circle(radius float64, attrs ...js.Attr) Element {
-	return svg.CreateElement("circle", append(attrs, js.MakeAttr("r", radius))...)
+func (svg SVG) Circle(radius float64, attrs ...attr.Attr) Element {
+	return svg.CreateElement("circle", append(attrs, attr.Make("r", radius))...)
 }
 
-func (svg SVG) Text(text string, attrs ...js.Attr) Element {
+func (svg SVG) Text(text string, attrs ...attr.Attr) Element {
 	elem := svg.CreateElement("text", attrs...)
 	elem.Set("textContent", text)
 	return elem
