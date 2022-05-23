@@ -44,10 +44,6 @@ func (document DOMDocument) CreateElementNS(ns string, tagName string, attrs ...
 	return elem
 }
 
-func (document DOMDocument) CreateSVG(tag string, attrs ...Attr) DOMElement {
-	return document.CreateElementNS("http://www.w3.org/2000/svg", tag, attrs...)
-}
-
 func (document DOMDocument) GetElementByID(id string) DOMElement {
 	elem := document.Call("getElementById", id)
 	return DOMElement{elem, document}
