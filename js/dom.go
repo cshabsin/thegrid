@@ -1,10 +1,28 @@
 package js
 
 import (
+	"errors"
+	"net/url"
 	"syscall/js"
 
 	"github.com/cshabsin/thegrid/js/attr"
 )
+
+func URL() (*url.URL, error) {
+	window := js.Global().Get("window")
+	if window.IsNull() {
+		return nil, errors.New("window not found")
+	}
+	location := window.Get("location")
+	if location.IsNull() {
+		return nil, errors.New("location not found")
+	}
+	href := location.Get("href")
+	if href.IsNull() {
+		return nil, errors.New("href not found")
+	}
+	return url.Parse(href.String())
+}
 
 type DOMDocument struct {
 	js.Value

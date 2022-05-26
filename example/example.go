@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"path"
 
 	"github.com/cshabsin/thegrid/example/view"
 	"github.com/cshabsin/thegrid/hexmap"
@@ -12,6 +13,11 @@ import (
 )
 
 func main() {
+	url, err := js.URL()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	document := js.Document()
 	hm := hexmap.NewHexMap(10, 11, 70, false)
 
@@ -20,12 +26,16 @@ func main() {
 	mapGroup := svg.CreateElement("g", attr.Make("class", "map-anchor-group"), attr.Make("transform", "translate(10,10)"))
 	mapGroup.Append(hm.GridMesh().ToElement(svg, attr.Class("map-mesh")))
 
-	data := model.ExplorersMapData()
-	fmt.Println(len(data.HexGrid), len(data.HexGrid[0]))
+	newURL := *url
+	newURL.Path = path.Join(newURL.Path, "/data")
+	data, err := model.FromURL(newURL)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	mapView := view.NewMapView(svg, hm)
-	fmt.Println(mapView)
-	for col := 0; col < 10; col++ {
-		for row := 0; row < 11; row++ {
+	for col := range data.HexGrid {
+		for row := range data.HexGrid[col] {
 			parsec := mapView.NewParsec(col, row, data.GetCell(col, row))
 			mapGroup.Append(parsec.Anchor.AsDOM())
 		}
