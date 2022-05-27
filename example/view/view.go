@@ -18,34 +18,35 @@ type Entity interface {
 	Name() string
 	Label() string
 	HasCircle() bool
+	Description() string
 }
 
 type MapView struct {
-	svg    svg.SVG
-	hexMap *hexmap.HexMap
-}
+	SVG    svg.SVG
+	HexMap *hexmap.HexMap
 
-func NewMapView(svg svg.SVG, hexMap *hexmap.HexMap) *MapView {
-	return &MapView{svg: svg, hexMap: hexMap}
+	DataElement js.DOMElement
 }
 
 func (mv *MapView) NewParsec(col, row int, e Entity) *Parsec {
-	hexAnchor := mv.svg.CreateElement("a", attr.Class("map-anchor"), mv.hexMap.CellTranslate(col, row))
-	hexagon := mv.hexMap.HexPath(mv.svg, "map-hexagon")
+	hexAnchor := mv.SVG.CreateElement("a", attr.Class("map-anchor"), mv.HexMap.CellTranslate(col, row))
+	hexagon := mv.HexMap.HexPath(mv.SVG, "map-hexagon")
 	hexAnchor.Append(hexagon) // TODO: just hexagon, but tweak the class with events
-	hexAnchor.Append(mv.svg.Text(e.Label(), attr.Make("y", 50), attr.Class("map-coord")))
-	hexAnchor.Append(mv.svg.Text(e.Name(), attr.Make("y", 20), attr.Class("map-name")))
+	hexAnchor.Append(mv.SVG.Text(e.Label(), attr.Make("y", 50), attr.Class("map-coord")))
+	hexAnchor.Append(mv.SVG.Text(e.Name(), attr.Make("y", 20), attr.Class("map-name")))
 
 	if e.HasCircle() {
-		hexAnchor.Append(mv.svg.Circle(5, attr.Class("map-planet")))
+		hexAnchor.Append(mv.SVG.Circle(5, attr.Class("map-planet")))
 	}
 
 	hexAnchor.AddEventListener("mouseenter", func(js.DOMElement, js.DOMEvent) {
 		fmt.Println("hi")
 		hexagon.SetAttr("class", "map-hexagon-hilite")
+		mv.DataElement.Set("innerHTML", e.Description())
 	})
 	hexAnchor.AddEventListener("mouseleave", func(js.DOMElement, js.DOMEvent) {
 		hexagon.SetAttr("class", "map-hexagon")
+		mv.DataElement.Set("innerHTML", "")
 	})
 	return &Parsec{Anchor: hexAnchor, hexagon: hexagon}
 }

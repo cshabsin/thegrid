@@ -33,7 +33,7 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	mapView := view.NewMapView(svg, hm)
+	mapView := &view.MapView{SVG: svg, HexMap: hm, DataElement: document.GetElementByID("data-contents")}
 	for col := range data.HexGrid {
 		for row := range data.HexGrid[col] {
 			parsec := mapView.NewParsec(col, row, data.GetCell(col, row))

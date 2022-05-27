@@ -91,6 +91,10 @@ func (s systemData) HasCircle() bool {
 	return true
 }
 
+func (s systemData) Description() string {
+	return s.description
+}
+
 type emptySystem struct {
 	sysRow, sysCol int
 }
@@ -103,4 +107,8 @@ func (s emptySystem) Label() string {
 }
 func (s emptySystem) HasCircle() bool {
 	return false
+}
+
+func (s emptySystem) Description() string {
+	return ""
 }
