@@ -11,9 +11,9 @@ type PathSegment struct {
 	EndOffset   [2]int
 }
 
-var ExplorersPathData = makePathData()
+var ExplorersPathData = makePathData(ExplorersMapData)
 
-func makePathData() *PathData {
+func makePathData(mapData *MapData) *PathData {
 	hexes := map[string][2]int{
 		"Khida":      {21, 18},
 		"Gimi Kuuid": {20, 17},
@@ -39,6 +39,10 @@ func makePathData() *PathData {
 		if endCoord == [2]int{0, 0} {
 			panic("endCoord is nil")
 		}
+		startCoord[0] -= mapData.MinCol // TODO: normalize the coordinate systems somehow
+		endCoord[0] -= mapData.MinCol
+		startCoord[1] -= mapData.MinRow
+		endCoord[1] -= mapData.MinRow
 		pathData.Segments = append(pathData.Segments, PathSegment{
 			StartCoord:  startCoord,
 			StartOffset: [2]int{startOffsetX, startOffsetY},

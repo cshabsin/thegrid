@@ -41,7 +41,7 @@ func NewHexMap(width, height int, radius float64, staggerUp bool) *HexMap {
 	for col := range grid {
 		grid[col] = make([]gridEntry, height)
 		for row := range grid[col] {
-			center := hexmap.calculateCenter(col, row)
+			center := hexmap.CellCenter(col, row)
 			grid[col][row] = gridEntry{
 				x:         col,
 				y:         row,
@@ -63,7 +63,7 @@ func (h HexMap) isCellDown(col, row int) bool {
 	return col%2 == 0
 }
 
-func (h HexMap) calculateCenter(col, row int) svg.Coord {
+func (h HexMap) CellCenter(col, row int) svg.Coord {
 	x := h.dx*float64(col) + h.radius
 	y := h.dy*float64(row) + h.radius*SinPiOver3
 	if h.isCellDown(col, row) {
@@ -97,7 +97,7 @@ func (h HexMap) GridMesh() svg.Path {
 			if !h.showMesh(col, row) {
 				continue
 			}
-			path = path.MoveAbs(h.calculateCenter(col, row), false).MoveRel(hexagon[0], false)
+			path = path.MoveAbs(h.CellCenter(col, row), false).MoveRel(hexagon[0], false)
 			drawn[3] = h.isDownRightShown(col, row)
 			drawn[4] = h.isDownShown(col, row)
 			for i := 0; i < 6; i++ {

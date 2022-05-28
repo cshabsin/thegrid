@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"path"
 
+	"github.com/cshabsin/thegrid/example/server/data"
 	"github.com/cshabsin/thegrid/example/view"
 	"github.com/cshabsin/thegrid/hexmap"
 	"github.com/cshabsin/thegrid/js"
@@ -28,17 +29,21 @@ func main() {
 
 	newURL := *url
 	newURL.Path = path.Join(newURL.Path, "/data")
-	data, err := model.FromURL(newURL)
+	explorersSystemData, err := model.FromURL(newURL)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	mapView := &view.MapView{SVG: svg, HexMap: hm, DataElement: document.GetElementByID("data-contents")}
-	for col := range data.HexGrid {
-		for row := range data.HexGrid[col] {
-			parsec := mapView.NewParsec(col, row, data.GetCell(col, row))
+	for col := range explorersSystemData.HexGrid {
+		for row := range explorersSystemData.HexGrid[col] {
+			parsec := mapView.NewParsec(col, row, explorersSystemData.GetCell(col, row))
 			mapGroup.Append(parsec.Anchor.AsDOM())
 		}
+	}
+
+	for _, seg := range data.ExplorersPathData.Segments {
+		mapGroup.Append(mapView.NewPathSegment(seg, "spiny-rat"))
 	}
 
 	svg.SetAttr("height", fmt.Sprintf("%fpx", hm.GetPixHeight()+20))

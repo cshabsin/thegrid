@@ -9,6 +9,13 @@ type Coord struct {
 	X, Y float64
 }
 
+func (c Coord) Translate(x, y float64) Coord {
+	return Coord{
+		X: c.X + x,
+		Y: c.Y + y,
+	}
+}
+
 type Vector struct {
 	DX, DY float64
 }

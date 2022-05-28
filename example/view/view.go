@@ -1,8 +1,7 @@
 package view
 
 import (
-	"fmt"
-
+	"github.com/cshabsin/thegrid/example/server/data"
 	"github.com/cshabsin/thegrid/hexmap"
 	"github.com/cshabsin/thegrid/js"
 	"github.com/cshabsin/thegrid/js/attr"
@@ -40,7 +39,6 @@ func (mv *MapView) NewParsec(col, row int, e Entity) *Parsec {
 	}
 
 	hexAnchor.AddEventListener("mouseenter", func(js.DOMElement, js.DOMEvent) {
-		fmt.Println("hi")
 		hexagon.SetAttr("class", "map-hexagon-hilite")
 		mv.DataElement.Set("innerHTML", e.Description())
 	})
@@ -49,4 +47,14 @@ func (mv *MapView) NewParsec(col, row int, e Entity) *Parsec {
 		mv.DataElement.Set("innerHTML", "")
 	})
 	return &Parsec{Anchor: hexAnchor, hexagon: hexagon}
+}
+
+func (mv *MapView) NewPathSegment(seg data.PathSegment, cls string, attrs ...attr.Attr) svg.Element {
+	g := mv.SVG.CreateElement("g")
+	var p svg.Path
+	p = p.MoveAbs(mv.HexMap.CellCenter(seg.StartCoord[0], seg.StartCoord[1]).Translate(float64(seg.StartOffset[0]), float64(seg.StartOffset[1])), false)
+	p = p.MoveAbs(mv.HexMap.CellCenter(seg.EndCoord[0], seg.EndCoord[1]).Translate(float64(seg.EndOffset[0]), float64(seg.EndOffset[1])), true)
+	g.Append(p.ToElement(mv.SVG, append(attrs, attr.Make("marker-end", "url(#triangle)"), attr.Class(cls))...))
+	g.Append(p.ToElement(mv.SVG, attr.Class(cls+"-wide")))
+	return g
 }
