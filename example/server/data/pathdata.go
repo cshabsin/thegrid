@@ -21,7 +21,7 @@ func makePathData(mapData *MapData) *PathData {
 		"Uure":       {18, 18},
 		"Forquee":    {17, 19},
 		"Vlir":       {22, 17},
-		"Nagilun":    {21, 19},
+		"Nagilun":    {23, 17},
 		"Udipeni":    {23, 16},
 		"Ugar":       {22, 16},
 		"Girgulash":  {21, 16},
