@@ -20,12 +20,34 @@ func main() {
 		return
 	}
 	document := js.Document()
+	svgElem := svg.GetSVGById(document, "map-svg")
+	if url.Fragment == "graph" {
+		svgElem.SetAttr("height", "100%")
+		svgElem.SetAttr("width", "100%")
+		svgElem.SetAttr("viewBox", "0 0 10000 10000")
+		var p svg.Path
+		for i := 0; i < 10000; i += 70 {
+			p = p.MoveAbs(svg.Coord{X: float64(i), Y: 0}, false)
+			p = p.MoveAbs(svg.Coord{X: 0, Y: float64(10000 - i)}, true)
+
+			p = p.MoveAbs(svg.Coord{X: float64(i), Y: 10000}, false)
+			p = p.MoveAbs(svg.Coord{X: 0, Y: float64(i)}, true)
+
+			p = p.MoveAbs(svg.Coord{X: float64(i), Y: 10000}, false)
+			p = p.MoveAbs(svg.Coord{X: 10000, Y: float64(10000 - i)}, true)
+
+			p = p.MoveAbs(svg.Coord{X: float64(i), Y: 0}, false)
+			p = p.MoveAbs(svg.Coord{X: 10000, Y: float64(i)}, true)
+
+			svgElem.Append(p.ToElement(svgElem, attr.Make("style", fmt.Sprintf("fill: none; stroke: hsl(%d, 100%%, 50%%); stroke-width: 10px", i*360/10000))))
+			p = ""
+		}
+		return
+	}
 	hm := hexmap.NewHexMap(10, 11, 70, false)
 
-	svg := svg.GetSVGById(document, "map-svg")
-
-	mapGroup := svg.CreateElement("g", attr.Make("class", "map-anchor-group"), attr.Make("transform", "translate(10,10)"))
-	mapGroup.Append(hm.GridMesh().ToElement(svg, attr.Class("map-mesh")))
+	mapGroup := svgElem.CreateElement("g", attr.Make("class", "map-anchor-group"), attr.Make("transform", "translate(10,10)"))
+	mapGroup.Append(hm.GridMesh().ToElement(svgElem, attr.Class("map-mesh")))
 
 	newURL := *url
 	newURL.Path = path.Join(newURL.Path, "/data")
@@ -34,7 +56,7 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	mapView := &view.MapView{SVG: svg, HexMap: hm, DataElement: document.GetElementByID("data-contents")}
+	mapView := &view.MapView{SVG: svgElem, HexMap: hm, DataElement: document.GetElementByID("data-contents")}
 	for col := range explorersSystemData.HexGrid {
 		for row := range explorersSystemData.HexGrid[col] {
 			parsec := mapView.NewParsec(col, row, explorersSystemData.GetCell(col, row))
@@ -46,9 +68,9 @@ func main() {
 		mapGroup.Append(mapView.NewPathSegment(seg, "spiny-rat"))
 	}
 
-	svg.SetAttr("height", fmt.Sprintf("%fpx", hm.GetPixHeight()+20))
-	svg.SetAttr("width", fmt.Sprintf("%fpx", hm.GetPixWidth()+20))
-	svg.Append(mapGroup)
+	svgElem.SetAttr("height", fmt.Sprintf("%fpx", hm.GetPixHeight()+20))
+	svgElem.SetAttr("width", fmt.Sprintf("%fpx", hm.GetPixWidth()+20))
+	svgElem.Append(mapGroup)
 
 	select {}
 }
