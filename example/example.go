@@ -30,11 +30,11 @@ func main() {
 			p = p.MoveAbs(svg.Coord{X: float64(i), Y: 0}, false)
 			p = p.MoveAbs(svg.Coord{X: 0, Y: float64(10000 - i)}, true)
 
-			p = p.MoveAbs(svg.Coord{X: float64(i), Y: 10000}, false)
-			p = p.MoveAbs(svg.Coord{X: 0, Y: float64(i)}, true)
+			p = p.MoveAbs(svg.Coord{X: float64(10000 - i), Y: 10000}, false)
+			p = p.MoveAbs(svg.Coord{X: 0, Y: float64(10000 - i)}, true)
 
-			p = p.MoveAbs(svg.Coord{X: float64(i), Y: 10000}, false)
-			p = p.MoveAbs(svg.Coord{X: 10000, Y: float64(10000 - i)}, true)
+			p = p.MoveAbs(svg.Coord{X: float64(10000 - i), Y: 10000}, false)
+			p = p.MoveAbs(svg.Coord{X: 10000, Y: float64(i)}, true)
 
 			p = p.MoveAbs(svg.Coord{X: float64(i), Y: 0}, false)
 			p = p.MoveAbs(svg.Coord{X: 10000, Y: float64(i)}, true)
