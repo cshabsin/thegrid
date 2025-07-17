@@ -5,17 +5,23 @@ Kidnapping this repository to just play around with WASM for a bit. Notes:
 To compile "example", run:
 
 ```
-GOOS=js GOARCH=wasm go1.18.2 build -o example/main.wasm github.com/cshabsin/thegrid/example
+GOOS=js GOARCH=wasm go build -o example/main.wasm github.com/cshabsin/thegrid/example
 ```
 
 Then from the top-level, run
 
 ```
-go1.18.2 run example/server/server.go --dir example
+go run example/server/server.go --dir example
 ```
 
 (You can just keep this server running and recompile... might need to
 shift-reload)
+
+Part of the setup may involve updating the wasm_exec stub that Go provides:
+
+```
+    cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" example/wasm_exec.js
+```
 
 # thegrid
 
@@ -39,4 +45,3 @@ the four directions.
 
 From here... can I move things around enough to make a tower defense game? A
 manufactoria type game? I don't know.
-
