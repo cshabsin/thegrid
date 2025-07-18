@@ -25,8 +25,8 @@ func main() {
 		svgElem.SetAttr("height", "100%")
 		svgElem.SetAttr("width", "100%")
 		svgElem.SetAttr("viewBox", "0 0 10000 10000")
-		var p svg.Path
 		for i := 0; i < 10000; i += 70 {
+			var p svg.Path
 			p = p.MoveAbs(svg.Coord{X: float64(i), Y: 0}, false)
 			p = p.MoveAbs(svg.Coord{X: 0, Y: float64(10000 - i)}, true)
 
@@ -40,7 +40,6 @@ func main() {
 			p = p.MoveAbs(svg.Coord{X: 10000, Y: float64(i)}, true)
 
 			svgElem.Append(p.ToElement(svgElem, attr.Make("style", fmt.Sprintf("fill: none; stroke: hsl(%d, 100%%, 50%%); stroke-width: 10px", i*360/10000))))
-			p = ""
 		}
 		return
 	}
