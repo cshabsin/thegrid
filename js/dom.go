@@ -88,6 +88,19 @@ func (el DOMElement) AddEventListener(eventName string, fn func(el DOMElement, e
 		}))
 }
 
+func (el DOMElement) QuerySelectorAll(selector string) []DOMElement {
+	nodes := el.Call("querySelectorAll", selector)
+	var elements []DOMElement
+	for i := 0; i < nodes.Length(); i++ {
+		elements = append(elements, DOMElement{nodes.Index(i), el.document})
+	}
+	return elements
+}
+
+func (el DOMElement) GetBoundingClientRect() js.Value {
+	return el.Call("getBoundingClientRect")
+}
+
 type DOMEvent struct {
 	js.Value
 }
