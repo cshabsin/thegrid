@@ -34,11 +34,13 @@ func Document() DOMDocument {
 }
 
 func (document DOMDocument) Body() DOMElement {
-	return DOMElement{document.Get("body"), document}
+	bodyVal := document.Get("body")
+	return DOMElement{bodyVal, document, Style{bodyVal.Get("style")}}
 }
 
 func (document DOMDocument) CreateElement(tagName string, attrs ...attr.Attr) DOMElement {
-	elem := DOMElement{document.Call("createElement", tagName), document}
+	elemVal := document.Call("createElement", tagName)
+	elem := DOMElement{elemVal, document, Style{elemVal.Get("style")}}
 	for _, attr := range attrs {
 		elem.SetAttr(attr.Name, attr.Value)
 	}
@@ -46,7 +48,8 @@ func (document DOMDocument) CreateElement(tagName string, attrs ...attr.Attr) DO
 }
 
 func (document DOMDocument) CreateElementNS(ns string, tagName string, attrs ...attr.Attr) DOMElement {
-	elem := DOMElement{document.Call("createElementNS", ns, tagName), document}
+	elemVal := document.Call("createElementNS", ns, tagName)
+	elem := DOMElement{elemVal, document, Style{elemVal.Get("style")}}
 	for _, attr := range attrs {
 		elem.SetAttr(attr.Name, attr.Value)
 	}
@@ -54,13 +57,18 @@ func (document DOMDocument) CreateElementNS(ns string, tagName string, attrs ...
 }
 
 func (document DOMDocument) GetElementByID(id string) DOMElement {
-	elem := document.Call("getElementById", id)
-	return DOMElement{elem, document}
+	elemVal := document.Call("getElementById", id)
+	return DOMElement{elemVal, document, Style{elemVal.Get("style")}}
 }
 
 type DOMElement struct {
 	js.Value
 	document DOMDocument
+	style    Style
+}
+
+func (el DOMElement) Style() Style {
+	return el.style
 }
 
 type elementer interface {
@@ -92,7 +100,8 @@ func (el DOMElement) QuerySelectorAll(selector string) []DOMElement {
 	nodes := el.Call("querySelectorAll", selector)
 	var elements []DOMElement
 	for i := 0; i < nodes.Length(); i++ {
-		elements = append(elements, DOMElement{nodes.Index(i), el.document})
+		node := nodes.Index(i)
+		elements = append(elements, DOMElement{node, el.document, Style{node.Get("style")}})
 	}
 	return elements
 }
