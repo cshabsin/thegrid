@@ -31,8 +31,8 @@ func (mv *MapView) NewParsec(col, row int, e Entity) *Parsec {
 	hexAnchor := mv.SVG.CreateElement("a", attr.Class("map-anchor"), mv.HexMap.CellTranslate(col, row))
 	hexagon := mv.HexMap.HexPath(mv.SVG, "map-hexagon")
 	hexAnchor.Append(hexagon) // TODO: just hexagon, but tweak the class with events
-	hexAnchor.Append(mv.SVG.Text(e.Label(), attr.Make("y", 50), attr.Class("map-coord")))
-	hexAnchor.Append(mv.SVG.Text(e.Name(), attr.Make("y", 20), attr.Class("map-name")))
+	hexAnchor.Append(mv.SVG.Text(e.Label(), attr.Y(50), attr.Class("map-coord")))
+	hexAnchor.Append(mv.SVG.Text(e.Name(), attr.Y(20), attr.Class("map-name")))
 
 	if e.HasCircle() {
 		hexAnchor.Append(mv.SVG.Circle(5, attr.Class("map-planet")))
