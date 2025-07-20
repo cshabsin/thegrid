@@ -56,7 +56,7 @@ func main() {
 	ui.Waste.AddEventListener("click", func(el js.DOMElement, e js.DOMEvent) {
 		if len(g.Waste) > 0 {
 			g.SelectedCard = g.Waste[len(g.Waste)-1]
-			render(document, ui, g)
+			g.NotifyListeners() // This will trigger a render
 		}
 	})
 
@@ -75,14 +75,32 @@ func main() {
 			if len(foundation) == 0 {
 				if g.SelectedCard.Rank == game.Ace {
 					g.MoveSelectedToFoundation(foundationIndex)
-					render(document, ui, g)
 				}
 				return
 			}
 			topCard := foundation[len(foundation)-1]
 			if g.SelectedCard.Suit == topCard.Suit && g.SelectedCard.Rank == topCard.Rank+1 {
 				g.MoveSelectedToFoundation(foundationIndex)
-				render(document, ui, g)
+			}
+		})
+		ui.Foundations[i].AddEventListener("dragover", func(el js.DOMElement, e js.DOMEvent) {
+			e.Value.Call("preventDefault")
+		})
+		ui.Foundations[i].AddEventListener("drop", func(el js.DOMElement, e js.DOMEvent) {
+			e.Value.Call("preventDefault")
+			if g.SelectedCard == nil {
+				return
+			}
+			foundation := g.Foundations[foundationIndex]
+			if len(foundation) == 0 {
+				if g.SelectedCard.Rank == game.Ace {
+					g.MoveSelectedToFoundation(foundationIndex)
+				}
+			} else {
+				topCard := foundation[len(foundation)-1]
+				if g.SelectedCard.Suit == topCard.Suit && g.SelectedCard.Rank == topCard.Rank+1 {
+					g.MoveSelectedToFoundation(foundationIndex)
+				}
 			}
 		})
 	}
@@ -118,9 +136,9 @@ func main() {
 					rect := cardEl.GetBoundingClientRect()
 					if clientY >= rect.Get("top").Int() && clientY <= rect.Get("bottom").Int() {
 						if !card.FaceUp {
-							if i == len(pile)-1 {
+														if i == len(pile)-1 {
 								card.FaceUp = true
-								render(document, ui, g)
+								g.NotifyListeners()
 							}
 							return
 						}
@@ -159,33 +177,41 @@ func main() {
 			} else {
 				g.SelectedCard = clickedCard
 			}
-			render(document, ui, g)
+			g.NotifyListeners()
+		})
+		ui.Tableau[i].AddEventListener("dragover", func(el js.DOMElement, e js.DOMEvent) {
+			e.Value.Call("preventDefault")
+		})
+		ui.Tableau[i].AddEventListener("drop", func(el js.DOMElement, e js.DOMEvent) {
+			e.Value.Call("preventDefault")
+			if g.SelectedCard == nil {
+				return
+			}
+			destPile := g.Tableau[pileIndex]
+			if len(destPile) == 0 {
+				if g.SelectedCard.Rank == game.King {
+					g.MoveSelectedToTableau(pileIndex)
+				}
+			} else {
+				topCard := destPile[len(destPile)-1]
+				if g.SelectedCard.Suit.Color() != topCard.Suit.Color() && g.SelectedCard.Rank == topCard.Rank-1 {
+					g.MoveSelectedToTableau(pileIndex)
+				}
+			}
 		})
 	}
 
 	ui.Stock.AddEventListener("click", func(el js.DOMElement, e js.DOMEvent) {
 		if len(g.Stock) > 0 {
-			// Draw up to 3 cards
-			numToDraw := 3
-			if len(g.Stock) < 3 {
-				numToDraw = len(g.Stock)
-			}
-			for i := 0; i < numToDraw; i++ {
-				card := g.Stock[0]
-				g.Stock = g.Stock[1:]
-				card.FaceUp = true
-				g.Waste = append(g.Waste, card)
-			}
-		} else if len(g.Waste) > 0 {
-			g.Stock = g.Waste
-			g.Waste = nil
-			for _, card := range g.Stock {
-				card.FaceUp = false
-			}
+			g.DrawCards()
+		} else {
+			g.RecycleWaste()
 		}
-		render(document, ui, g)
 	})
 
+	g.AddListener(func() {
+		render(document, ui, g)
+	})
 	render(document, ui, g)
 	select {}
 }
@@ -236,6 +262,7 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 			}
 			// Offset the cards to fan them out
 			cardDiv.Value.Get("style").Set("left", fmt.Sprintf("%dpx", (i-start)*20))
+			cardDiv.Value.Set("draggable", "true")
 			cardDiv.Value.Set("innerHTML", fmt.Sprintf(`<div class="suit" style="color:%s">%s</div><div class="rank" style="color:%s">%s</div>`, card.Suit.Color(), card.Suit.String(), card.Suit.Color(), card.Rank.String()))
 			ui.Waste.Append(cardDiv)
 			cardDiv.AddEventListener("dblclick", func(el js.DOMElement, e js.DOMEvent) {
@@ -245,7 +272,6 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 						if card.Rank == game.Ace {
 							g.SelectedCard = card
 							g.MoveSelectedToFoundation(i)
-							render(document, ui, g)
 							return
 						}
 					} else {
@@ -253,11 +279,15 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 						if card.Suit == topCard.Suit && card.Rank == topCard.Rank+1 {
 							g.SelectedCard = card
 							g.MoveSelectedToFoundation(i)
-							render(document, ui, g)
 							return
 						}
 					}
 				}
+			})
+			cardDiv.AddEventListener("dragstart", func(el js.DOMElement, e js.DOMEvent) {
+				e.Value.Get("dataTransfer").Call("setData", "text/plain", "")
+				g.SelectedCard = card
+				// Do not notify listeners here, it will cancel the drag event.
 			})
 		}
 	}
@@ -291,6 +321,7 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 			}
 			cardDiv.Value.Get("style").Set("top", fmt.Sprintf("%dpx", j*30))
 			if card.FaceUp {
+				cardDiv.Value.Set("draggable", "true")
 				cardDiv.Value.Set("innerHTML", fmt.Sprintf(`<div class="suit" style="color:%s">%s</div><div class="rank" style="color:%s">%s</div>`, card.Suit.Color(), card.Suit.String(), card.Suit.Color(), card.Rank.String()))
 			} else {
 				cardDiv.Value.Get("style").Set("backgroundColor", "blue")
@@ -306,7 +337,6 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 						if card.Rank == game.Ace {
 							g.SelectedCard = card
 							g.MoveSelectedToFoundation(i)
-							render(document, ui, g)
 							return
 						}
 					} else {
@@ -314,12 +344,22 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 						if card.Suit == topCard.Suit && card.Rank == topCard.Rank+1 {
 							g.SelectedCard = card
 							g.MoveSelectedToFoundation(i)
-							render(document, ui, g)
 							return
 						}
 					}
 				}
 			})
+			cardDiv.AddEventListener("dragstart", func(el js.DOMElement, e js.DOMEvent) {
+				if !card.FaceUp {
+					e.Value.Call("preventDefault")
+					return
+				}
+				e.Value.Get("dataTransfer").Call("setData", "text/plain", "")
+				g.SelectedCard = card
+				// Do not notify listeners here, it will cancel the drag event.
+			})
 		}
 	}
 }
+												
+

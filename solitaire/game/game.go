@@ -102,6 +102,7 @@ type Game struct {
 	Stock        []*Card
 	Waste        []*Card
 	SelectedCard *Card
+	listeners    []func()
 }
 
 func New() *Game {
@@ -133,6 +134,32 @@ func (g *Game) drawCard() *Card {
 	card := g.Deck[0]
 	g.Deck = g.Deck[1:]
 	return card
+}
+
+func (g *Game) RecycleWaste() {
+	if len(g.Stock) > 0 {
+		return
+	}
+	g.Stock = g.Waste
+	g.Waste = nil
+	for _, card := range g.Stock {
+		card.FaceUp = false
+	}
+	g.NotifyListeners()
+}
+
+func (g *Game) DrawCards() {
+	numToDraw := 3
+	if len(g.Stock) < 3 {
+		numToDraw = len(g.Stock)
+	}
+	for i := 0; i < numToDraw; i++ {
+		card := g.Stock[0]
+		g.Stock = g.Stock[1:]
+		card.FaceUp = true
+		g.Waste = append(g.Waste, card)
+	}
+	g.NotifyListeners()
 }
 
 // findAndRemoveSelectedCard finds the selected card, removes it (and any cards on top of it) from its current location,
@@ -201,6 +228,7 @@ func (g *Game) MoveSelectedToFoundation(foundationIndex int) {
 	if stack != nil {
 		g.Foundations[foundationIndex] = append(g.Foundations[foundationIndex], stack...)
 		g.SelectedCard = nil
+		g.NotifyListeners()
 	}
 }
 
@@ -224,6 +252,7 @@ func (g *Game) MoveSelectedToTableau(tableauIndex int) {
 	if stack != nil {
 		*destPile = append(*destPile, stack...)
 		g.SelectedCard = nil
+		g.NotifyListeners()
 	}
 }
 
@@ -234,4 +263,14 @@ func (g *Game) CheckWin() bool {
 		}
 	}
 	return true
+}
+
+func (g *Game) AddListener(listener func()) {
+	g.listeners = append(g.listeners, listener)
+}
+
+func (g *Game) NotifyListeners() {
+	for _, listener := range g.listeners {
+		listener()
+	}
 }
