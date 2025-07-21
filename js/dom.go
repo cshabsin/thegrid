@@ -6,6 +6,7 @@ import (
 	"syscall/js"
 
 	"github.com/cshabsin/thegrid/js/attr"
+	"github.com/cshabsin/thegrid/js/style"
 )
 
 func URL() (*url.URL, error) {
@@ -71,13 +72,9 @@ func (el DOMElement) Style() Style {
 	return el.style
 }
 
-func (el DOMElement) SetStyle(pairs ...string) DOMElement {
-	if len(pairs)%2 != 0 {
-		// Maybe panic here?
-		return el
-	}
-	for i := 0; i < len(pairs); i += 2 {
-		el.style.Set(pairs[i], pairs[i+1])
+func (el DOMElement) SetStyle(styles ...style.Style) DOMElement {
+	for _, s := range styles {
+		el.style.Set(s.Name, s.Value)
 	}
 	return el
 }
