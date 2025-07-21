@@ -71,6 +71,17 @@ func (el DOMElement) Style() Style {
 	return el.style
 }
 
+func (el DOMElement) SetStyle(pairs ...string) DOMElement {
+	if len(pairs)%2 != 0 {
+		// Maybe panic here?
+		return el
+	}
+	for i := 0; i < len(pairs); i += 2 {
+		el.style.Set(pairs[i], pairs[i+1])
+	}
+	return el
+}
+
 type elementer interface {
 	AsDOM() DOMElement
 }

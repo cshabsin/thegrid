@@ -32,21 +32,18 @@ func main() {
 	ui := &GameUI{Board: board}
 
 	// Create top row elements
-	topRow := createDiv(document)
-	topRow.Style().Set("grid-row", "1")
-	topRow.Style().Set("grid-column", "1 / span 7")
-	topRow.Style().Set("display", "grid")
-	topRow.Style().Set("grid-template-columns", "repeat(7, 1fr)")
+	topRow := createDiv(document).SetStyle(
+		"grid-row", "1",
+		"grid-column", "1 / span 7",
+		"display", "grid",
+		"grid-template-columns", "repeat(7, 1fr)",
+	)
 	board.Append(topRow)
 
-	ui.Stock = createDiv(document)
-	ui.Stock.Style().Set("grid-column", "1")
-	ui.Stock.Style().Set("position", "relative")
+	ui.Stock = createDiv(document).SetStyle("grid-column", "1", "position", "relative")
 	topRow.Append(ui.Stock)
 
-	ui.Waste = createDiv(document)
-	ui.Waste.Style().Set("grid-column", "2")
-	ui.Waste.Style().Set("position", "relative")
+	ui.Waste = createDiv(document).SetStyle("grid-column", "2", "position", "relative")
 	topRow.Append(ui.Waste)
 	ui.Waste.AddEventListener("click", func(el js.DOMElement, e js.DOMEvent) {
 		if len(g.Waste) > 0 {
@@ -57,9 +54,7 @@ func main() {
 
 	for i := range 4 {
 		foundationIndex := i
-		ui.Foundations[i] = createDiv(document)
-		ui.Foundations[i].Style().Set("grid-column", fmt.Sprintf("%d", i+4))
-		ui.Foundations[i].Style().Set("position", "relative")
+		ui.Foundations[i] = createDiv(document).SetStyle("grid-column", fmt.Sprintf("%d", i+4), "position", "relative")
 		topRow.Append(ui.Foundations[i])
 		ui.Foundations[i].AddEventListener("click", func(el js.DOMElement, e js.DOMEvent) {
 			if g.SelectedCard == nil {
@@ -96,17 +91,16 @@ func main() {
 	}
 
 	// Create tableau elements
-	tableauRow := createDiv(document)
-	tableauRow.Style().Set("grid-row", "2")
-	tableauRow.Style().Set("grid-column", "1 / span 7")
-	tableauRow.Style().Set("display", "grid")
-	tableauRow.Style().Set("grid-template-columns", "repeat(7, 1fr)")
+	tableauRow := createDiv(document).SetStyle(
+		"grid-row", "2",
+		"grid-column", "1 / span 7",
+		"display", "grid",
+		"grid-template-columns", "repeat(7, 1fr)",
+	)
 	board.Append(tableauRow)
 	for i := 0; i < 7; i++ {
 		pileIndex := i
-		ui.Tableau[i] = createDiv(document)
-		ui.Tableau[i].Style().Set("grid-column", fmt.Sprintf("%d", i+1))
-		ui.Tableau[i].Style().Set("position", "relative")
+		ui.Tableau[i] = createDiv(document).SetStyle("grid-column", fmt.Sprintf("%d", i+1), "position", "relative")
 		tableauRow.Append(ui.Tableau[i])
 		ui.Tableau[i].AddEventListener("click", func(el js.DOMElement, e js.DOMEvent) {
 			pile := g.Tableau[pileIndex]
@@ -202,13 +196,14 @@ func main() {
 
 func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 	if g.CheckWin() {
-		winDiv := createDiv(document)
-		winDiv.Style().Set("position", "absolute")
-		winDiv.Style().Set("top", "50%")
-		winDiv.Style().Set("left", "50%")
-		winDiv.Style().Set("transform", "translate(-50%, -50%)")
-		winDiv.Style().Set("font-size", "5em")
-		winDiv.Style().Set("color", "white")
+		winDiv := createDiv(document).SetStyle(
+			"position", "absolute",
+			"top", "50%",
+			"left", "50%",
+			"transform", "translate(-50%, -50%)",
+			"font-size", "5em",
+			"color", "white",
+		)
 		winDiv.Append(document.CreateElement("h1").SetText("You Win!"))
 		ui.Board.Append(winDiv)
 		return
@@ -217,16 +212,15 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 	ui.Stock.Clear()
 	stockCardDiv := createDiv(document, attr.Class("card"))
 	if len(g.Stock) > 0 {
-		stockCardDiv.Style().Set("background-color", "blue")
+		stockCardDiv.SetStyle("background-color", "blue")
 	} else {
-		stockCardDiv.Style().Set("border", "1px solid black")
+		stockCardDiv.SetStyle("border", "1px solid black")
 	}
 	ui.Stock.Append(stockCardDiv)
 
 	// Render Waste
 	ui.Waste.Clear()
-	wastePlaceholder := createDiv(document, attr.Class("card"))
-	wastePlaceholder.Style().Set("border", "1px solid black")
+	wastePlaceholder := createDiv(document, attr.Class("card")).SetStyle("border", "1px solid black")
 	ui.Waste.Append(wastePlaceholder)
 	if len(g.Waste) > 0 {
 		start := len(g.Waste) - 3
@@ -237,9 +231,9 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 			card := g.Waste[i]
 			cardDiv := createDiv(document, attr.Class("card"))
 			if i == len(g.Waste)-1 && card == g.SelectedCard {
-				cardDiv.Style().Set("border", "2px solid yellow")
+				cardDiv.SetStyle("border", "2px solid yellow")
 			}
-			cardDiv.Style().Set("left", fmt.Sprintf("%dpx", (i-start)*20))
+			cardDiv.SetStyle("left", fmt.Sprintf("%dpx", (i-start)*20))
 			cardDiv.SetAttr("draggable", true)
 			suitDiv := createDiv(document, attr.Class("suit"))
 			suitDiv.Style().Set("color", card.Suit.Color())
@@ -279,8 +273,7 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 	for i := 0; i < 4; i++ {
 		foundationDiv := ui.Foundations[i]
 		foundationDiv.Clear()
-		placeholder := createDiv(document, attr.Class("card"))
-		placeholder.Style().Set("border", "1px solid black")
+		placeholder := createDiv(document, attr.Class("card")).SetStyle("border", "1px solid black")
 		foundationDiv.Append(placeholder)
 		if len(g.Foundations[i]) > 0 {
 			card := g.Foundations[i][len(g.Foundations[i])-1]
@@ -304,9 +297,9 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 		for j, card := range pile {
 			cardDiv := createDiv(document, attr.Class("card"))
 			if card == g.SelectedCard {
-				cardDiv.Style().Set("border", "2px solid yellow")
+				cardDiv.SetStyle("border", "2px solid yellow")
 			}
-			cardDiv.Style().Set("top", fmt.Sprintf("%dpx", j*30))
+			cardDiv.SetStyle("top", fmt.Sprintf("%dpx", j*30))
 			if card.FaceUp {
 				cardDiv.SetAttr("draggable", true)
 				suitDiv := createDiv(document, attr.Class("suit"))
@@ -318,7 +311,7 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 				rankDiv.SetText(card.Rank.String())
 				cardDiv.Append(rankDiv)
 			} else {
-				cardDiv.Style().Set("background-color", "blue")
+				cardDiv.SetStyle("background-color", "blue")
 			}
 			pileDiv.Append(cardDiv)
 			cardDiv.AddEventListener("dblclick", func(el js.DOMElement, e js.DOMEvent) {
