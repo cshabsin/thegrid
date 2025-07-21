@@ -27,7 +27,7 @@ func main() {
 	g = game.New()
 	document := js.Document()
 	board := document.GetElementByID("game-board")
-	board.Value.Set("innerHTML", "") // Clear the board
+	board.Clear() // Clear the board
 
 	ui := &GameUI{Board: board}
 
@@ -209,12 +209,12 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 		winDiv.Style().Set("transform", "translate(-50%, -50%)")
 		winDiv.Style().Set("font-size", "5em")
 		winDiv.Style().Set("color", "white")
-		winDiv.Value.Set("innerHTML", "<h1>You Win!</h1>")
+		winDiv.Append(document.CreateElement("h1").SetText("You Win!"))
 		ui.Board.Append(winDiv)
 		return
 	}
 	// Render Stock
-	ui.Stock.Value.Set("innerHTML", "")
+	ui.Stock.Clear()
 	stockCardDiv := createDiv(document, attr.Class("card"))
 	if len(g.Stock) > 0 {
 		stockCardDiv.Style().Set("background-color", "blue")
@@ -224,7 +224,7 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 	ui.Stock.Append(stockCardDiv)
 
 	// Render Waste
-	ui.Waste.Value.Set("innerHTML", "")
+	ui.Waste.Clear()
 	wastePlaceholder := createDiv(document, attr.Class("card"))
 	wastePlaceholder.Style().Set("border", "1px solid black")
 	ui.Waste.Append(wastePlaceholder)
@@ -241,7 +241,14 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 			}
 			cardDiv.Style().Set("left", fmt.Sprintf("%dpx", (i-start)*20))
 			cardDiv.SetAttr("draggable", true)
-			cardDiv.Value.Set("innerHTML", fmt.Sprintf(`<div class="suit" style="color:%s">%s</div><div class="rank" style="color:%s">%s</div>`, card.Suit.Color(), card.Suit.String(), card.Suit.Color(), card.Rank.String()))
+			suitDiv := createDiv(document, attr.Class("suit"))
+			suitDiv.Style().Set("color", card.Suit.Color())
+			suitDiv.SetText(card.Suit.String())
+			cardDiv.Append(suitDiv)
+			rankDiv := createDiv(document, attr.Class("rank"))
+			rankDiv.Style().Set("color", card.Suit.Color())
+			rankDiv.SetText(card.Rank.String())
+			cardDiv.Append(rankDiv)
 			ui.Waste.Append(cardDiv)
 			cardDiv.AddEventListener("dblclick", func(el js.DOMElement, e js.DOMEvent) {
 				for i := 0; i < 4; i++ {
@@ -271,14 +278,21 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 	// Render Foundations
 	for i := 0; i < 4; i++ {
 		foundationDiv := ui.Foundations[i]
-		foundationDiv.Value.Set("innerHTML", "")
+		foundationDiv.Clear()
 		placeholder := createDiv(document, attr.Class("card"))
 		placeholder.Style().Set("border", "1px solid black")
 		foundationDiv.Append(placeholder)
 		if len(g.Foundations[i]) > 0 {
 			card := g.Foundations[i][len(g.Foundations[i])-1]
 			cardDiv := createDiv(document, attr.Class("card"))
-			cardDiv.Value.Set("innerHTML", fmt.Sprintf(`<div class="suit" style="color:%s">%s</div><div class="rank" style="color:%s">%s</div>`, card.Suit.Color(), card.Suit.String(), card.Suit.Color(), card.Rank.String()))
+			suitDiv := createDiv(document, attr.Class("suit"))
+			suitDiv.Style().Set("color", card.Suit.Color())
+			suitDiv.SetText(card.Suit.String())
+			cardDiv.Append(suitDiv)
+			rankDiv := createDiv(document, attr.Class("rank"))
+			rankDiv.Style().Set("color", card.Suit.Color())
+			rankDiv.SetText(card.Rank.String())
+			cardDiv.Append(rankDiv)
 			foundationDiv.Append(cardDiv)
 		}
 	}
@@ -286,7 +300,7 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 	// Render Tableau
 	for i, pile := range g.Tableau {
 		pileDiv := ui.Tableau[i]
-		pileDiv.Value.Set("innerHTML", "")
+		pileDiv.Clear()
 		for j, card := range pile {
 			cardDiv := createDiv(document, attr.Class("card"))
 			if card == g.SelectedCard {
@@ -295,7 +309,14 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 			cardDiv.Style().Set("top", fmt.Sprintf("%dpx", j*30))
 			if card.FaceUp {
 				cardDiv.SetAttr("draggable", true)
-				cardDiv.Value.Set("innerHTML", fmt.Sprintf(`<div class="suit" style="color:%s">%s</div><div class="rank" style="color:%s">%s</div>`, card.Suit.Color(), card.Suit.String(), card.Suit.Color(), card.Rank.String()))
+				suitDiv := createDiv(document, attr.Class("suit"))
+				suitDiv.Style().Set("color", card.Suit.Color())
+				suitDiv.SetText(card.Suit.String())
+				cardDiv.Append(suitDiv)
+				rankDiv := createDiv(document, attr.Class("rank"))
+				rankDiv.Style().Set("color", card.Suit.Color())
+				rankDiv.SetText(card.Rank.String())
+				cardDiv.Append(rankDiv)
 			} else {
 				cardDiv.Style().Set("background-color", "blue")
 			}

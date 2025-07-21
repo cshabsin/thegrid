@@ -84,8 +84,17 @@ func (el DOMElement) Append(child elementer) DOMElement {
 	return el
 }
 
+func (el DOMElement) Clear() {
+	el.Call("replaceChildren")
+}
+
 func (el DOMElement) SetAttr(name string, value interface{}) {
 	el.Call("setAttribute", name, value)
+}
+
+func (el DOMElement) SetText(text string) DOMElement {
+	el.Set("textContent", text)
+	return el
 }
 
 func (el DOMElement) AddEventListener(eventName string, fn func(el DOMElement, e DOMEvent)) {
