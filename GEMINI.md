@@ -13,3 +13,7 @@ API and refining the object model to suit these different use cases more
 idiomatically. When there's a chance to turn a generic accessor (such as
 `addStyle("color", "red")`) into a specific accessor (such as 
 `setColor("red")`), consider adding the specific accessor instead.
+
+The command to rebuild the solitaire wasm is simply 
+`GOOS=js GOARCH=wasm go build -o solitaire.wasm .` 
+executed from the solitaire subdirectory.
