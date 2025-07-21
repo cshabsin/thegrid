@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/cshabsin/thegrid/js"
+	"github.com/cshabsin/thegrid/js/attr"
 	"github.com/cshabsin/thegrid/js/dragdrop"
 	"github.com/cshabsin/thegrid/solitaire/game"
 )
@@ -18,8 +19,8 @@ type GameUI struct {
 
 var g *game.Game
 
-func createDiv(doc js.DOMDocument) js.DOMElement {
-	return doc.CreateElement("div")
+func createDiv(doc js.DOMDocument, attrs ...attr.Attr) js.DOMElement {
+	return doc.CreateElement("div", attrs...)
 }
 
 func main() {
@@ -214,8 +215,7 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 	}
 	// Render Stock
 	ui.Stock.Value.Set("innerHTML", "")
-	stockCardDiv := createDiv(document)
-	stockCardDiv.SetAttr("class", "card")
+	stockCardDiv := createDiv(document, attr.Class("card"))
 	if len(g.Stock) > 0 {
 		stockCardDiv.Style().Set("background-color", "blue")
 	} else {
@@ -225,8 +225,7 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 
 	// Render Waste
 	ui.Waste.Value.Set("innerHTML", "")
-	wastePlaceholder := createDiv(document)
-	wastePlaceholder.SetAttr("class", "card")
+	wastePlaceholder := createDiv(document, attr.Class("card"))
 	wastePlaceholder.Style().Set("border", "1px solid black")
 	ui.Waste.Append(wastePlaceholder)
 	if len(g.Waste) > 0 {
@@ -236,8 +235,7 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 		}
 		for i := start; i < len(g.Waste); i++ {
 			card := g.Waste[i]
-			cardDiv := createDiv(document)
-			cardDiv.SetAttr("class", "card")
+			cardDiv := createDiv(document, attr.Class("card"))
 			if i == len(g.Waste)-1 && card == g.SelectedCard {
 				cardDiv.Style().Set("border", "2px solid yellow")
 			}
@@ -274,14 +272,12 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 	for i := 0; i < 4; i++ {
 		foundationDiv := ui.Foundations[i]
 		foundationDiv.Value.Set("innerHTML", "")
-		placeholder := createDiv(document)
-		placeholder.SetAttr("class", "card")
+		placeholder := createDiv(document, attr.Class("card"))
 		placeholder.Style().Set("border", "1px solid black")
 		foundationDiv.Append(placeholder)
 		if len(g.Foundations[i]) > 0 {
 			card := g.Foundations[i][len(g.Foundations[i])-1]
-			cardDiv := createDiv(document)
-			cardDiv.SetAttr("class", "card")
+			cardDiv := createDiv(document, attr.Class("card"))
 			cardDiv.Value.Set("innerHTML", fmt.Sprintf(`<div class="suit" style="color:%s">%s</div><div class="rank" style="color:%s">%s</div>`, card.Suit.Color(), card.Suit.String(), card.Suit.Color(), card.Rank.String()))
 			foundationDiv.Append(cardDiv)
 		}
@@ -292,8 +288,7 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 		pileDiv := ui.Tableau[i]
 		pileDiv.Value.Set("innerHTML", "")
 		for j, card := range pile {
-			cardDiv := createDiv(document)
-			cardDiv.SetAttr("class", "card")
+			cardDiv := createDiv(document, attr.Class("card"))
 			if card == g.SelectedCard {
 				cardDiv.Style().Set("border", "2px solid yellow")
 			}

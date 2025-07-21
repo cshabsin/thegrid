@@ -35,8 +35,6 @@ func ID(value string) Attr {
 	return Attr{"id", value}
 }
 
-
-
 func Type(value string) Attr {
 	return Attr{"type", value}
 }
