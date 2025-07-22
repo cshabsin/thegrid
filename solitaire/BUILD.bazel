@@ -18,17 +18,17 @@ go_library(
 go_binary(
     name = "solitaire_wasm",
     embed = [":go_default_library"],
-    goos = "js",
     goarch = "wasm",
+    goos = "js",
     visibility = ["//visibility:public"],
 )
 
 pkg_web(
     name = "solitaire_pkg",
     srcs = [
-        ":solitaire_wasm",
         "index.html",
         "solitaire.css",
         "wasm_exec.js",
+        ":solitaire_wasm",
     ],
 )

@@ -21,17 +21,17 @@ go_library(
 go_binary(
     name = "example_wasm",
     embed = [":go_default_library"],
-    goos = "js",
     goarch = "wasm",
+    goos = "js",
     visibility = ["//visibility:public"],
 )
 
 pkg_web(
     name = "example_pkg",
     srcs = [
-        ":example_wasm",
         "index.html",
         "map-display.css",
         "wasm_exec.js",
+        ":example_wasm",
     ],
 )
