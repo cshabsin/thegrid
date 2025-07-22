@@ -255,9 +255,10 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 	for i := 0; i < 4; i++ {
 		foundationDiv := ui.Foundations[i]
 		foundationDiv.Clear()
-		placeholder := createDiv(document, attr.Class("card-placeholder"))
-		foundationDiv.Append(placeholder)
-		if len(g.Foundations[i]) > 0 {
+		if len(g.Foundations[i]) == 0 {
+			placeholder := createDiv(document, attr.Class("card-placeholder"))
+			foundationDiv.Append(placeholder)
+		} else {
 			card := g.Foundations[i][len(g.Foundations[i])-1]
 			cardDiv := createDiv(document, attr.Class("card"))
 			suitDiv := createDiv(document, attr.Class("suit")).SetStyle(style.Color(card.Suit.Color()))
