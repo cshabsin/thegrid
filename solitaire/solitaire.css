@@ -1,3 +1,7 @@
+body {
+	background-color: green;
+}
+
 .top-row {
 	grid-row: 1;
 	grid-column: 1 / span 7;
@@ -47,6 +51,7 @@
     justify-content: space-between;
     padding: 5px;
     position: absolute;
+	border: 1px solid black;
 }
 
 .face-up-card {
