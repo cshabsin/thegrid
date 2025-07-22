@@ -16,4 +16,5 @@ idiomatically. When there's a chance to turn a generic accessor (such as
 
 The command to rebuild the solitaire wasm is simply 
 `GOOS=js GOARCH=wasm go build -o solitaire.wasm .` 
-executed from the solitaire subdirectory.
+executed from the solitaire subdirectory. No need to rebuild when the changes
+are only in CSS or HTML.
