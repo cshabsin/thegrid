@@ -19,6 +19,7 @@ body {
 
 .pile {
 	position: relative;
+	z-index: 1;
 }
 
 .win-div {
