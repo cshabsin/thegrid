@@ -204,7 +204,7 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 
 	// Render Waste
 	ui.Waste.Clear()
-	wastePlaceholder := createDiv(document, attr.Class("card"), attr.Class("card-placeholder"))
+	wastePlaceholder := createDiv(document, attr.Class("card-placeholder"))
 	ui.Waste.Append(wastePlaceholder)
 	if len(g.Waste) > 0 {
 		start := len(g.Waste) - 3
@@ -255,7 +255,7 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 	for i := 0; i < 4; i++ {
 		foundationDiv := ui.Foundations[i]
 		foundationDiv.Clear()
-		placeholder := createDiv(document, attr.Class("card"), attr.Class("card-placeholder"))
+		placeholder := createDiv(document, attr.Class("card-placeholder"))
 		foundationDiv.Append(placeholder)
 		if len(g.Foundations[i]) > 0 {
 			card := g.Foundations[i][len(g.Foundations[i])-1]
