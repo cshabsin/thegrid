@@ -274,6 +274,10 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 	for i, pile := range g.Tableau {
 		pileDiv := ui.Tableau[i]
 		pileDiv.Clear()
+		if len(pile) == 0 {
+			placeholder := createDiv(document, attr.Class("card-placeholder"))
+			pileDiv.Append(placeholder)
+		}
 		for j, card := range pile {
 			cardDiv := createDiv(document, attr.Class("card"))
 			if card == g.SelectedCard {
