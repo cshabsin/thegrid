@@ -10,6 +10,7 @@ import (
 	"github.com/cshabsin/thegrid/js"
 	"github.com/cshabsin/thegrid/js/attr"
 	"github.com/cshabsin/thegrid/js/svg"
+	"github.com/cshabsin/thegrid/js/style"
 	"github.com/cshabsin/thegrid/model"
 )
 
@@ -25,6 +26,8 @@ func main() {
 		svgElem.SetAttr("height", "100%")
 		svgElem.SetAttr("width", "100%")
 		svgElem.SetAttr("viewBox", "0 0 10000 10000")
+
+		var paths []svg.Element
 		for i := 0; i < 10000; i += 70 {
 			var p svg.Path
 			p = p.MoveAbs(svg.Coord{X: float64(i), Y: 0}, false)
@@ -39,8 +42,29 @@ func main() {
 			p = p.MoveAbs(svg.Coord{X: float64(i), Y: 0}, false)
 			p = p.MoveAbs(svg.Coord{X: 10000, Y: float64(i)}, true)
 
-			svgElem.Append(p.ToElement(svgElem, attr.Make("style", fmt.Sprintf("fill: none; stroke: hsl(%d, 100%%, 50%%); stroke-width: 10px", i*360/10000))))
+			pathElem := p.ToElement(svgElem, attr.Make("style", fmt.Sprintf("fill: none; stroke: hsl(%d, 100%%, 50%%); stroke-width: 10px", i*360/10000)))
+			svgElem.Append(pathElem)
+			paths = append(paths, pathElem)
 		}
+
+		var startTime float64
+		var animate func(timestamp float64)
+		animate = func(timestamp float64) {
+			if startTime == 0 {
+				startTime = timestamp
+			}
+			elapsed := timestamp - startTime
+
+			for _, p := range paths {
+				length := p.GetTotalLength()
+				offset := length - (elapsed / 10.0)
+				p.SetStyle(style.Make("stroke-dasharray", fmt.Sprintf("%f", length)), style.Make("stroke-dashoffset", fmt.Sprintf("%f", offset)))
+			}
+
+			js.RequestAnimationFrame(func() { animate(js.Global().Call("performance.now").Float()) })
+		}
+		js.RequestAnimationFrame(func() { animate(js.Global().Call("performance.now").Float()) })
+
 		return
 	}
 	hm := hexmap.NewHexMap(10, 11, 70, false)

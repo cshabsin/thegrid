@@ -139,3 +139,14 @@ type DOMEvent struct {
 func (el DOMEvent) GetEventType() string {
 	return el.Value.Get("type").String()
 }
+
+func RequestAnimationFrame(fn func()) {
+	js.Global().Call("requestAnimationFrame", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		fn()
+		return nil
+	}))
+}
+
+func Global() js.Value {
+	return js.Global()
+}
