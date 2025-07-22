@@ -33,18 +33,13 @@ func main() {
 	ui := &GameUI{Board: board}
 
 	// Create top row elements
-	topRow := createDiv(document).SetStyle(
-		style.GridRow("1"),
-		style.GridColumn("1 / span 7"),
-		style.Display("grid"),
-		style.GridTemplateColumns("repeat(7, 1fr)"),
-	)
+	topRow := createDiv(document, attr.Class("top-row"))
 	board.Append(topRow)
 
-	ui.Stock = createDiv(document).SetStyle(style.GridColumn("1"), style.Position("relative"))
+	ui.Stock = createDiv(document, attr.Class("pile")).SetStyle(style.GridColumn("1"))
 	topRow.Append(ui.Stock)
 
-	ui.Waste = createDiv(document).SetStyle(style.GridColumn("2"), style.Position("relative"))
+	ui.Waste = createDiv(document, attr.Class("pile")).SetStyle(style.GridColumn("2"))
 	topRow.Append(ui.Waste)
 	ui.Waste.AddEventListener("click", func(el js.DOMElement, e js.DOMEvent) {
 		if len(g.Waste) > 0 {
@@ -55,7 +50,7 @@ func main() {
 
 	for i := range 4 {
 		foundationIndex := i
-		ui.Foundations[i] = createDiv(document).SetStyle(style.GridColumn(fmt.Sprintf("%d", i+4)), style.Position("relative"))
+		ui.Foundations[i] = createDiv(document, attr.Class("pile")).SetStyle(style.GridColumn(fmt.Sprintf("%d", i+4)))
 		topRow.Append(ui.Foundations[i])
 		ui.Foundations[i].AddEventListener("click", func(el js.DOMElement, e js.DOMEvent) {
 			if g.SelectedCard == nil {
@@ -92,16 +87,11 @@ func main() {
 	}
 
 	// Create tableau elements
-	tableauRow := createDiv(document).SetStyle(
-		style.GridRow("2"),
-		style.GridColumn("1 / span 7"),
-		style.Display("grid"),
-		style.GridTemplateColumns("repeat(7, 1fr)"),
-	)
+	tableauRow := createDiv(document, attr.Class("tableau-row"))
 	board.Append(tableauRow)
 	for i := 0; i < 7; i++ {
 		pileIndex := i
-		ui.Tableau[i] = createDiv(document).SetStyle(style.GridColumn(fmt.Sprintf("%d", i+1)), style.Position("relative"))
+		ui.Tableau[i] = createDiv(document, attr.Class("pile")).SetStyle(style.GridColumn(fmt.Sprintf("%d", i+1)))
 		tableauRow.Append(ui.Tableau[i])
 		ui.Tableau[i].AddEventListener("click", func(el js.DOMElement, e js.DOMEvent) {
 			pile := g.Tableau[pileIndex]
@@ -172,7 +162,7 @@ func main() {
 					g.MoveSelectedToTableau(pileIndex)
 				}
 			} else {
-				topCard := destPile[len(destPile)-1]
+					topCard := destPile[len(destPile)-1]
 				if g.SelectedCard.Suit.Color() != topCard.Suit.Color() && g.SelectedCard.Rank == topCard.Rank-1 {
 					g.MoveSelectedToTableau(pileIndex)
 				}
@@ -197,14 +187,7 @@ func main() {
 
 func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 	if g.CheckWin() {
-		winDiv := createDiv(document).SetStyle(
-			style.Position("absolute"),
-			style.Top("50%"),
-			style.Left("50%"),
-			style.Transform("translate(-50%, -50%)"),
-			style.FontSize("5em"),
-			style.Color("white"),
-		)
+		winDiv := createDiv(document, attr.Class("win-div"))
 		winDiv.Append(document.CreateElement("h1").SetText("You Win!"))
 		ui.Board.Append(winDiv)
 		return
@@ -213,15 +196,15 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 	ui.Stock.Clear()
 	stockCardDiv := createDiv(document, attr.Class("card"))
 	if len(g.Stock) > 0 {
-		stockCardDiv.SetStyle(style.BackgroundColor("blue"))
+		stockCardDiv.AddClass("face-down-card")
 	} else {
-		stockCardDiv.SetStyle(style.Border("1px solid black"))
+		stockCardDiv.AddClass("card-placeholder")
 	}
 	ui.Stock.Append(stockCardDiv)
 
 	// Render Waste
 	ui.Waste.Clear()
-	wastePlaceholder := createDiv(document, attr.Class("card")).SetStyle(style.Border("1px solid black"))
+	wastePlaceholder := createDiv(document, attr.Class("card"), attr.Class("card-placeholder"))
 	ui.Waste.Append(wastePlaceholder)
 	if len(g.Waste) > 0 {
 		start := len(g.Waste) - 3
@@ -232,7 +215,7 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 			card := g.Waste[i]
 			cardDiv := createDiv(document, attr.Class("card"))
 			if i == len(g.Waste)-1 && card == g.SelectedCard {
-				cardDiv.SetStyle(style.Border("2px solid yellow"))
+				cardDiv.AddClass("selected-card")
 			}
 			cardDiv.SetStyle(style.Left(fmt.Sprintf("%dpx", (i-start)*20)))
 			cardDiv.SetAttr("draggable", true)
@@ -272,7 +255,7 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 	for i := 0; i < 4; i++ {
 		foundationDiv := ui.Foundations[i]
 		foundationDiv.Clear()
-		placeholder := createDiv(document, attr.Class("card")).SetStyle(style.Border("1px solid black"))
+		placeholder := createDiv(document, attr.Class("card"), attr.Class("card-placeholder"))
 		foundationDiv.Append(placeholder)
 		if len(g.Foundations[i]) > 0 {
 			card := g.Foundations[i][len(g.Foundations[i])-1]
@@ -294,7 +277,7 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 		for j, card := range pile {
 			cardDiv := createDiv(document, attr.Class("card"))
 			if card == g.SelectedCard {
-				cardDiv.SetStyle(style.Border("2px solid yellow"))
+				cardDiv.AddClass("selected-card")
 			}
 			cardDiv.SetStyle(style.Top(fmt.Sprintf("%dpx", j*30)))
 			if card.FaceUp {
@@ -306,7 +289,7 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 				rankDiv.SetText(card.Rank.String())
 				cardDiv.Append(rankDiv)
 			} else {
-				cardDiv.SetStyle(style.BackgroundColor("blue"))
+				cardDiv.AddClass("face-down-card")
 			}
 			pileDiv.Append(cardDiv)
 			cardDiv.AddEventListener("dblclick", func(el js.DOMElement, e js.DOMEvent) {

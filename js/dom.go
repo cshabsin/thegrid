@@ -100,6 +100,11 @@ func (el DOMElement) SetAttr(name string, value interface{}) {
 	el.Call("setAttribute", name, value)
 }
 
+func (el DOMElement) AddClass(className string) DOMElement {
+	el.Get("classList").Call("add", className)
+	return el
+}
+
 func (el DOMElement) SetText(text string) DOMElement {
 	el.Set("textContent", text)
 	return el
