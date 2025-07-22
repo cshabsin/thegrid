@@ -1,0 +1,34 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+load("@io_bazel_rules_go//pkg:web.bzl", "pkg_web")
+
+go_library(
+    name = "go_default_library",
+    srcs = ["solitaire.go"],
+    importpath = "github.com/cshabsin/thegrid/solitaire",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//js:go_default_library",
+        "//js/attr:go_default_library",
+        "//js/dragdrop:go_default_library",
+        "//js/style:go_default_library",
+        "//solitaire/game:go_default_library",
+    ],
+)
+
+go_binary(
+    name = "solitaire_wasm",
+    embed = [":go_default_library"],
+    goos = "js",
+    goarch = "wasm",
+    visibility = ["//visibility:public"],
+)
+
+pkg_web(
+    name = "solitaire_pkg",
+    srcs = [
+        ":solitaire_wasm",
+        "index.html",
+        "solitaire.css",
+        "wasm_exec.js",
+    ],
+)

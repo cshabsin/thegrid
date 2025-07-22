@@ -1,0 +1,15 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "go_default_library",
+    srcs = ["view.go"],
+    importpath = "github.com/cshabsin/thegrid/example/view",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//example/server/data:go_default_library",
+        "//hexmap:go_default_library",
+        "//js:go_default_library",
+        "//js/attr:go_default_library",
+        "//js/svg:go_default_library",
+    ],
+)

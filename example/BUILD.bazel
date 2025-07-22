@@ -1,0 +1,37 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+load("@io_bazel_rules_go//pkg:web.bzl", "pkg_web")
+
+go_library(
+    name = "go_default_library",
+    srcs = ["example.go"],
+    importpath = "github.com/cshabsin/thegrid/example",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//example/server/data:go_default_library",
+        "//example/view:go_default_library",
+        "//hexmap:go_default_library",
+        "//js:go_default_library",
+        "//js/attr:go_default_library",
+        "//js/style:go_default_library",
+        "//js/svg:go_default_library",
+        "//model:go_default_library",
+    ],
+)
+
+go_binary(
+    name = "example_wasm",
+    embed = [":go_default_library"],
+    goos = "js",
+    goarch = "wasm",
+    visibility = ["//visibility:public"],
+)
+
+pkg_web(
+    name = "example_pkg",
+    srcs = [
+        ":example_wasm",
+        "index.html",
+        "map-display.css",
+        "wasm_exec.js",
+    ],
+)
