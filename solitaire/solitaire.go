@@ -281,6 +281,7 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 			}
 			cardDiv.SetStyle(style.Top(fmt.Sprintf("%dpx", j*30)))
 			if card.FaceUp {
+				cardDiv.AddClass("face-up-card")
 				cardDiv.SetAttr("draggable", true)
 				suitDiv := createDiv(document, attr.Class("suit")).SetStyle(style.Color(card.Suit.Color()))
 				suitDiv.SetText(card.Suit.String())
