@@ -31,6 +31,9 @@ body {
 
 .card-placeholder {
 	border: 1px solid black;
+	width: 100px;
+	height: 140px;
+	border-radius: 5px;
 }
 
 .selected-card {
