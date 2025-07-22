@@ -140,9 +140,9 @@ func (el DOMEvent) GetEventType() string {
 	return el.Value.Get("type").String()
 }
 
-func RequestAnimationFrame(fn func()) {
+func RequestAnimationFrame(fn func(timestamp float64)) {
 	js.Global().Call("requestAnimationFrame", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		fn()
+		fn(args[0].Float())
 		return nil
 	}))
 }

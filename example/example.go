@@ -61,9 +61,9 @@ func main() {
 				p.SetStyle(style.Make("stroke-dasharray", fmt.Sprintf("%f", length)), style.Make("stroke-dashoffset", fmt.Sprintf("%f", offset)))
 			}
 
-			js.RequestAnimationFrame(func() { animate(js.Global().Call("performance.now").Float()) })
+			js.RequestAnimationFrame(animate)
 		}
-		js.RequestAnimationFrame(func() { animate(js.Global().Call("performance.now").Float()) })
+		js.RequestAnimationFrame(animate)
 
 		return
 	}
