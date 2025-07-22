@@ -68,7 +68,7 @@ func main() {
 				g.MoveSelectedToFoundation(foundationIndex)
 			}
 		})
-		dragdrop.NewDropTarget(ui.Foundations[i], func(e js.DOMEvent) {
+		foundationDropTarget := dragdrop.NewDropTarget(ui.Foundations[i], func(e js.DOMEvent) {
 			if g.SelectedCard == nil {
 				return
 			}
@@ -84,6 +84,17 @@ func main() {
 				}
 			}
 		})
+		foundationDropTarget.CanDrop = func(e js.DOMEvent) bool {
+			if g.SelectedCard == nil {
+				return false
+			}
+			foundation := g.Foundations[foundationIndex]
+			if len(foundation) == 0 {
+				return g.SelectedCard.Rank == game.Ace
+			}
+			topCard := foundation[len(foundation)-1]
+			return g.SelectedCard.Suit == topCard.Suit && g.SelectedCard.Rank == topCard.Rank+1
+		}
 	}
 
 	// Create tableau elements
@@ -152,7 +163,7 @@ func main() {
 			}
 			g.NotifyListeners()
 		})
-		dragdrop.NewDropTarget(ui.Tableau[i], func(e js.DOMEvent) {
+		tableauDropTarget := dragdrop.NewDropTarget(ui.Tableau[i], func(e js.DOMEvent) {
 			if g.SelectedCard == nil {
 				return
 			}
@@ -162,12 +173,23 @@ func main() {
 					g.MoveSelectedToTableau(pileIndex)
 				}
 			} else {
-					topCard := destPile[len(destPile)-1]
+				topCard := destPile[len(destPile)-1]
 				if g.SelectedCard.Suit.Color() != topCard.Suit.Color() && g.SelectedCard.Rank == topCard.Rank-1 {
 					g.MoveSelectedToTableau(pileIndex)
 				}
 			}
 		})
+		tableauDropTarget.CanDrop = func(e js.DOMEvent) bool {
+			if g.SelectedCard == nil {
+				return false
+			}
+			destPile := g.Tableau[pileIndex]
+			if len(destPile) == 0 {
+				return g.SelectedCard.Rank == game.King
+			}
+			topCard := destPile[len(destPile)-1]
+			return g.SelectedCard.Suit.Color() != topCard.Suit.Color() && g.SelectedCard.Rank == topCard.Rank-1
+		}
 	}
 
 	ui.Stock.AddEventListener("click", func(el js.DOMElement, e js.DOMEvent) {

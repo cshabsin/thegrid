@@ -23,6 +23,7 @@ func NewDraggable(el js.DOMElement, onDragStart func(js.DOMEvent)) *Draggable {
 type DropTarget struct {
 	js.DOMElement
 	OnDrop      func(js.DOMEvent)
+	CanDrop     func(js.DOMEvent) bool
 	OnDragOver  func(js.DOMEvent)
 	OnDragEnter func(js.DOMEvent)
 	OnDragLeave func(js.DOMEvent)
@@ -31,7 +32,9 @@ type DropTarget struct {
 func NewDropTarget(el js.DOMElement, onDrop func(js.DOMEvent)) *DropTarget {
 	d := &DropTarget{DOMElement: el, OnDrop: onDrop}
 	d.AddEventListener("dragover", func(_ js.DOMElement, e js.DOMEvent) {
-		e.Value.Call("preventDefault")
+		if d.CanDrop == nil || d.CanDrop(e) {
+			e.Value.Call("preventDefault")
+		}
 		if d.OnDragOver != nil {
 			d.OnDragOver(e)
 		}
