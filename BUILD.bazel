@@ -1,19 +1,1 @@
 # gazelle:prefix github.com/cshabsin/thegrid
-
-filegroup(
-    name = "web_zips",
-    srcs = [
-        "//solitaire:solitaire_pkg",
-        "//example:example_pkg",
-    ],
-    visibility = ["//server:__pkg__"],
-)
-
-sh_binary(
-    name = "server_runner",
-    srcs = ["run_server.sh"],
-    data = [
-        "//server",
-        ":web_zips",
-    ],
-)

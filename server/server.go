@@ -2,26 +2,17 @@ package main
 
 import (
 	"archive/zip"
-	"flag"
 	"log"
 	"net/http"
-	"path/filepath"
 )
 
-var dataDir = flag.String("data_dir", ".", "directory containing the zip files")
-
 func main() {
-	flag.Parse()
-
-	solitaireZipPath := filepath.Join(*dataDir, "solitaire.zip")
-	exampleZipPath := filepath.Join(*dataDir, "example.zip")
-
-	solitaireZipReader, err := zip.OpenReader(solitaireZipPath)
+	solitaireZipReader, err := zip.OpenReader("solitaire/solitaire_pkg.zip")
 	if err != nil {
 		log.Fatalf("failed to open solitaire.zip: %v", err)
 	}
 
-	exampleZipReader, err := zip.OpenReader(exampleZipPath)
+	exampleZipReader, err := zip.OpenReader("example/example_pkg.zip")
 	if err != nil {
 		log.Fatalf("failed to open example.zip: %v", err)
 	}

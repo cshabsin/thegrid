@@ -31,5 +31,5 @@ pkg_zip(
         "wasm_exec.js",
         ":solitaire_wasm",
     ],
-    visibility = ["//:__pkg__"],
+    visibility = ["//server:__pkg__"],
 )
