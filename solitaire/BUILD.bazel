@@ -16,7 +16,7 @@ go_library(
 )
 
 go_binary(
-    name = "solitaire_wasm",
+    name = "solitaire.wasm",
     embed = [":solitaire"],
     goarch = "wasm",
     goos = "js",
@@ -29,7 +29,7 @@ pkg_zip(
         "index.html",
         "solitaire.css",
         "wasm_exec.js",
-        ":solitaire_wasm",
+        ":solitaire.wasm",
     ],
     visibility = ["//server:__pkg__"],
 )

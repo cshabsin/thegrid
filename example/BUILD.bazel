@@ -19,7 +19,7 @@ go_library(
 )
 
 go_binary(
-    name = "example_wasm",
+    name = "example.wasm",
     embed = [":example"],
     goarch = "wasm",
     goos = "js",
@@ -32,7 +32,7 @@ pkg_zip(
         "index.html",
         "map-display.css",
         "wasm_exec.js",
-        ":example_wasm",
+        ":example.wasm",
     ],
     visibility = ["//server:__pkg__"],
 )
