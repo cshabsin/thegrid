@@ -1,12 +1,12 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library")
 
 go_library(
-    name = "go_default_library",
+    name = "model",
     srcs = ["model.go"],
     importpath = "github.com/cshabsin/thegrid/model",
     visibility = ["//visibility:public"],
     deps = [
-        "//example/server/data:go_default_library",
-        "//example/view:go_default_library",
+        "//example/server/data",
+        "//example/view",
     ],
 )

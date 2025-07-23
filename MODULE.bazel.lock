@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 3,
-  "moduleFileHash": "1a6da4b6fc013169248f619af60494373aae61fea4faa0f4e20c0463413e57ba",
+  "moduleFileHash": "4ae6e4d6a9b0f6f585dd48ba4c6b0dc11049640158bef66ec2e9da57f1a7c978",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -25,27 +25,30 @@
       "toolchainsToRegister": [],
       "extensionUsages": [
         {
-          "extensionBzlFile": "@rules_go//go:extensions.bzl",
-          "extensionName": "go",
+          "extensionBzlFile": "//:MODULE.bazel",
+          "extensionName": "_repo_rules",
           "usingModule": "<root>",
           "location": {
             "file": "@@//:MODULE.bazel",
-            "line": 11,
-            "column": 19
+            "line": 0,
+            "column": 0
           },
-          "imports": {},
+          "imports": {
+            "go_sdk": "go_sdk"
+          },
           "devImports": [],
           "tags": [
             {
-              "tagName": "go_register_toolchains",
+              "tagName": "@rules_go//go:def.bzl%go_sdk",
               "attributeValues": {
-                "version": "1.23.0"
+                "version": "1.23.0",
+                "name": "go_sdk"
               },
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 12,
-                "column": 26
+                "line": 13,
+                "column": 7
               }
             }
           ],
@@ -58,7 +61,7 @@
           "usingModule": "<root>",
           "location": {
             "file": "@@//:MODULE.bazel",
-            "line": 14,
+            "line": 18,
             "column": 24
           },
           "imports": {},
@@ -72,7 +75,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 15,
+                "line": 19,
                 "column": 18
               }
             }

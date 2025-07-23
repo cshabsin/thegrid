@@ -1,7 +1,7 @@
 load("@rules_go//go:def.bzl", "go_library")
 
 go_library(
-    name = "go_default_library",
+    name = "js",
     srcs = [
         "dom.go",
         "style.go",
@@ -9,7 +9,7 @@ go_library(
     importpath = "github.com/cshabsin/thegrid/js",
     visibility = ["//visibility:public"],
     deps = [
-        "//js/attr:go_default_library",
-        "//js/style:go_default_library",
+        "//js/attr",
+        "//js/style",
     ],
 )

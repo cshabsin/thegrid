@@ -1,7 +1,7 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
 
 go_library(
-    name = "go_default_library",
+    name = "solitaire_server",
     srcs = ["server.go"],
     importpath = "github.com/cshabsin/thegrid/solitaire/server",
     visibility = ["//visibility:private"],
@@ -9,6 +9,6 @@ go_library(
 
 go_binary(
     name = "server",
-    embed = [":go_default_library"],
+    embed = [":solitaire_server"],
     visibility = ["//visibility:public"],
 )

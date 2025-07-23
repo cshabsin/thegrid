@@ -1,26 +1,26 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
 
 go_library(
-    name = "go_default_library",
+    name = "example",
     srcs = ["example.go"],
     importpath = "github.com/cshabsin/thegrid/example",
     visibility = ["//visibility:private"],
     deps = [
-        "//example/server/data:go_default_library",
-        "//example/view:go_default_library",
-        "//hexmap:go_default_library",
-        "//js:go_default_library",
-        "//js/attr:go_default_library",
-        "//js/style:go_default_library",
-        "//js/svg:go_default_library",
-        "//model:go_default_library",
+        "//example/server/data",
+        "//example/view",
+        "//hexmap",
+        "//js",
+        "//js/attr",
+        "//js/style",
+        "//js/svg",
+        "//model",
     ],
 )
 
 go_binary(
     name = "example_wasm",
-    embed = [":go_default_library"],
+    embed = [":example"],
     goarch = "wasm",
     goos = "js",
     visibility = ["//visibility:public"],

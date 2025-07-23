@@ -1,14 +1,14 @@
-load("@rules_go//go:def.bzl", "go_test", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
-    name = "go_default_library",
+    name = "game",
     srcs = ["game.go"],
     importpath = "github.com/cshabsin/thegrid/solitaire/game",
     visibility = ["//visibility:public"],
 )
 
 go_test(
-    name = "go_default_test",
+    name = "game_test",
     srcs = ["game_test.go"],
-    embed = [":go_default_library"],
+    embed = [":game"],
 )

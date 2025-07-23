@@ -1,12 +1,12 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library")
 
 go_library(
-    name = "go_default_library",
+    name = "hexmap",
     srcs = ["hexmap.go"],
     importpath = "github.com/cshabsin/thegrid/hexmap",
     visibility = ["//visibility:public"],
     deps = [
-        "//js/attr:go_default_library",
-        "//js/svg:go_default_library",
+        "//js/attr",
+        "//js/svg",
     ],
 )
