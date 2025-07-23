@@ -12,3 +12,14 @@ go_test(
     srcs = ["game_test.go"],
     embed = [":game"],
 )
+
+go_library(
+    name = "klondike",
+    srcs = ["game.go"],
+    importpath = "github.com/cshabsin/thegrid/solitaire/klondike",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//cardkit/card",
+        "//cardkit/pile",
+    ],
+)

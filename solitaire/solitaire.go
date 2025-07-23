@@ -3,11 +3,12 @@ package main
 import (
 	"fmt"
 
+	"github.com/cshabsin/thegrid/cardkit/card"
 	"github.com/cshabsin/thegrid/js"
 	"github.com/cshabsin/thegrid/js/attr"
 	"github.com/cshabsin/thegrid/js/dragdrop"
 	"github.com/cshabsin/thegrid/js/style"
-	"github.com/cshabsin/thegrid/solitaire/game"
+	"github.com/cshabsin/thegrid/solitaire/klondike"
 )
 
 type GameUI struct {
@@ -18,14 +19,14 @@ type GameUI struct {
 	Tableau     [7]js.DOMElement
 }
 
-var g *game.Game
+var klondikeGame *klondike.Klondike
 
 func createDiv(doc js.DOMDocument, attrs ...attr.Attr) js.DOMElement {
 	return doc.CreateElement("div", attrs...)
 }
 
 func main() {
-	g = game.New()
+	klondikeGame = klondike.New()
 	document := js.Document()
 	board := document.GetElementByID("game-board")
 	board.Clear() // Clear the board
@@ -42,58 +43,58 @@ func main() {
 	ui.Waste = createDiv(document, attr.Class("pile")).SetStyle(style.GridColumn("2"))
 	topRow.Append(ui.Waste)
 	ui.Waste.AddEventListener("click", func(el js.DOMElement, e js.DOMEvent) {
-		if len(g.Waste) > 0 {
-			g.SelectedCard = g.Waste[len(g.Waste)-1]
-			g.NotifyListeners() // This will trigger a render
+		if len(klondikeGame.Waste) > 0 {
+			klondikeGame.SelectedCard = klondikeGame.Waste[len(klondikeGame.Waste)-1]
+			klondikeGame.NotifyListeners() // This will trigger a render
 		}
 	})
 
-	for i := range 4 {
+	for i := range ui.Foundations {
 		foundationIndex := i
 		ui.Foundations[i] = createDiv(document, attr.Class("pile")).SetStyle(style.GridColumn(fmt.Sprintf("%d", i+4)))
 		topRow.Append(ui.Foundations[i])
 		ui.Foundations[i].AddEventListener("click", func(el js.DOMElement, e js.DOMEvent) {
-			if g.SelectedCard == nil {
+			if klondikeGame.SelectedCard == nil {
 				return
 			}
-			foundation := g.Foundations[foundationIndex]
+			foundation := klondikeGame.Foundations[foundationIndex]
 			if len(foundation) == 0 {
-				if g.SelectedCard.Rank == game.Ace {
-					g.MoveSelectedToFoundation(foundationIndex)
+				if klondikeGame.SelectedCard.Rank == card.Ace {
+					klondikeGame.MoveSelectedToFoundation(foundationIndex)
 				}
 				return
 			}
 			topCard := foundation[len(foundation)-1]
-			if g.SelectedCard.Suit == topCard.Suit && g.SelectedCard.Rank == topCard.Rank+1 {
-				g.MoveSelectedToFoundation(foundationIndex)
+			if klondikeGame.SelectedCard.Suit == topCard.Suit && klondikeGame.SelectedCard.Rank == topCard.Rank+1 {
+				klondikeGame.MoveSelectedToFoundation(foundationIndex)
 			}
 		})
 		foundationDropTarget := dragdrop.NewDropTarget(ui.Foundations[i], func(e js.DOMEvent) {
-			if g.SelectedCard == nil {
+			if klondikeGame.SelectedCard == nil {
 				return
 			}
-			foundation := g.Foundations[foundationIndex]
+			foundation := klondikeGame.Foundations[foundationIndex]
 			if len(foundation) == 0 {
-				if g.SelectedCard.Rank == game.Ace {
-					g.MoveSelectedToFoundation(foundationIndex)
+				if klondikeGame.SelectedCard.Rank == card.Ace {
+					klondikeGame.MoveSelectedToFoundation(foundationIndex)
 				}
 			} else {
 				topCard := foundation[len(foundation)-1]
-				if g.SelectedCard.Suit == topCard.Suit && g.SelectedCard.Rank == topCard.Rank+1 {
-					g.MoveSelectedToFoundation(foundationIndex)
+				if klondikeGame.SelectedCard.Suit == topCard.Suit && klondikeGame.SelectedCard.Rank == topCard.Rank+1 {
+					klondikeGame.MoveSelectedToFoundation(foundationIndex)
 				}
 			}
 		})
 		foundationDropTarget.CanDrop = func(e js.DOMEvent) bool {
-			if g.SelectedCard == nil {
+			if klondikeGame.SelectedCard == nil {
 				return false
 			}
-			foundation := g.Foundations[foundationIndex]
-			if len(foundation) == 0 {
-				return g.SelectedCard.Rank == game.Ace
+			foundation := klondikeGame.Foundations[foundationIndex]
+			if foundation.Len() == 0 {
+				return klondikeGame.SelectedCard.Rank == card.Ace
 			}
-			topCard := foundation[len(foundation)-1]
-			return g.SelectedCard.Suit == topCard.Suit && g.SelectedCard.Rank == topCard.Rank+1
+			topCard := foundation.Peek()
+			return klondikeGame.SelectedCard.Suit == topCard.Suit && klondikeGame.SelectedCard.Rank == topCard.Rank+1
 		}
 	}
 
@@ -105,10 +106,10 @@ func main() {
 		ui.Tableau[i] = createDiv(document, attr.Class("pile")).SetStyle(style.GridColumn(fmt.Sprintf("%d", i+1)))
 		tableauRow.Append(ui.Tableau[i])
 		ui.Tableau[i].AddEventListener("click", func(el js.DOMElement, e js.DOMEvent) {
-			pile := g.Tableau[pileIndex]
+			pile := klondikeGame.Tableau[pileIndex]
 
 			// First, determine which card was clicked, if any.
-			var clickedCard *game.Card
+			var clickedCard *card.Card
 			clickedCardIsLast := false
 
 			if len(pile) > 0 {
@@ -122,7 +123,7 @@ func main() {
 						if !card.FaceUp {
 							if i == len(pile)-1 {
 								card.FaceUp = true
-								g.NotifyListeners()
+								klondikeGame.NotifyListeners()
 							}
 							return
 						}
@@ -135,80 +136,80 @@ func main() {
 				}
 			}
 
-			if g.SelectedCard != nil {
-				if clickedCard == g.SelectedCard {
-					g.SelectedCard = nil
+			if klondikeGame.SelectedCard != nil {
+				if clickedCard == klondikeGame.SelectedCard {
+					klondikeGame.SelectedCard = nil
 				} else {
 					canMoveTo := false
-					destPile := g.Tableau[pileIndex]
+					destPile := klondikeGame.Tableau[pileIndex]
 					if len(destPile) == 0 {
-						if g.SelectedCard.Rank == game.King {
+						if klondikeGame.SelectedCard.Rank == card.King {
 							canMoveTo = true
 						}
 					} else if clickedCardIsLast {
 						topCard := destPile[len(destPile)-1]
-						if g.SelectedCard.Suit.Color() != topCard.Suit.Color() && g.SelectedCard.Rank == topCard.Rank-1 {
+						if klondikeGame.SelectedCard.Suit.Color() != topCard.Suit.Color() && klondikeGame.SelectedCard.Rank == topCard.Rank-1 {
 							canMoveTo = true
 						}
 					}
 
 					if canMoveTo {
-						g.MoveSelectedToTableau(pileIndex)
+						klondikeGame.MoveSelectedToTableau(pileIndex)
 					} else {
-						g.SelectedCard = clickedCard
+						klondikeGame.SelectedCard = clickedCard
 					}
 				}
 			} else {
-				g.SelectedCard = clickedCard
+				klondikeGame.SelectedCard = clickedCard
 			}
-			g.NotifyListeners()
+			klondikeGame.NotifyListeners()
 		})
 		tableauDropTarget := dragdrop.NewDropTarget(ui.Tableau[i], func(e js.DOMEvent) {
-			if g.SelectedCard == nil {
+			if klondikeGame.SelectedCard == nil {
 				return
 			}
-			destPile := g.Tableau[pileIndex]
+			destPile := klondikeGame.Tableau[pileIndex]
 			if len(destPile) == 0 {
-				if g.SelectedCard.Rank == game.King {
-					g.MoveSelectedToTableau(pileIndex)
+				if klondikeGame.SelectedCard.Rank == card.King {
+					klondikeGame.MoveSelectedToTableau(pileIndex)
 				}
 			} else {
 				topCard := destPile[len(destPile)-1]
-				if g.SelectedCard.Suit.Color() != topCard.Suit.Color() && g.SelectedCard.Rank == topCard.Rank-1 {
-					g.MoveSelectedToTableau(pileIndex)
+				if klondikeGame.SelectedCard.Suit.Color() != topCard.Suit.Color() && klondikeGame.SelectedCard.Rank == topCard.Rank-1 {
+					klondikeGame.MoveSelectedToTableau(pileIndex)
 				}
 			}
 		})
 		tableauDropTarget.CanDrop = func(e js.DOMEvent) bool {
-			if g.SelectedCard == nil {
+			if klondikeGame.SelectedCard == nil {
 				return false
 			}
-			destPile := g.Tableau[pileIndex]
-			if len(destPile) == 0 {
-				return g.SelectedCard.Rank == game.King
+			destPile := klondikeGame.Tableau[pileIndex]
+			if destPile.Len() == 0 {
+				return klondikeGame.SelectedCard.Rank == card.King
 			}
-			topCard := destPile[len(destPile)-1]
-			return g.SelectedCard.Suit.Color() != topCard.Suit.Color() && g.SelectedCard.Rank == topCard.Rank-1
+			topCard := destPile.Peek()
+			return klondikeGame.SelectedCard.Suit.Color() != topCard.Suit.Color() && klondikeGame.SelectedCard.Rank == topCard.Rank-1
 		}
 	}
 
 	ui.Stock.AddEventListener("click", func(el js.DOMElement, e js.DOMEvent) {
-		if len(g.Stock) > 0 {
-			g.DrawCards()
+		if len(klondikeGame.Stock) > 0 {
+			klondikeGame.DrawCards()
 		} else {
-			g.RecycleWaste()
+			klondikeGame.RecycleWaste()
 		}
 	})
 
-	g.AddListener(func() {
-		render(document, ui, g)
+	klondikeGame.AddListener(func() {
+		render(document, ui, klondikeGame)
 	})
-	render(document, ui, g)
+	render(document, ui, klondikeGame)
 	select {}
 }
 
-func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
-	if g.CheckWin() {
+func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
+	if klondikeGame.CheckWin() {
 		winDiv := createDiv(document, attr.Class("win-div"))
 		winDiv.Append(document.CreateElement("h1").SetText("You Win!"))
 		ui.Board.Append(winDiv)
@@ -217,7 +218,7 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 	// Render Stock
 	ui.Stock.Clear()
 	stockCardDiv := createDiv(document, attr.Class("card"))
-	if len(g.Stock) > 0 {
+	if len(klondikeGame.Stock) > 0 {
 		stockCardDiv.AddClass("face-down-card")
 	} else {
 		stockCardDiv.AddClass("card-placeholder")
@@ -228,60 +229,60 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 	ui.Waste.Clear()
 	wastePlaceholder := createDiv(document, attr.Class("card-placeholder"))
 	ui.Waste.Append(wastePlaceholder)
-	if len(g.Waste) > 0 {
-		start := len(g.Waste) - 3
+	if len(klondikeGame.Waste) > 0 {
+		start := len(klondikeGame.Waste) - 3
 		if start < 0 {
 			start = 0
 		}
-		for i := start; i < len(g.Waste); i++ {
-			card := g.Waste[i]
+		for i := start; i < len(klondikeGame.Waste); i++ {
+			wasteCard := klondikeGame.Waste[i]
 			cardDiv := createDiv(document, attr.Class("card"))
-			if i == len(g.Waste)-1 && card == g.SelectedCard {
+			if i == len(klondikeGame.Waste)-1 && wasteCard == klondikeGame.SelectedCard {
 				cardDiv.AddClass("selected-card")
 			}
 			cardDiv.SetStyle(style.Left(fmt.Sprintf("%dpx", (i-start)*20)))
 			cardDiv.SetAttr("draggable", true)
-			suitDiv := createDiv(document, attr.Class("suit")).SetStyle(style.Color(card.Suit.Color()))
-			suitDiv.SetText(card.Suit.String())
+			suitDiv := createDiv(document, attr.Class("suit")).SetStyle(style.Color(wasteCard.Suit.Color()))
+			suitDiv.SetText(wasteCard.Suit.String())
 			cardDiv.Append(suitDiv)
-			rankDiv := createDiv(document, attr.Class("rank")).SetStyle(style.Color(card.Suit.Color()))
-			rankDiv.SetText(card.Rank.String())
+			rankDiv := createDiv(document, attr.Class("rank")).SetStyle(style.Color(wasteCard.Suit.Color()))
+			rankDiv.SetText(wasteCard.Rank.String())
 			cardDiv.Append(rankDiv)
 			ui.Waste.Append(cardDiv)
 			cardDiv.AddEventListener("dblclick", func(el js.DOMElement, e js.DOMEvent) {
-				for i := range 4 {
-					foundation := g.Foundations[i]
-					if len(foundation) == 0 {
-						if card.Rank == game.Ace {
-							g.SelectedCard = card
-							g.MoveSelectedToFoundation(i)
+				for i := range klondikeGame.Foundations {
+					foundation := klondikeGame.Foundations[i]
+					if foundation.Len() == 0 {
+						if wasteCard.Rank == card.Ace {
+							klondikeGame.SelectedCard = wasteCard
+							klondikeGame.MoveSelectedToFoundation(i)
 							return
 						}
 					} else {
-						topCard := foundation[len(foundation)-1]
-						if card.Suit == topCard.Suit && card.Rank == topCard.Rank+1 {
-							g.SelectedCard = card
-							g.MoveSelectedToFoundation(i)
+						topCard := foundation.Peek()
+						if wasteCard.Suit == topCard.Suit && wasteCard.Rank == topCard.Rank+1 {
+							klondikeGame.SelectedCard = wasteCard
+							klondikeGame.MoveSelectedToFoundation(i)
 							return
 						}
 					}
 				}
 			})
 			dragdrop.NewDraggable(cardDiv, func(e js.DOMEvent) {
-				g.SelectedCard = card
+				klondikeGame.SelectedCard = wasteCard
 			})
 		}
 	}
 
 	// Render Foundations
-	for i := range 4 {
+	for i := range ui.Foundations {
 		foundationDiv := ui.Foundations[i]
 		foundationDiv.Clear()
-		if len(g.Foundations[i]) == 0 {
+		if len(klondikeGame.Foundations[i]) == 0 {
 			placeholder := createDiv(document, attr.Class("card-placeholder"))
 			foundationDiv.Append(placeholder)
 		} else {
-			card := g.Foundations[i][len(g.Foundations[i])-1]
+			card := klondikeGame.Foundations[i][len(klondikeGame.Foundations[i])-1]
 			cardDiv := createDiv(document, attr.Class("card"))
 			suitDiv := createDiv(document, attr.Class("suit")).SetStyle(style.Color(card.Suit.Color()))
 			suitDiv.SetText(card.Suit.String())
@@ -294,57 +295,57 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 	}
 
 	// Render Tableau
-	for i, pile := range g.Tableau {
+	for i, pile := range klondikeGame.Tableau {
 		pileDiv := ui.Tableau[i]
 		pileDiv.Clear()
 		if len(pile) == 0 {
 			placeholder := createDiv(document, attr.Class("card-placeholder"))
 			pileDiv.Append(placeholder)
 		}
-		for j, card := range pile {
+		for j, currentCard := range pile {
 			cardDiv := createDiv(document, attr.Class("card"))
-			if card == g.SelectedCard {
+			if currentCard == klondikeGame.SelectedCard {
 				cardDiv.AddClass("selected-card")
 			}
 			cardDiv.SetStyle(style.Top(fmt.Sprintf("%dpx", j*30)))
-			if card.FaceUp {
+			if currentCard.FaceUp {
 				cardDiv.AddClass("face-up-card")
 				cardDiv.SetAttr("draggable", true)
-				suitDiv := createDiv(document, attr.Class("suit")).SetStyle(style.Color(card.Suit.Color()))
-				suitDiv.SetText(card.Suit.String())
+				suitDiv := createDiv(document, attr.Class("suit")).SetStyle(style.Color(currentCard.Suit.Color()))
+				suitDiv.SetText(currentCard.Suit.String())
 				cardDiv.Append(suitDiv)
-				rankDiv := createDiv(document, attr.Class("rank")).SetStyle(style.Color(card.Suit.Color()))
-				rankDiv.SetText(card.Rank.String())
+				rankDiv := createDiv(document, attr.Class("rank")).SetStyle(style.Color(currentCard.Suit.Color()))
+				rankDiv.SetText(currentCard.Rank.String())
 				cardDiv.Append(rankDiv)
 			} else {
 				cardDiv.AddClass("face-down-card")
 			}
 			pileDiv.Append(cardDiv)
 			cardDiv.AddEventListener("dblclick", func(el js.DOMElement, e js.DOMEvent) {
-				if !card.FaceUp {
+				if !currentCard.FaceUp {
 					return
 				}
-				for i := range 4 {
-					foundation := g.Foundations[i]
-					if len(foundation) == 0 {
-						if card.Rank == game.Ace {
-							g.SelectedCard = card
-							g.MoveSelectedToFoundation(i)
+				for i := range klondikeGame.Foundations {
+					foundation := klondikeGame.Foundations[i]
+					if foundation.Len() == 0 {
+						if currentCard.Rank == card.Ace {
+							klondikeGame.SelectedCard = currentCard
+							klondikeGame.MoveSelectedToFoundation(i)
 							return
 						}
 					} else {
-						topCard := foundation[len(foundation)-1]
-						if card.Suit == topCard.Suit && card.Rank == topCard.Rank+1 {
-							g.SelectedCard = card
-							g.MoveSelectedToFoundation(i)
+						topCard := foundation.Peek()
+						if currentCard.Suit == topCard.Suit && currentCard.Rank == topCard.Rank+1 {
+							klondikeGame.SelectedCard = currentCard
+							klondikeGame.MoveSelectedToFoundation(i)
 							return
 						}
 					}
 				}
 			})
-			if card.FaceUp {
+			if currentCard.FaceUp {
 				dragdrop.NewDraggable(cardDiv, func(e js.DOMEvent) {
-					g.SelectedCard = card
+					klondikeGame.SelectedCard = currentCard
 				})
 			}
 		}
