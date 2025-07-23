@@ -48,7 +48,7 @@ func main() {
 		}
 	})
 
-	for i := 0; i < 4; i++ {
+	for i := range 4 {
 		foundationIndex := i
 		ui.Foundations[i] = createDiv(document, attr.Class("pile")).SetStyle(style.GridColumn(fmt.Sprintf("%d", i+4)))
 		topRow.Append(ui.Foundations[i])
@@ -249,7 +249,7 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 			cardDiv.Append(rankDiv)
 			ui.Waste.Append(cardDiv)
 			cardDiv.AddEventListener("dblclick", func(el js.DOMElement, e js.DOMEvent) {
-				for i := 0; i < 4; i++ {
+				for i := range 4 {
 					foundation := g.Foundations[i]
 					if len(foundation) == 0 {
 						if card.Rank == game.Ace {
@@ -274,7 +274,7 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 	}
 
 	// Render Foundations
-	for i := 0; i < 4; i++ {
+	for i := range 4 {
 		foundationDiv := ui.Foundations[i]
 		foundationDiv.Clear()
 		if len(g.Foundations[i]) == 0 {
@@ -324,7 +324,7 @@ func render(document js.DOMDocument, ui *GameUI, g *game.Game) {
 				if !card.FaceUp {
 					return
 				}
-				for i := 0; i < 4; i++ {
+				for i := range 4 {
 					foundation := g.Foundations[i]
 					if len(foundation) == 0 {
 						if card.Rank == game.Ace {

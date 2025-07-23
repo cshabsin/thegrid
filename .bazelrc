@@ -1,1 +1,0 @@
-build --repo_env=BAZEL_GO_SDK=/usr/lib/go-1.22
