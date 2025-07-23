@@ -1,21 +1,8 @@
 load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
-    name = "game",
-    srcs = ["game.go"],
-    importpath = "github.com/cshabsin/thegrid/solitaire/game",
-    visibility = ["//visibility:public"],
-)
-
-go_test(
-    name = "game_test",
-    srcs = ["game_test.go"],
-    embed = [":game"],
-)
-
-go_library(
     name = "klondike",
-    srcs = ["game.go"],
+    srcs = ["klondike.go"],
     importpath = "github.com/cshabsin/thegrid/solitaire/klondike",
     visibility = ["//visibility:public"],
     deps = [
@@ -23,3 +10,10 @@ go_library(
         "//cardkit/pile",
     ],
 )
+
+go_test(
+    name = "klondike_test",
+    srcs = ["klondike_test.go"],
+    embed = [":klondike"],
+)
+

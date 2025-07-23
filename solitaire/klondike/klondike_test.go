@@ -1,7 +1,9 @@
-package game
+package klondike
 
 import (
 	"testing"
+
+	"github.com/cshabsin/thegrid/cardkit/card"
 )
 
 func TestNewGame(t *testing.T) {
@@ -17,12 +19,12 @@ func TestNewGame(t *testing.T) {
 }
 
 func TestMoveToTableau(t *testing.T) {
-	game := &Game{}
-	game.Tableau[0] = []*Card{
-		{Suit: Spades, Rank: King, FaceUp: true},
+	game := &Klondike{}
+	game.Tableau[0] = []*card.Card{
+		{Suit: card.Spades, Rank: card.King, FaceUp: true},
 	}
-	game.Tableau[1] = []*Card{
-		{Suit: Hearts, Rank: Queen, FaceUp: true},
+	game.Tableau[1] = []*card.Card{
+		{Suit: card.Hearts, Rank: card.Queen, FaceUp: true},
 	}
 	game.SelectedCard = game.Tableau[1][0]
 	game.MoveSelectedToTableau(0)
@@ -38,12 +40,12 @@ func TestMoveToTableau(t *testing.T) {
 }
 
 func TestInvalidMoveToTableau(t *testing.T) {
-	game := &Game{}
-	game.Tableau[0] = []*Card{
-		{Suit: Spades, Rank: King, FaceUp: true},
+	game := &Klondike{}
+	game.Tableau[0] = []*card.Card{
+		{Suit: card.Spades, Rank: card.King, FaceUp: true},
 	}
-	game.Tableau[1] = []*Card{
-		{Suit: Spades, Rank: Queen, FaceUp: true},
+	game.Tableau[1] = []*card.Card{
+		{Suit: card.Spades, Rank: card.Queen, FaceUp: true},
 	}
 	game.SelectedCard = game.Tableau[1][0]
 	game.MoveSelectedToTableau(0)
@@ -59,9 +61,9 @@ func TestInvalidMoveToTableau(t *testing.T) {
 }
 
 func TestMoveToFoundation(t *testing.T) {
-	game := &Game{}
-	game.Tableau[0] = []*Card{
-		{Suit: Spades, Rank: Ace, FaceUp: true},
+	game := &Klondike{}
+	game.Tableau[0] = []*card.Card{
+		{Suit: card.Spades, Rank: card.Ace, FaceUp: true},
 	}
 	game.SelectedCard = game.Tableau[0][0]
 	game.MoveSelectedToFoundation(0)
@@ -77,12 +79,12 @@ func TestMoveToFoundation(t *testing.T) {
 }
 
 func TestInvalidMoveToFoundation(t *testing.T) {
-	game := &Game{}
-	game.Foundations[0] = []*Card{
-		{Suit: Spades, Rank: Ace, FaceUp: true},
+	game := &Klondike{}
+	game.Foundations[0] = []*card.Card{
+		{Suit: card.Spades, Rank: card.Ace, FaceUp: true},
 	}
-	game.Tableau[0] = []*Card{
-		{Suit: Spades, Rank: Three, FaceUp: true},
+	game.Tableau[0] = []*card.Card{
+		{Suit: card.Spades, Rank: card.Three, FaceUp: true},
 	}
 	game.SelectedCard = game.Tableau[0][0]
 	game.MoveSelectedToFoundation(0)
