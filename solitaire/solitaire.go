@@ -48,7 +48,7 @@ func main() {
 		}
 	})
 
-	for i := range 4 {
+	for i := 0; i < 4; i++ {
 		foundationIndex := i
 		ui.Foundations[i] = createDiv(document, attr.Class("pile")).SetStyle(style.GridColumn(fmt.Sprintf("%d", i+4)))
 		topRow.Append(ui.Foundations[i])
