@@ -1,5 +1,5 @@
 load("@rules_go//go:def.bzl", "go_binary", "go_library")
-load("@rules_pkg//:pkg.bzl", "pkg_tar")
+load("@rules_pkg//:pkg.bzl", "pkg_zip")
 
 go_library(
     name = "example",
@@ -26,7 +26,7 @@ go_binary(
     visibility = ["//visibility:public"],
 )
 
-pkg_tar(
+pkg_zip(
     name = "example_pkg",
     srcs = [
         "index.html",
@@ -34,4 +34,5 @@ pkg_tar(
         "wasm_exec.js",
         ":example_wasm",
     ],
+    visibility = ["//server:__pkg__"],
 )

@@ -1,21 +1,27 @@
-// A basic HTTP server.
-// By default, it serves the current working directory on port 8080.
 package main
 
 import (
-	"flag"
+	"archive/zip"
 	"log"
 	"net/http"
 )
 
-var (
-	listen = flag.String("listen", ":8080", "listen address")
-	dir    = flag.String("dir", ".", "directory to serve")
-)
-
 func main() {
-	flag.Parse()
-	log.Printf("listening on %q...", *listen)
-	err := http.ListenAndServe(*listen, http.FileServer(http.Dir(*dir)))
-	log.Fatalln(err)
+	solitaireZipReader, err := zip.OpenReader("solitaire.zip")
+	if err != nil {
+		log.Fatalf("failed to open solitaire.zip: %v", err)
+	}
+	// defer solitaireZipReader.Close() // This would close the file before the server can use it.
+
+	exampleZipReader, err := zip.OpenReader("example.zip")
+	if err != nil {
+		log.Fatalf("failed to open example.zip: %v", err)
+	}
+	// defer exampleZipReader.Close() // This would close the file before the server can use it.
+
+	http.Handle("/solitaire/", http.StripPrefix("/solitaire/", http.FileServer(http.FS(solitaireZipReader))))
+	http.Handle("/example/", http.StripPrefix("/example/", http.FileServer(http.FS(exampleZipReader))))
+
+	log.Println("Listening on :8080...")
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
