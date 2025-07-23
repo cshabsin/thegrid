@@ -1,5 +1,5 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
-load("@io_bazel_rules_go//pkg:web.bzl", "pkg_web")
+load("@rules_pkg//:pkg.bzl", "pkg_web")
 
 go_library(
     name = "go_default_library",
