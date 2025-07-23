@@ -17,9 +17,6 @@ genrule(
 go_binary(
     name = "server",
     srcs = ["server.go"],
-    data = [
-        ":solitaire_zip",
-        ":example_zip",
-    ],
+    data = ["//:web_zips"],
     visibility = ["//visibility:public"],
 )

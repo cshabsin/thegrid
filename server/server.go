@@ -2,22 +2,29 @@ package main
 
 import (
 	"archive/zip"
+	"flag"
 	"log"
 	"net/http"
+	"path/filepath"
 )
 
+var dataDir = flag.String("data_dir", ".", "directory containing the zip files")
+
 func main() {
-	solitaireZipReader, err := zip.OpenReader("solitaire.zip")
+	flag.Parse()
+
+	solitaireZipPath := filepath.Join(*dataDir, "solitaire.zip")
+	exampleZipPath := filepath.Join(*dataDir, "example.zip")
+
+	solitaireZipReader, err := zip.OpenReader(solitaireZipPath)
 	if err != nil {
 		log.Fatalf("failed to open solitaire.zip: %v", err)
 	}
-	// defer solitaireZipReader.Close() // This would close the file before the server can use it.
 
-	exampleZipReader, err := zip.OpenReader("example.zip")
+	exampleZipReader, err := zip.OpenReader(exampleZipPath)
 	if err != nil {
 		log.Fatalf("failed to open example.zip: %v", err)
 	}
-	// defer exampleZipReader.Close() // This would close the file before the server can use it.
 
 	http.Handle("/solitaire/", http.StripPrefix("/solitaire/", http.FileServer(http.FS(solitaireZipReader))))
 	http.Handle("/example/", http.StripPrefix("/example/", http.FileServer(http.FS(exampleZipReader))))
