@@ -117,27 +117,28 @@ func (g *Klondike) CanMoveToFoundation(c *card.Card, foundationIndex int) bool {
 }
 
 func (g *Klondike) MoveSelectedToTableau(tableauIndex int) {
-	if g.SelectedCard == nil {
+	if !g.CanMoveToTableau(g.SelectedCard, tableauIndex) {
 		return
-	}
-	destPile := &g.Tableau[tableauIndex]
-	if destPile.Len() > 0 {
-		topCard := destPile.Peek()
-		if g.SelectedCard.Suit.Color() == topCard.Suit.Color() || g.SelectedCard.Rank != topCard.Rank-1 {
-			return // Invalid move
-		}
-	} else {
-		if g.SelectedCard.Rank != card.King {
-			return // Must be a king on an empty pile
-		}
 	}
 
 	stack := g.findAndRemoveSelectedCard()
 	if stack != nil {
-		*destPile = append(*destPile, stack...)
+		g.Tableau[tableauIndex] = append(g.Tableau[tableauIndex], stack...)
 		g.SelectedCard = nil
 		g.NotifyListeners()
 	}
+}
+
+func (g *Klondike) CanMoveToTableau(c *card.Card, tableauIndex int) bool {
+	if c == nil {
+		return false
+	}
+	destPile := &g.Tableau[tableauIndex]
+	if destPile.Len() == 0 {
+		return c.Rank == card.King
+	}
+	topCard := destPile.Peek()
+	return c.Suit.Color() != topCard.Suit.Color() && c.Rank == topCard.Rank-1
 }
 
 func (g *Klondike) CheckWin() bool {

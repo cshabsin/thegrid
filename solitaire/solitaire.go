@@ -80,7 +80,6 @@ func main() {
 
 			// First, determine which card was clicked, if any.
 			var clickedCard *card.Card
-			clickedCardIsLast := false
 
 			if len(pile) > 0 {
 				clientY := e.Value.Get("clientY").Int()
@@ -98,9 +97,6 @@ func main() {
 							return
 						}
 						clickedCard = card
-						if i == len(pile)-1 {
-							clickedCardIsLast = true
-						}
 						break
 					}
 				}
@@ -110,20 +106,7 @@ func main() {
 				if clickedCard == klondikeGame.SelectedCard {
 					klondikeGame.SelectedCard = nil
 				} else {
-					canMoveTo := false
-					destPile := klondikeGame.Tableau[pileIndex]
-					if len(destPile) == 0 {
-						if klondikeGame.SelectedCard.Rank == card.King {
-							canMoveTo = true
-						}
-					} else if clickedCardIsLast {
-						topCard := destPile[len(destPile)-1]
-						if klondikeGame.SelectedCard.Suit.Color() != topCard.Suit.Color() && klondikeGame.SelectedCard.Rank == topCard.Rank-1 {
-							canMoveTo = true
-						}
-					}
-
-					if canMoveTo {
+					if klondikeGame.CanMoveToTableau(klondikeGame.SelectedCard, pileIndex) {
 						klondikeGame.MoveSelectedToTableau(pileIndex)
 					} else {
 						klondikeGame.SelectedCard = clickedCard
@@ -135,31 +118,12 @@ func main() {
 			klondikeGame.NotifyListeners()
 		})
 		tableauDropTarget := dragdrop.NewDropTarget(ui.Tableau[i], func(e js.DOMEvent) {
-			if klondikeGame.SelectedCard == nil {
-				return
-			}
-			destPile := klondikeGame.Tableau[pileIndex]
-			if len(destPile) == 0 {
-				if klondikeGame.SelectedCard.Rank == card.King {
-					klondikeGame.MoveSelectedToTableau(pileIndex)
-				}
-			} else {
-				topCard := destPile[len(destPile)-1]
-				if klondikeGame.SelectedCard.Suit.Color() != topCard.Suit.Color() && klondikeGame.SelectedCard.Rank == topCard.Rank-1 {
-					klondikeGame.MoveSelectedToTableau(pileIndex)
-				}
+			if klondikeGame.CanMoveToTableau(klondikeGame.SelectedCard, pileIndex) {
+				klondikeGame.MoveSelectedToTableau(pileIndex)
 			}
 		})
 		tableauDropTarget.CanDrop = func(e js.DOMEvent) bool {
-			if klondikeGame.SelectedCard == nil {
-				return false
-			}
-			destPile := klondikeGame.Tableau[pileIndex]
-			if destPile.Len() == 0 {
-				return klondikeGame.SelectedCard.Rank == card.King
-			}
-			topCard := destPile.Peek()
-			return klondikeGame.SelectedCard.Suit.Color() != topCard.Suit.Color() && klondikeGame.SelectedCard.Rank == topCard.Rank-1
+			return klondikeGame.CanMoveToTableau(klondikeGame.SelectedCard, pileIndex)
 		}
 	}
 
