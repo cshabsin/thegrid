@@ -24,12 +24,6 @@ var klondikeGame *klondike.Klondike
 
 func createCardElement(doc js.DOMDocument, c *card.Card) js.DOMElement {
 	cardDiv := createDiv(doc, attr.Class("card"))
-	suitDiv := createDiv(doc, attr.Class("suit")).SetStyle(style.Color(c.Suit.Color()))
-	suitDiv.SetText(c.Suit.String())
-	cardDiv.Append(suitDiv)
-	rankDiv := createDiv(doc, attr.Class("rank")).SetStyle(style.Color(c.Suit.Color()))
-	rankDiv.SetText(c.Rank.String())
-	cardDiv.Append(rankDiv)
 	dragdrop.NewDraggable(cardDiv, func(e js.DOMEvent) {
 		klondikeGame.SelectedCard = c
 	})
@@ -189,6 +183,7 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 	ui.Stock.Clear()
 	if len(g.Stock) > 0 {
 		stockCardDiv := ui.CardToDOM[g.Stock[len(g.Stock)-1]]
+		stockCardDiv.Clear()
 		stockCardDiv.RemoveClass("face-up-card")
 		stockCardDiv.AddClass("face-down-card")
 		ui.Stock.Append(stockCardDiv)
@@ -207,6 +202,7 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 		for i := start; i < len(g.Waste); i++ {
 			card := g.Waste[i]
 			cardDiv := ui.CardToDOM[card]
+			cardDiv.Clear()
 			cardDiv.RemoveClass("face-down-card")
 			cardDiv.AddClass("face-up-card")
 			if i == len(g.Waste)-1 && card == g.SelectedCard {
@@ -215,6 +211,12 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 				cardDiv.RemoveClass("selected-card")
 			}
 			cardDiv.SetStyle(style.Left(fmt.Sprintf("%dpx", (i-start)*20)))
+			suitDiv := createDiv(document, attr.Class("suit")).SetStyle(style.Color(card.Suit.Color()))
+			suitDiv.SetText(card.Suit.String())
+			cardDiv.Append(suitDiv)
+			rankDiv := createDiv(document, attr.Class("rank")).SetStyle(style.Color(card.Suit.Color()))
+			rankDiv.SetText(card.Rank.String())
+			cardDiv.Append(rankDiv)
 			ui.Waste.Append(cardDiv)
 		}
 	} else {
@@ -232,8 +234,15 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 		} else {
 			card := g.Foundations[i].Peek()
 			cardDiv := ui.CardToDOM[card]
+			cardDiv.Clear()
 			cardDiv.RemoveClass("face-down-card")
 			cardDiv.AddClass("face-up-card")
+			suitDiv := createDiv(document, attr.Class("suit")).SetStyle(style.Color(card.Suit.Color()))
+			suitDiv.SetText(card.Suit.String())
+			cardDiv.Append(suitDiv)
+			rankDiv := createDiv(document, attr.Class("rank")).SetStyle(style.Color(card.Suit.Color()))
+			rankDiv.SetText(card.Rank.String())
+			cardDiv.Append(rankDiv)
 			foundationDiv.Append(cardDiv)
 		}
 	}
@@ -248,6 +257,7 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 		}
 		for j, card := range pile {
 			cardDiv := ui.CardToDOM[card]
+			cardDiv.Clear()
 			if card == g.SelectedCard {
 				cardDiv.AddClass("selected-card")
 			} else {
@@ -257,6 +267,12 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 			if card.FaceUp {
 				cardDiv.RemoveClass("face-down-card")
 				cardDiv.AddClass("face-up-card")
+				suitDiv := createDiv(document, attr.Class("suit")).SetStyle(style.Color(card.Suit.Color()))
+				suitDiv.SetText(card.Suit.String())
+				cardDiv.Append(suitDiv)
+				rankDiv := createDiv(document, attr.Class("rank")).SetStyle(style.Color(card.Suit.Color()))
+				rankDiv.SetText(card.Rank.String())
+				cardDiv.Append(rankDiv)
 			} else {
 				cardDiv.RemoveClass("face-up-card")
 				cardDiv.AddClass("face-down-card")
