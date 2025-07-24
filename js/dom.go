@@ -105,6 +105,11 @@ func (el DOMElement) AddClass(className string) DOMElement {
 	return el
 }
 
+func (el DOMElement) RemoveClass(className string) DOMElement {
+	el.Get("classList").Call("remove", className)
+	return el
+}
+
 func (el DOMElement) SetText(text string) DOMElement {
 	el.Set("textContent", text)
 	return el

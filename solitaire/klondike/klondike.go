@@ -141,6 +141,19 @@ func (g *Klondike) CanMoveToTableau(c *card.Card, tableauIndex int) bool {
 	return c.Suit.Color() != topCard.Suit.Color() && c.Rank == topCard.Rank-1
 }
 
+func (g *Klondike) AllCards() []*card.Card {
+	var cards []*card.Card
+	for _, p := range g.Tableau {
+		cards = append(cards, p...)
+	}
+	for _, p := range g.Foundations {
+		cards = append(cards, p...)
+	}
+	cards = append(cards, g.Stock...)
+	cards = append(cards, g.Waste...)
+	return cards
+}
+
 func (g *Klondike) CheckWin() bool {
 	for _, f := range g.Foundations {
 		if f.Len() != 13 {

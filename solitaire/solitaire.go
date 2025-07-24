@@ -17,9 +17,36 @@ type GameUI struct {
 	Waste       js.DOMElement
 	Foundations [4]js.DOMElement
 	Tableau     [7]js.DOMElement
+	CardToDOM   map[*card.Card]js.DOMElement
 }
 
 var klondikeGame *klondike.Klondike
+
+func createCardElement(doc js.DOMDocument, c *card.Card) js.DOMElement {
+	cardDiv := createDiv(doc, attr.Class("card"))
+	suitDiv := createDiv(doc, attr.Class("suit")).SetStyle(style.Color(c.Suit.Color()))
+	suitDiv.SetText(c.Suit.String())
+	cardDiv.Append(suitDiv)
+	rankDiv := createDiv(doc, attr.Class("rank")).SetStyle(style.Color(c.Suit.Color()))
+	rankDiv.SetText(c.Rank.String())
+	cardDiv.Append(rankDiv)
+	dragdrop.NewDraggable(cardDiv, func(e js.DOMEvent) {
+		klondikeGame.SelectedCard = c
+	})
+	cardDiv.AddEventListener("dblclick", func(el js.DOMElement, e js.DOMEvent) {
+		if !c.FaceUp {
+			return
+		}
+		for i := range klondikeGame.Foundations {
+			if klondikeGame.CanMoveToFoundation(c, i) {
+				klondikeGame.SelectedCard = c
+				klondikeGame.MoveSelectedToFoundation(i)
+				return
+			}
+		}
+	})
+	return cardDiv
+}
 
 func createDiv(doc js.DOMDocument, attrs ...attr.Attr) js.DOMElement {
 	return doc.CreateElement("div", attrs...)
@@ -31,7 +58,15 @@ func main() {
 	board := document.GetElementByID("game-board")
 	board.Clear() // Clear the board
 
-	ui := &GameUI{Board: board}
+	ui := &GameUI{
+		Board:     board,
+		CardToDOM: make(map[*card.Card]js.DOMElement),
+	}
+
+	// Create all card elements upfront
+	for _, c := range klondikeGame.AllCards() {
+		ui.CardToDOM[c] = createCardElement(document, c)
+	}
 
 	// Create top row elements
 	topRow := createDiv(document, attr.Class("top-row"))
@@ -143,128 +178,90 @@ func main() {
 }
 
 func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
-	if klondikeGame.CheckWin() {
+	if g.CheckWin() {
 		winDiv := createDiv(document, attr.Class("win-div"))
 		winDiv.Append(document.CreateElement("h1").SetText("You Win!"))
 		ui.Board.Append(winDiv)
 		return
 	}
+
 	// Render Stock
 	ui.Stock.Clear()
-	stockCardDiv := createDiv(document, attr.Class("card"))
-	if len(klondikeGame.Stock) > 0 {
+	if len(g.Stock) > 0 {
+		stockCardDiv := ui.CardToDOM[g.Stock[len(g.Stock)-1]]
+		stockCardDiv.RemoveClass("face-up-card")
 		stockCardDiv.AddClass("face-down-card")
+		ui.Stock.Append(stockCardDiv)
 	} else {
-		stockCardDiv.AddClass("card-placeholder")
+		placeholder := createDiv(document, attr.Class("card-placeholder"))
+		ui.Stock.Append(placeholder)
 	}
-	ui.Stock.Append(stockCardDiv)
 
 	// Render Waste
 	ui.Waste.Clear()
-	if len(klondikeGame.Waste) == 0 {
-		wastePlaceholder := createDiv(document, attr.Class("card-placeholder"))
-		ui.Waste.Append(wastePlaceholder)
-	} else {
-		start := len(klondikeGame.Waste) - 3
+	if len(g.Waste) > 0 {
+		start := len(g.Waste) - 3
 		if start < 0 {
 			start = 0
 		}
-		for i := start; i < len(klondikeGame.Waste); i++ {
-			wasteCard := klondikeGame.Waste[i]
-			cardDiv := createDiv(document, attr.Class("card"))
+		for i := start; i < len(g.Waste); i++ {
+			card := g.Waste[i]
+			cardDiv := ui.CardToDOM[card]
+			cardDiv.RemoveClass("face-down-card")
 			cardDiv.AddClass("face-up-card")
-			if i == len(klondikeGame.Waste)-1 && wasteCard == klondikeGame.SelectedCard {
+			if i == len(g.Waste)-1 && card == g.SelectedCard {
 				cardDiv.AddClass("selected-card")
+			} else {
+				cardDiv.RemoveClass("selected-card")
 			}
 			cardDiv.SetStyle(style.Left(fmt.Sprintf("%dpx", (i-start)*20)))
-			cardDiv.SetAttr("draggable", true)
-			suitDiv := createDiv(document, attr.Class("suit")).SetStyle(style.Color(wasteCard.Suit.Color()))
-			suitDiv.SetText(wasteCard.Suit.String())
-			cardDiv.Append(suitDiv)
-			rankDiv := createDiv(document, attr.Class("rank")).SetStyle(style.Color(wasteCard.Suit.Color()))
-			rankDiv.SetText(wasteCard.Rank.String())
-			cardDiv.Append(rankDiv)
 			ui.Waste.Append(cardDiv)
-			cardDiv.AddEventListener("dblclick", func(el js.DOMElement, e js.DOMEvent) {
-				for i := range klondikeGame.Foundations {
-					if klondikeGame.CanMoveToFoundation(wasteCard, i) {
-						klondikeGame.SelectedCard = wasteCard
-						klondikeGame.MoveSelectedToFoundation(i)
-						return
-					}
-				}
-			})
-			dragdrop.NewDraggable(cardDiv, func(e js.DOMEvent) {
-				klondikeGame.SelectedCard = wasteCard
-			})
 		}
+	} else {
+		placeholder := createDiv(document, attr.Class("card-placeholder"))
+		ui.Waste.Append(placeholder)
 	}
 
 	// Render Foundations
 	for i := range ui.Foundations {
 		foundationDiv := ui.Foundations[i]
 		foundationDiv.Clear()
-		if len(klondikeGame.Foundations[i]) == 0 {
+		if len(g.Foundations[i]) == 0 {
 			placeholder := createDiv(document, attr.Class("card-placeholder"))
 			foundationDiv.Append(placeholder)
 		} else {
-			card := klondikeGame.Foundations[i][len(klondikeGame.Foundations[i])-1]
-			cardDiv := createDiv(document, attr.Class("card"))
+			card := g.Foundations[i].Peek()
+			cardDiv := ui.CardToDOM[card]
+			cardDiv.RemoveClass("face-down-card")
 			cardDiv.AddClass("face-up-card")
-			suitDiv := createDiv(document, attr.Class("suit")).SetStyle(style.Color(card.Suit.Color()))
-			suitDiv.SetText(card.Suit.String())
-			cardDiv.Append(suitDiv)
-			rankDiv := createDiv(document, attr.Class("rank")).SetStyle(style.Color(card.Suit.Color()))
-			rankDiv.SetText(card.Rank.String())
-			cardDiv.Append(rankDiv)
 			foundationDiv.Append(cardDiv)
 		}
 	}
 
 	// Render Tableau
-	for i, pile := range klondikeGame.Tableau {
+	for i, pile := range g.Tableau {
 		pileDiv := ui.Tableau[i]
 		pileDiv.Clear()
 		if len(pile) == 0 {
 			placeholder := createDiv(document, attr.Class("card-placeholder"))
 			pileDiv.Append(placeholder)
 		}
-		for j, currentCard := range pile {
-			cardDiv := createDiv(document, attr.Class("card"))
-			if currentCard == klondikeGame.SelectedCard {
+		for j, card := range pile {
+			cardDiv := ui.CardToDOM[card]
+			if card == g.SelectedCard {
 				cardDiv.AddClass("selected-card")
+			} else {
+				cardDiv.RemoveClass("selected-card")
 			}
 			cardDiv.SetStyle(style.Top(fmt.Sprintf("%dpx", j*30)))
-			if currentCard.FaceUp {
+			if card.FaceUp {
+				cardDiv.RemoveClass("face-down-card")
 				cardDiv.AddClass("face-up-card")
-				cardDiv.SetAttr("draggable", true)
-				suitDiv := createDiv(document, attr.Class("suit")).SetStyle(style.Color(currentCard.Suit.Color()))
-				suitDiv.SetText(currentCard.Suit.String())
-				cardDiv.Append(suitDiv)
-				rankDiv := createDiv(document, attr.Class("rank")).SetStyle(style.Color(currentCard.Suit.Color()))
-				rankDiv.SetText(currentCard.Rank.String())
-				cardDiv.Append(rankDiv)
 			} else {
+				cardDiv.RemoveClass("face-up-card")
 				cardDiv.AddClass("face-down-card")
 			}
 			pileDiv.Append(cardDiv)
-			cardDiv.AddEventListener("dblclick", func(el js.DOMElement, e js.DOMEvent) {
-				if !currentCard.FaceUp {
-					return
-				}
-				for i := range klondikeGame.Foundations {
-					if klondikeGame.CanMoveToFoundation(currentCard, i) {
-						klondikeGame.SelectedCard = currentCard
-						klondikeGame.MoveSelectedToFoundation(i)
-						return
-					}
-				}
-			})
-			if currentCard.FaceUp {
-				dragdrop.NewDraggable(cardDiv, func(e js.DOMEvent) {
-					klondikeGame.SelectedCard = currentCard
-				})
-			}
 		}
 	}
 }
