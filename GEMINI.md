@@ -1,5 +1,7 @@
 For every prompt, once you're done with your work, create a git commit with
-the message "Gemini commit: " followed by the prompt that generated the code.
+the message "Gemini commit: " followed by the prompt that generated the code,
+a blank line, and a brief description of what you did. Use triple backslashes
+to escape any single quotes in the commit message.
 
 In general, when you are editing code that uses `interface{}` replace it with
 the new modern `any`.
