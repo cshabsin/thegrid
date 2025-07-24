@@ -208,6 +208,7 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 		} else {
 			card := klondikeGame.Foundations[i][len(klondikeGame.Foundations[i])-1]
 			cardDiv := createDiv(document, attr.Class("card"))
+			cardDiv.AddClass("face-up-card")
 			suitDiv := createDiv(document, attr.Class("suit")).SetStyle(style.Color(card.Suit.Color()))
 			suitDiv.SetText(card.Suit.String())
 			cardDiv.Append(suitDiv)
