@@ -179,6 +179,15 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 		return
 	}
 
+	for _, c := range g.AllCards() {
+		cardDiv := ui.CardToDOM[c]
+		if c == g.SelectedCard {
+			cardDiv.AddClass("selected-card")
+		} else {
+			cardDiv.RemoveClass("selected-card")
+		}
+	}
+
 	// Render Stock
 	ui.Stock.Clear()
 	if len(g.Stock) > 0 {
@@ -205,11 +214,7 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 			cardDiv.Clear()
 			cardDiv.RemoveClass("face-down-card")
 			cardDiv.AddClass("face-up-card")
-			if i == len(g.Waste)-1 && card == g.SelectedCard {
-				cardDiv.AddClass("selected-card")
-			} else {
-				cardDiv.RemoveClass("selected-card")
-			}
+			
 			cardDiv.SetStyle(style.Left(fmt.Sprintf("%dpx", (i-start)*20)))
 			cardDiv.SetAttr("draggable", true)
 			suitDiv := createDiv(document, attr.Class("suit")).SetStyle(style.Color(card.Suit.Color()))
@@ -259,11 +264,7 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 		for j, card := range pile {
 			cardDiv := ui.CardToDOM[card]
 			cardDiv.Clear()
-			if card == g.SelectedCard {
-				cardDiv.AddClass("selected-card")
-			} else {
-				cardDiv.RemoveClass("selected-card")
-			}
+			
 			cardDiv.SetStyle(style.Top(fmt.Sprintf("%dpx", j*30)))
 			if card.FaceUp {
 				cardDiv.SetAttr("draggable", true)
