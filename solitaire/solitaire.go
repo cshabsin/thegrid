@@ -225,6 +225,7 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 			cardDiv.AddClass("face-up-card")
 			
 			cardDiv.SetStyle(style.Left(fmt.Sprintf("%dpx", (i-start)*20)))
+			cardDiv.SetAttr("draggable", true)
 			populateCardElement(document, cardDiv, card)
 			ui.Waste.Append(cardDiv)
 		}
