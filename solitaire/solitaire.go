@@ -46,6 +46,15 @@ func createDiv(doc js.DOMDocument, attrs ...attr.Attr) js.DOMElement {
 	return doc.CreateElement("div", attrs...)
 }
 
+func populateCardElement(doc js.DOMDocument, cardDiv js.DOMElement, c *card.Card) {
+	suitDiv := createDiv(doc, attr.Class("suit")).SetStyle(style.Color(c.Suit.Color()))
+	suitDiv.SetText(c.Suit.String())
+	cardDiv.Append(suitDiv)
+	rankDiv := createDiv(doc, attr.Class("rank")).SetStyle(style.Color(c.Suit.Color()))
+	rankDiv.SetText(c.Rank.String())
+	cardDiv.Append(rankDiv)
+}
+
 func main() {
 	klondikeGame = klondike.New()
 	document := js.Document()
@@ -216,13 +225,7 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 			cardDiv.AddClass("face-up-card")
 			
 			cardDiv.SetStyle(style.Left(fmt.Sprintf("%dpx", (i-start)*20)))
-			cardDiv.SetAttr("draggable", true)
-			suitDiv := createDiv(document, attr.Class("suit")).SetStyle(style.Color(card.Suit.Color()))
-			suitDiv.SetText(card.Suit.String())
-			cardDiv.Append(suitDiv)
-			rankDiv := createDiv(document, attr.Class("rank")).SetStyle(style.Color(card.Suit.Color()))
-			rankDiv.SetText(card.Rank.String())
-			cardDiv.Append(rankDiv)
+			populateCardElement(document, cardDiv, card)
 			ui.Waste.Append(cardDiv)
 		}
 	} else {
@@ -243,12 +246,7 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 			cardDiv.Clear()
 			cardDiv.RemoveClass("face-down-card")
 			cardDiv.AddClass("face-up-card")
-			suitDiv := createDiv(document, attr.Class("suit")).SetStyle(style.Color(card.Suit.Color()))
-			suitDiv.SetText(card.Suit.String())
-			cardDiv.Append(suitDiv)
-			rankDiv := createDiv(document, attr.Class("rank")).SetStyle(style.Color(card.Suit.Color()))
-			rankDiv.SetText(card.Rank.String())
-			cardDiv.Append(rankDiv)
+			populateCardElement(document, cardDiv, card)
 			foundationDiv.Append(cardDiv)
 		}
 	}
@@ -270,12 +268,7 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 				cardDiv.SetAttr("draggable", true)
 				cardDiv.RemoveClass("face-down-card")
 				cardDiv.AddClass("face-up-card")
-				suitDiv := createDiv(document, attr.Class("suit")).SetStyle(style.Color(card.Suit.Color()))
-				suitDiv.SetText(card.Suit.String())
-				cardDiv.Append(suitDiv)
-				rankDiv := createDiv(document, attr.Class("rank")).SetStyle(style.Color(card.Suit.Color()))
-				rankDiv.SetText(card.Rank.String())
-				cardDiv.Append(rankDiv)
+				populateCardElement(document, cardDiv, card)
 			} else {
 				cardDiv.SetAttr("draggable", false)
 				cardDiv.RemoveClass("face-up-card")
