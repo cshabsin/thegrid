@@ -92,45 +92,28 @@ func (g *Klondike) findAndRemoveSelectedCard() pile.Pile {
 }
 
 func (g *Klondike) MoveSelectedToFoundation(foundationIndex int) {
-	if g.SelectedCard == nil {
+	if !g.CanMoveToFoundation(g.SelectedCard, foundationIndex) {
 		return
-	}
-	foundation := &g.Foundations[foundationIndex]
-	// Foundation move is only valid if moving a single card.
-	// Check if the selected card is the top of its stack.
-	if g.Waste.Len() > 0 && g.Waste.Peek() == g.SelectedCard {
-		// It's from the waste pile, which is a single card move.
-	} else {
-		found := false
-		for _, p := range g.Tableau {
-			if p.Len() > 0 && p.Peek() == g.SelectedCard {
-				found = true
-				break
-			}
-		}
-		if !found {
-			// The selected card is not at the top of a tableau pile, so it's part of a stack. Invalid move.
-			return
-		}
-	}
-
-	if foundation.Len() == 0 {
-		if g.SelectedCard.Rank != card.Ace {
-			return // Must be an Ace on an empty foundation
-		}
-	} else {
-		topCard := foundation.Peek()
-		if g.SelectedCard.Suit != topCard.Suit || g.SelectedCard.Rank != topCard.Rank+1 {
-			return // Must be same suit and next rank
-		}
 	}
 
 	stack := g.findAndRemoveSelectedCard()
 	if stack != nil {
-		*foundation = append(*foundation, stack...)
+		g.Foundations[foundationIndex].Push(stack[0])
 		g.SelectedCard = nil
 		g.NotifyListeners()
 	}
+}
+
+func (g *Klondike) CanMoveToFoundation(c *card.Card, foundationIndex int) bool {
+	if c == nil {
+		return false
+	}
+	foundation := &g.Foundations[foundationIndex]
+	if foundation.Len() == 0 {
+		return c.Rank == card.Ace
+	}
+	topCard := foundation.Peek()
+	return c.Suit == topCard.Suit && c.Rank == topCard.Rank+1
 }
 
 func (g *Klondike) MoveSelectedToTableau(tableauIndex int) {
