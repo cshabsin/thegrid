@@ -161,9 +161,10 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 
 	// Render Waste
 	ui.Waste.Clear()
-	wastePlaceholder := createDiv(document, attr.Class("card-placeholder"))
-	ui.Waste.Append(wastePlaceholder)
-	if len(klondikeGame.Waste) > 0 {
+	if len(klondikeGame.Waste) == 0 {
+		wastePlaceholder := createDiv(document, attr.Class("card-placeholder"))
+		ui.Waste.Append(wastePlaceholder)
+	} else {
 		start := len(klondikeGame.Waste) - 3
 		if start < 0 {
 			start = 0
@@ -171,6 +172,7 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 		for i := start; i < len(klondikeGame.Waste); i++ {
 			wasteCard := klondikeGame.Waste[i]
 			cardDiv := createDiv(document, attr.Class("card"))
+			cardDiv.AddClass("face-up-card")
 			if i == len(klondikeGame.Waste)-1 && wasteCard == klondikeGame.SelectedCard {
 				cardDiv.AddClass("selected-card")
 			}
