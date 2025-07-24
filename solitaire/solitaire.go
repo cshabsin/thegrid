@@ -265,6 +265,7 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 			}
 			cardDiv.SetStyle(style.Top(fmt.Sprintf("%dpx", j*30)))
 			if card.FaceUp {
+				cardDiv.SetAttr("draggable", true)
 				cardDiv.RemoveClass("face-down-card")
 				cardDiv.AddClass("face-up-card")
 				suitDiv := createDiv(document, attr.Class("suit")).SetStyle(style.Color(card.Suit.Color()))
@@ -274,6 +275,7 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 				rankDiv.SetText(card.Rank.String())
 				cardDiv.Append(rankDiv)
 			} else {
+				cardDiv.SetAttr("draggable", false)
 				cardDiv.RemoveClass("face-up-card")
 				cardDiv.AddClass("face-down-card")
 			}
