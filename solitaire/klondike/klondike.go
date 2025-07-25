@@ -130,6 +130,18 @@ func (g *Klondike) MoveToFoundation(c *card.Card) {
 	}
 }
 
+func (g *Klondike) MoveSelectedToPile(pileName string) {
+	if strings.HasPrefix(pileName, "foundation-") {
+		var i int
+		fmt.Sscanf(pileName, "foundation-%d", &i)
+		g.MoveSelectedToFoundation(i)
+	} else if strings.HasPrefix(pileName, "tableau-") {
+		var i int
+		fmt.Sscanf(pileName, "tableau-%d", &i)
+		g.MoveSelectedToTableau(i)
+	}
+}
+
 func (g *Klondike) MoveSelectedToTableau(tableauIndex int) {
 	if !g.CanMoveToTableau(g.selectedCard, tableauIndex) {
 		return

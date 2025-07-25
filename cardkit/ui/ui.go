@@ -35,6 +35,7 @@ type Game interface {
 	SelectedCard() *card.Card
 	SetSelectedCard(*card.Card)
 	MoveToFoundation(*card.Card)
+	MoveSelectedToPile(string)
 }
 
 type Board struct {
@@ -80,6 +81,11 @@ func NewBoard(g Game, doc js.DOMDocument, boardDiv js.DOMElement) *Board {
 		} else {
 			tableauRow.Append(pileDiv)
 		}
+		func(name string) {
+			dragdrop.NewDropTarget(pileDiv, func(e js.DOMEvent) {
+				b.game.MoveSelectedToPile(name)
+			})
+		}(name)
 	}
 
 	g.AddListener(b.Render)

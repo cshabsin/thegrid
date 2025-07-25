@@ -2,6 +2,11 @@ body {
 	background-color: green;
 }
 
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
 .top-row {
 	grid-row: 1;
 	grid-column: 1 / span 7;
