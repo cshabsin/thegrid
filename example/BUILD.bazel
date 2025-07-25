@@ -12,7 +12,6 @@ go_library(
         "//hexmap",
         "//js",
         "//js/attr",
-        "//js/style",
         "//js/svg",
         "//model",
     ],

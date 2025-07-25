@@ -3,9 +3,9 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "svg",
     srcs = [
+        "g.go",
         "path.go",
         "svg.go",
-        "g.go",
     ],
     importpath = "github.com/cshabsin/thegrid/js/svg",
     visibility = ["//visibility:public"],

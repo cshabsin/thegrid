@@ -1,8 +1,12 @@
 package klondike
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/cshabsin/thegrid/cardkit/card"
 	"github.com/cshabsin/thegrid/cardkit/pile"
+	"github.com/cshabsin/thegrid/cardkit/ui"
 )
 
 type Klondike struct {
@@ -170,5 +174,32 @@ func (g *Klondike) AddListener(listener func()) {
 func (g *Klondike) NotifyListeners() {
 	for _, listener := range g.listeners {
 		listener()
+	}
+}
+
+func (g *Klondike) GetAllPiles() map[string]pile.Pile {
+	piles := make(map[string]pile.Pile)
+	piles["stock"] = g.Stock
+	piles["waste"] = g.Waste
+	for i, p := range g.Foundations {
+		piles[fmt.Sprintf("foundation-%d", i)] = p
+	}
+	for i, p := range g.Tableau {
+		piles[fmt.Sprintf("tableau-%d", i)] = p
+	}
+	return piles
+}
+
+func (g *Klondike) GetPileLayout(name string) ui.PileLayout {
+	switch name {
+	case "waste":
+		return ui.PileLayout{Direction: ui.Horizontal, CardOffset: 20, MaxVisible: 3}
+	case "stock":
+		return ui.PileLayout{}
+	default:
+		if strings.HasPrefix(name, "tableau-") {
+			return ui.PileLayout{Direction: ui.Vertical, CardOffset: 30}
+		}
+		return ui.PileLayout{}
 	}
 }

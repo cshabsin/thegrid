@@ -8,6 +8,7 @@ go_library(
     deps = [
         "//cardkit/card",
         "//cardkit/pile",
+        "//cardkit/ui",
     ],
 )
 
@@ -15,5 +16,5 @@ go_test(
     name = "klondike_test",
     srcs = ["klondike_test.go"],
     embed = [":klondike"],
+    deps = ["//cardkit/card"],
 )
-
