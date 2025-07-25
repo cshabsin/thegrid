@@ -19,6 +19,7 @@ const (
 )
 
 type PileLayout struct {
+	GridRow    int
 	GridColumn int
 	Direction  LayoutDirection
 	CardOffset int
@@ -58,6 +59,12 @@ func NewBoard(g Game, doc js.DOMDocument, boardDiv js.DOMElement) *Board {
 		b.cardToDOM[c] = createCardElement(doc, c)
 	}
 
+	// Create top row and tableau row elements
+	topRow := createDiv(doc, attr.Class("top-row"))
+	boardDiv.Append(topRow)
+	tableauRow := createDiv(doc, attr.Class("tableau-row"))
+	boardDiv.Append(tableauRow)
+
 	// Create pile elements
 	for name := range g.GetAllPiles() {
 		pileDiv := createDiv(doc, attr.Class("pile"))
@@ -66,7 +73,11 @@ func NewBoard(g Game, doc js.DOMDocument, boardDiv js.DOMElement) *Board {
 			pileDiv.SetStyle(style.GridColumn(fmt.Sprintf("%d", layout.GridColumn)))
 		}
 		b.pileToDOM[name] = pileDiv
-		boardDiv.Append(pileDiv)
+		if layout.GridRow == 1 {
+			topRow.Append(pileDiv)
+		} else {
+			tableauRow.Append(pileDiv)
+		}
 	}
 
 	g.AddListener(b.Render)
