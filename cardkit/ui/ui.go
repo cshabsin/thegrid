@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/cshabsin/thegrid/cardkit/card"
 	"github.com/cshabsin/thegrid/cardkit/pile"
@@ -69,7 +70,12 @@ func NewBoard(g Game, doc js.DOMDocument, boardDiv js.DOMElement) *Board {
 	boardDiv.Append(tableauRow)
 
 	// Create pile elements
+	var pileNames []string
 	for name := range g.GetAllPiles() {
+		pileNames = append(pileNames, name)
+	}
+	sort.Strings(pileNames)
+	for _, name := range pileNames {
 		pileDiv := createDiv(doc, attr.Class("pile"))
 		layout := g.GetPileLayout(name)
 		if layout.GridColumn > 0 {
