@@ -50,9 +50,9 @@ body {
     width: 100px;
     height: 140px;
     border-radius: 5px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
     padding: 5px;
     position: absolute;
 	border: 1px solid black;
@@ -62,11 +62,34 @@ body {
 	background-color: white;
 }
 
-.suit {
+.suit-top-left {
     font-size: 24px;
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+    align-self: start;
 }
 
-.rank {
+.rank-top-right {
     font-size: 24px;
-    align-self: flex-end;
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    align-self: start;
+}
+
+.rank-bottom-left {
+    font-size: 24px;
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: start;
+    align-self: end;
+}
+
+.suit-bottom-right {
+    font-size: 24px;
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: end;
+    align-self: end;
 }

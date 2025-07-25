@@ -55,12 +55,21 @@ func createDiv(doc js.DOMDocument, attrs ...attr.Attr) js.DOMElement {
 }
 
 func populateCardElement(doc js.DOMDocument, cardDiv js.DOMElement, c *card.Card) {
-	suitDiv := createDiv(doc, attr.Class("suit")).SetStyle(style.Color(c.Suit.Color()))
-	suitDiv.SetText(c.Suit.String())
-	cardDiv.Append(suitDiv)
-	rankDiv := createDiv(doc, attr.Class("rank")).SetStyle(style.Color(c.Suit.Color()))
-	rankDiv.SetText(c.Rank.String())
-	cardDiv.Append(rankDiv)
+	topSuit := createDiv(doc, attr.Class("suit-top-left")).SetStyle(style.Color(c.Suit.Color()))
+	topSuit.SetText(c.Suit.String())
+	cardDiv.Append(topSuit)
+
+	topRank := createDiv(doc, attr.Class("rank-top-right")).SetStyle(style.Color(c.Suit.Color()))
+	topRank.SetText(c.Rank.String())
+	cardDiv.Append(topRank)
+
+	bottomRank := createDiv(doc, attr.Class("rank-bottom-left")).SetStyle(style.Color(c.Suit.Color()))
+	bottomRank.SetText(c.Rank.String())
+	cardDiv.Append(bottomRank)
+
+	bottomSuit := createDiv(doc, attr.Class("suit-bottom-right")).SetStyle(style.Color(c.Suit.Color()))
+	bottomSuit.SetText(c.Suit.String())
+	cardDiv.Append(bottomSuit)
 }
 
 func main() {
