@@ -120,6 +120,16 @@ func (g *Klondike) CanMoveToFoundation(c *card.Card, foundationIndex int) bool {
 	return c.Suit == topCard.Suit && c.Rank == topCard.Rank+1
 }
 
+func (g *Klondike) MoveToFoundation(c *card.Card) {
+	for i := range g.Foundations {
+		if g.CanMoveToFoundation(c, i) {
+			g.SetSelectedCard(c)
+			g.MoveSelectedToFoundation(i)
+			return
+		}
+	}
+}
+
 func (g *Klondike) MoveSelectedToTableau(tableauIndex int) {
 	if !g.CanMoveToTableau(g.selectedCard, tableauIndex) {
 		return
@@ -160,6 +170,11 @@ func (g *Klondike) AllCards() []*card.Card {
 
 func (g *Klondike) SelectedCard() *card.Card {
 	return g.selectedCard
+}
+
+func (g *Klondike) SetSelectedCard(c *card.Card) {
+	g.selectedCard = c
+	g.NotifyListeners()
 }
 
 func (g *Klondike) CheckWin() bool {

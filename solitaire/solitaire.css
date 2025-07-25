@@ -55,7 +55,7 @@ body {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
     padding: 5px;
-    position: absolute;
+    position: relative;
 	border: 1px solid black;
 }
 

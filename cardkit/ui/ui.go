@@ -33,6 +33,8 @@ type Game interface {
 	AddListener(func())
 	CheckWin() bool
 	SelectedCard() *card.Card
+	SetSelectedCard(*card.Card)
+	MoveToFoundation(*card.Card)
 }
 
 type Board struct {
@@ -56,7 +58,7 @@ func NewBoard(g Game, doc js.DOMDocument, boardDiv js.DOMElement) *Board {
 
 	// Create all card elements upfront
 	for _, c := range g.AllCards() {
-		b.cardToDOM[c] = createCardElement(doc, c)
+		b.cardToDOM[c] = b.createCardElement(doc, c)
 	}
 
 	// Create top row and tableau row elements
@@ -146,30 +148,27 @@ func (b *Board) Render() {
 	}
 }
 
-func createCardElement(doc js.DOMDocument, c *card.Card) js.DOMElement {
+func (b *Board) createCardElement(doc js.DOMDocument, c *card.Card) js.DOMElement {
 	cardDiv := createDiv(doc, attr.Class("card"))
 	dragdrop.NewDraggable(cardDiv, func(e js.DOMEvent) {
-		//klondikeGame.SelectedCard = c
+		b.game.SetSelectedCard(c)
 	})
 	cardDiv.AddEventListener("click", func(el js.DOMElement, e js.DOMEvent) {
-		// if klondikeGame.SelectedCard == c {
-		// 	klondikeGame.SelectedCard = nil
-		// } else {
-		// 	klondikeGame.SelectedCard = c
-		// }
-		// klondikeGame.NotifyListeners()
+		if b.game.SelectedCard() == c {
+			b.game.SetSelectedCard(nil)
+		} else {
+			b.game.SetSelectedCard(c)
+		}
 	})
 	cardDiv.AddEventListener("dblclick", func(el js.DOMElement, e js.DOMEvent) {
-		// if !c.FaceUp {
-		// 	return
-		// }
-		// for i := range klondikeGame.Foundations {
-		// 	if klondikeGame.CanMoveToFoundation(c, i) {
-		// 		klondikeGame.SelectedCard = c
-		// 		klondikeGame.MoveSelectedToFoundation(i)
-		// 		return
-		// 	}
-		// }
+		if !c.FaceUp {
+			return
+		}
+		if g, ok := b.game.(interface {
+			MoveToFoundation(*card.Card)
+		}); ok {
+			g.MoveToFoundation(c)
+		}
 	})
 	return cardDiv
 }
