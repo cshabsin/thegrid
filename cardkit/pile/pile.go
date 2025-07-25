@@ -2,7 +2,6 @@ package pile
 
 import (
 	"math/rand"
-	"time"
 
 	"github.com/cshabsin/thegrid/cardkit/card"
 )
@@ -34,7 +33,6 @@ func (p Pile) Len() int {
 }
 
 func (p Pile) Shuffle() {
-	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(p), func(i, j int) {
 		p[i], p[j] = p[j], p[i]
 	})

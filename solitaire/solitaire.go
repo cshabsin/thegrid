@@ -27,6 +27,14 @@ func createCardElement(doc js.DOMDocument, c *card.Card) js.DOMElement {
 	dragdrop.NewDraggable(cardDiv, func(e js.DOMEvent) {
 		klondikeGame.SelectedCard = c
 	})
+	cardDiv.AddEventListener("click", func(el js.DOMElement, e js.DOMEvent) {
+		if klondikeGame.SelectedCard == c {
+			klondikeGame.SelectedCard = nil
+		} else {
+			klondikeGame.SelectedCard = c
+		}
+		klondikeGame.NotifyListeners()
+	})
 	cardDiv.AddEventListener("dblclick", func(el js.DOMElement, e js.DOMEvent) {
 		if !c.FaceUp {
 			return
@@ -115,45 +123,13 @@ func main() {
 		tableauRow.Append(ui.Tableau[i])
 		ui.Tableau[i].AddEventListener("click", func(el js.DOMElement, e js.DOMEvent) {
 			pile := klondikeGame.Tableau[pileIndex]
-
-			// First, determine which card was clicked, if any.
-			var clickedCard *card.Card
-
-			if len(pile) > 0 {
-				clientY := e.Value.Get("clientY").Int()
-				cardElements := el.QuerySelectorAll(".card")
-				for i := len(pile) - 1; i >= 0; i-- {
-					card := pile[i]
-					cardEl := cardElements[i]
-					rect := cardEl.GetBoundingClientRect()
-					if clientY >= rect.Get("top").Int() && clientY <= rect.Get("bottom").Int() {
-						if !card.FaceUp {
-							if i == len(pile)-1 {
-								card.FaceUp = true
-								klondikeGame.NotifyListeners()
-							}
-							return
-						}
-						clickedCard = card
-						break
-					}
+			if pile.Len() > 0 {
+				card := pile.Peek()
+				if !card.FaceUp {
+					card.FaceUp = true
+					klondikeGame.NotifyListeners()
 				}
 			}
-
-			if klondikeGame.SelectedCard != nil {
-				if clickedCard == klondikeGame.SelectedCard {
-					klondikeGame.SelectedCard = nil
-				} else {
-					if klondikeGame.CanMoveToTableau(klondikeGame.SelectedCard, pileIndex) {
-						klondikeGame.MoveSelectedToTableau(pileIndex)
-					} else {
-						klondikeGame.SelectedCard = clickedCard
-					}
-				}
-			} else {
-				klondikeGame.SelectedCard = clickedCard
-			}
-			klondikeGame.NotifyListeners()
 		})
 		tableauDropTarget := dragdrop.NewDropTarget(ui.Tableau[i], func(e js.DOMEvent) {
 			if klondikeGame.CanMoveToTableau(klondikeGame.SelectedCard, pileIndex) {
