@@ -223,6 +223,7 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 			cardDiv.Clear()
 			cardDiv.RemoveClass("face-down-card")
 			cardDiv.AddClass("face-up-card")
+			cardDiv.SetStyle(style.Top("0"), style.Left("0"))
 			populateCardElement(document, cardDiv, card)
 			foundationDiv.Append(cardDiv)
 		}
