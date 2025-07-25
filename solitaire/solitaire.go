@@ -240,7 +240,7 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 			cardDiv := ui.CardToDOM[card]
 			cardDiv.Clear()
 
-			cardDiv.SetStyle(style.Top(fmt.Sprintf("%dpx", j*30)))
+			cardDiv.SetStyle(style.Top(fmt.Sprintf("%dpx", j*30)), style.Left("0"))
 			if card.FaceUp {
 				cardDiv.SetAttr("draggable", true)
 				cardDiv.RemoveClass("face-down-card")
