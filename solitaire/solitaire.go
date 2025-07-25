@@ -109,7 +109,7 @@ func main() {
 	// Create tableau elements
 	tableauRow := createDiv(document, attr.Class("tableau-row"))
 	board.Append(tableauRow)
-	for i := 0; i < 7; i++ {
+	for i := range ui.Tableau {
 		pileIndex := i
 		ui.Tableau[i] = createDiv(document, attr.Class("pile")).SetStyle(style.GridColumn(fmt.Sprintf("%d", i+1)))
 		tableauRow.Append(ui.Tableau[i])
@@ -223,7 +223,7 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 			cardDiv.Clear()
 			cardDiv.RemoveClass("face-down-card")
 			cardDiv.AddClass("face-up-card")
-			
+
 			cardDiv.SetStyle(style.Left(fmt.Sprintf("%dpx", (i-start)*20)))
 			cardDiv.SetAttr("draggable", true)
 			populateCardElement(document, cardDiv, card)
@@ -263,7 +263,7 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 		for j, card := range pile {
 			cardDiv := ui.CardToDOM[card]
 			cardDiv.Clear()
-			
+
 			cardDiv.SetStyle(style.Top(fmt.Sprintf("%dpx", j*30)))
 			if card.FaceUp {
 				cardDiv.SetAttr("draggable", true)
