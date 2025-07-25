@@ -189,6 +189,7 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 		stockCardDiv.Clear()
 		stockCardDiv.RemoveClass("face-up-card")
 		stockCardDiv.AddClass("face-down-card")
+		stockCardDiv.SetStyle(style.Left("0"))
 		ui.Stock.Append(stockCardDiv)
 	} else {
 		placeholder := createDiv(document, attr.Class("card-placeholder"))
