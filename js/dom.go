@@ -79,6 +79,13 @@ func (el DOMElement) SetStyle(styles ...style.Style) DOMElement {
 	return el
 }
 
+func (el DOMElement) ClearStyles(styles ...string) DOMElement {
+	for _, s := range styles {
+		el.style.Set(s, "")
+	}
+	return el
+}
+
 type elementer interface {
 	AsDOM() DOMElement
 }

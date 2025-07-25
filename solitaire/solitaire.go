@@ -165,6 +165,10 @@ func main() {
 	select {}
 }
 
+func resetCardPosition(cardDiv js.DOMElement) {
+	cardDiv.ClearStyles("top", "left")
+}
+
 func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 	if g.CheckWin() {
 		winDiv := createDiv(document, attr.Class("win-div"))
@@ -186,10 +190,10 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 	ui.Stock.Clear()
 	if len(g.Stock) > 0 {
 		stockCardDiv := ui.CardToDOM[g.Stock[len(g.Stock)-1]]
+		resetCardPosition(stockCardDiv)
 		stockCardDiv.Clear()
 		stockCardDiv.RemoveClass("face-up-card")
 		stockCardDiv.AddClass("face-down-card")
-		stockCardDiv.SetStyle(style.Left("0"))
 		ui.Stock.Append(stockCardDiv)
 	} else {
 		placeholder := createDiv(document, attr.Class("card-placeholder"))
@@ -206,6 +210,7 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 		for i := start; i < len(g.Waste); i++ {
 			card := g.Waste[i]
 			cardDiv := ui.CardToDOM[card]
+			resetCardPosition(cardDiv)
 			cardDiv.Clear()
 			cardDiv.RemoveClass("face-down-card")
 			cardDiv.AddClass("face-up-card")
@@ -230,10 +235,10 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 		} else {
 			card := g.Foundations[i].Peek()
 			cardDiv := ui.CardToDOM[card]
+			resetCardPosition(cardDiv)
 			cardDiv.Clear()
 			cardDiv.RemoveClass("face-down-card")
 			cardDiv.AddClass("face-up-card")
-			cardDiv.SetStyle(style.Top("0"), style.Left("0"))
 			populateCardElement(document, cardDiv, card)
 			foundationDiv.Append(cardDiv)
 		}
@@ -249,9 +254,10 @@ func render(document js.DOMDocument, ui *GameUI, g *klondike.Klondike) {
 		}
 		for j, card := range pile {
 			cardDiv := ui.CardToDOM[card]
+			resetCardPosition(cardDiv)
 			cardDiv.Clear()
 
-			cardDiv.SetStyle(style.Top(fmt.Sprintf("%dpx", j*30)), style.Left("0"))
+			cardDiv.SetStyle(style.Top(fmt.Sprintf("%dpx", j*30)))
 			if card.FaceUp {
 				cardDiv.SetAttr("draggable", true)
 				cardDiv.RemoveClass("face-down-card")
