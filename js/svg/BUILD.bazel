@@ -5,6 +5,7 @@ go_library(
     srcs = [
         "path.go",
         "svg.go",
+        "g.go",
     ],
     importpath = "github.com/cshabsin/thegrid/js/svg",
     visibility = ["//visibility:public"],

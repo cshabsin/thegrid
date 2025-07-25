@@ -84,7 +84,7 @@ func (h HexMap) GetPixWidth() float64 {
 }
 
 // GridMesh returns the SVG path for the grid starting with the top-left corner of the (0, 0) hex.
-func (h HexMap) GridMesh() svg.Path {
+func (h HexMap) GridMesh() *svg.Path {
 	hexagon := Hexagon(h.radius)
 	// drawn[0] = top left, going clockwise. 0, 1, 2, and 5 are
 	// always true, while 3 and 4 are recalculated per cell to
@@ -97,15 +97,16 @@ func (h HexMap) GridMesh() svg.Path {
 			if !h.showMesh(col, row) {
 				continue
 			}
-			path = path.MoveAbs(h.CellCenter(col, row), false).MoveRel(hexagon[0], false)
+			path.MoveAbs(h.CellCenter(col, row), false)
+			path.MoveRel(hexagon[0], false)
 			drawn[3] = h.isDownRightShown(col, row)
 			drawn[4] = h.isDownShown(col, row)
 			for i := 0; i < 6; i++ {
-				path = path.MoveRel(hexagon[i+1], drawn[i])
+				path.MoveRel(hexagon[i+1], drawn[i])
 			}
 		}
 	}
-	return path
+	return &path
 }
 
 func (h HexMap) HexPath(svg svg.SVG, cls string) svg.Element {
@@ -116,12 +117,12 @@ func (h HexMap) CellTranslate(col, row int) attr.Attr {
 	return attr.Translate(h.grid[col][row].centerX, h.grid[col][row].centerY)
 }
 
-func (h HexMap) HexagonPath() svg.Path {
+func (h HexMap) HexagonPath() *svg.Path {
 	var p svg.Path
 	for i, coord := range Hexagon(h.radius) {
-		p = p.MoveRel(coord, i != 0)
+		p.MoveRel(coord, i != 0)
 	}
-	return p
+	return &p
 }
 
 func (h HexMap) showMesh(col, row int) bool {

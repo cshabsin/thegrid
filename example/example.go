@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"path"
 
 	"github.com/cshabsin/thegrid/example/server/data"
@@ -10,7 +11,6 @@ import (
 	"github.com/cshabsin/thegrid/js"
 	"github.com/cshabsin/thegrid/js/attr"
 	"github.com/cshabsin/thegrid/js/svg"
-	"github.com/cshabsin/thegrid/js/style"
 	"github.com/cshabsin/thegrid/model"
 )
 
@@ -27,26 +27,6 @@ func main() {
 		svgElem.SetAttr("width", "100%")
 		svgElem.SetAttr("viewBox", "0 0 10000 10000")
 
-		var paths []svg.Element
-		for i := 0; i < 10000; i += 70 {
-			var p svg.Path
-			p = p.MoveAbs(svg.Coord{X: float64(i), Y: 0}, false)
-			p = p.MoveAbs(svg.Coord{X: 0, Y: float64(10000 - i)}, true)
-
-			p = p.MoveAbs(svg.Coord{X: float64(10000 - i), Y: 10000}, false)
-			p = p.MoveAbs(svg.Coord{X: 0, Y: float64(10000 - i)}, true)
-
-			p = p.MoveAbs(svg.Coord{X: float64(10000 - i), Y: 10000}, false)
-			p = p.MoveAbs(svg.Coord{X: 10000, Y: float64(i)}, true)
-
-			p = p.MoveAbs(svg.Coord{X: float64(i), Y: 0}, false)
-			p = p.MoveAbs(svg.Coord{X: 10000, Y: float64(i)}, true)
-
-			pathElem := p.ToElement(svgElem, attr.Make("style", fmt.Sprintf("fill: none; stroke: hsl(%d, 100%%, 50%%); stroke-width: 10px", i*360/10000)))
-			svgElem.Append(pathElem)
-			paths = append(paths, pathElem)
-		}
-
 		var startTime float64
 		var animate func(timestamp float64)
 		animate = func(timestamp float64) {
@@ -55,17 +35,14 @@ func main() {
 			}
 			elapsed := timestamp - startTime
 
-			for _, p := range paths {
-				length := p.GetTotalLength()
-				offset := length - (elapsed / 10.0)
-				p.SetStyle(style.Make("stroke-dasharray", fmt.Sprintf("%f", length)), style.Make("stroke-dashoffset", fmt.Sprintf("%f", offset)))
-			}
+			svgElem.Clear()
+			svgElem.Append(drawGraph(svgElem, elapsed))
 
 			js.RequestAnimationFrame(animate)
 		}
 		js.RequestAnimationFrame(animate)
 
-		return
+		select {}
 	}
 	hm := hexmap.NewHexMap(10, 11, 70, false)
 
@@ -96,4 +73,27 @@ func main() {
 	svgElem.Append(mapGroup)
 
 	select {}
+}
+
+func drawGraph(svgElem svg.SVG, timestamp float64) svg.Element {
+	var g svg.G
+	for i := 0; i < 10000; i += 70 {
+		i64 := math.Mod(float64(i)+timestamp, 10000)
+		var p svg.Path
+		p.MoveAbs(svg.Coord{X: i64, Y: 0}, false)
+		p.MoveAbs(svg.Coord{X: 0, Y: 10000 - i64}, true)
+
+		p.MoveAbs(svg.Coord{X: 10000 - i64, Y: 10000}, false)
+		p.MoveAbs(svg.Coord{X: 0, Y: 10000 - i64}, true)
+
+		p.MoveAbs(svg.Coord{X: 10000 - i64, Y: 10000}, false)
+		p.MoveAbs(svg.Coord{X: 10000, Y: i64}, true)
+
+		p.MoveAbs(svg.Coord{X: i64, Y: 0}, false)
+		p.MoveAbs(svg.Coord{X: 10000, Y: i64}, true)
+
+		p.SetAttr(attr.Make("style", fmt.Sprintf("fill: none; stroke: hsl(%d, 100%%, 50%%); stroke-width: 10px", i*360/10000)))
+		g = g.Append(&p)
+	}
+	return g.ToElement(svgElem)
 }

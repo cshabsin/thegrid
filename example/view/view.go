@@ -50,11 +50,11 @@ func (mv *MapView) NewParsec(col, row int, e Entity) *Parsec {
 }
 
 func (mv *MapView) NewPathSegment(seg data.PathSegment, cls string, attrs ...attr.Attr) svg.Element {
-	g := mv.SVG.CreateElement("g")
+	var g svg.G
 	var p svg.Path
-	p = p.MoveAbs(mv.HexMap.CellCenter(seg.StartCoord[0], seg.StartCoord[1]).Translate(float64(seg.StartOffset[0]), float64(seg.StartOffset[1])), false)
-	p = p.MoveAbs(mv.HexMap.CellCenter(seg.EndCoord[0], seg.EndCoord[1]).Translate(float64(seg.EndOffset[0]), float64(seg.EndOffset[1])), true)
-	g.Append(p.ToElement(mv.SVG, append(attrs, attr.Make("marker-end", "url(#triangle)"), attr.Class(cls))...))
-	g.Append(p.ToElement(mv.SVG, attr.Class(cls+"-wide")))
-	return g
+	p.MoveAbs(mv.HexMap.CellCenter(seg.StartCoord[0], seg.StartCoord[1]).Translate(float64(seg.StartOffset[0]), float64(seg.StartOffset[1])), false)
+	p.MoveAbs(mv.HexMap.CellCenter(seg.EndCoord[0], seg.EndCoord[1]).Translate(float64(seg.EndOffset[0]), float64(seg.EndOffset[1])), true)
+	g.Append(p.WithAttrs(append(attrs, attr.Make("marker-end", "url(#triangle)"), attr.Class(cls))...))
+	g.Append(p.WithAttrs(attr.Class(cls + "-wide")))
+	return g.ToElement(mv.SVG)
 }
