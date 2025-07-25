@@ -15,7 +15,7 @@ type Klondike struct {
 	Foundations  [4]pile.Pile
 	Stock        pile.Pile
 	Waste        pile.Pile
-	SelectedCard *card.Card
+	selectedCard *card.Card
 	listeners    []func()
 }
 
@@ -72,14 +72,14 @@ func (g *Klondike) DrawCards() {
 // findAndRemoveSelectedCard finds the selected card, removes it (and any cards on top of it) from its current location,
 // and returns the stack of cards that was removed. Returns nil if no card was selected or found.
 func (g *Klondike) findAndRemoveSelectedCard() pile.Pile {
-	if g.SelectedCard == nil {
+	if g.selectedCard == nil {
 		return nil
 	}
 
 	// Find in tableau
 	for i, p := range g.Tableau {
 		for j, c := range p {
-			if c == g.SelectedCard {
+			if c == g.selectedCard {
 				stack := g.Tableau[i][j:]
 				g.Tableau[i] = g.Tableau[i][:j]
 				return stack
@@ -88,7 +88,7 @@ func (g *Klondike) findAndRemoveSelectedCard() pile.Pile {
 	}
 
 	// Find in waste
-	if g.Waste.Len() > 0 && g.Waste.Peek() == g.SelectedCard {
+	if g.Waste.Len() > 0 && g.Waste.Peek() == g.selectedCard {
 		return pile.Pile{g.Waste.Pop()}
 	}
 
@@ -96,14 +96,14 @@ func (g *Klondike) findAndRemoveSelectedCard() pile.Pile {
 }
 
 func (g *Klondike) MoveSelectedToFoundation(foundationIndex int) {
-	if !g.CanMoveToFoundation(g.SelectedCard, foundationIndex) {
+	if !g.CanMoveToFoundation(g.selectedCard, foundationIndex) {
 		return
 	}
 
 	stack := g.findAndRemoveSelectedCard()
 	if stack != nil {
 		g.Foundations[foundationIndex].Push(stack[0])
-		g.SelectedCard = nil
+		g.selectedCard = nil
 		g.NotifyListeners()
 	}
 }
@@ -121,14 +121,14 @@ func (g *Klondike) CanMoveToFoundation(c *card.Card, foundationIndex int) bool {
 }
 
 func (g *Klondike) MoveSelectedToTableau(tableauIndex int) {
-	if !g.CanMoveToTableau(g.SelectedCard, tableauIndex) {
+	if !g.CanMoveToTableau(g.selectedCard, tableauIndex) {
 		return
 	}
 
 	stack := g.findAndRemoveSelectedCard()
 	if stack != nil {
 		g.Tableau[tableauIndex] = append(g.Tableau[tableauIndex], stack...)
-		g.SelectedCard = nil
+		g.selectedCard = nil
 		g.NotifyListeners()
 	}
 }
@@ -156,6 +156,10 @@ func (g *Klondike) AllCards() []*card.Card {
 	cards = append(cards, g.Stock...)
 	cards = append(cards, g.Waste...)
 	return cards
+}
+
+func (g *Klondike) SelectedCard() *card.Card {
+	return g.selectedCard
 }
 
 func (g *Klondike) CheckWin() bool {

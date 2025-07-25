@@ -1,9 +1,14 @@
 package ui
 
 import (
+	"fmt"
+
 	"github.com/cshabsin/thegrid/cardkit/card"
 	"github.com/cshabsin/thegrid/cardkit/pile"
 	"github.com/cshabsin/thegrid/js"
+	"github.com/cshabsin/thegrid/js/attr"
+	"github.com/cshabsin/thegrid/js/dragdrop"
+	"github.com/cshabsin/thegrid/js/style"
 )
 
 type LayoutDirection int
@@ -24,21 +29,157 @@ type Game interface {
 	GetAllPiles() map[string]pile.Pile
 	GetPileLayout(name string) PileLayout
 	AddListener(func())
+	CheckWin() bool
+	SelectedCard() *card.Card
 }
 
 type Board struct {
-	game      Game
-	document  js.DOMDocument
-	boardDiv  js.DOMElement
-	pileToDOM map[string]js.DOMElement
-	cardToDOM map[*card.Card]js.DOMElement
+	game        Game
+	document    js.DOMDocument
+	boardDiv    js.DOMElement
+	pileToDOM   map[string]js.DOMElement
+	cardToDOM   map[*card.Card]js.DOMElement
 }
 
-func NewBoard(g Game) *Board {
-	// ... implementation to follow
-	return nil
+func NewBoard(g Game, doc js.DOMDocument, boardDiv js.DOMElement) *Board {
+	b := &Board{
+		game:        g,
+		document:    doc,
+		boardDiv:    boardDiv,
+		pileToDOM:   make(map[string]js.DOMElement),
+		cardToDOM:   make(map[*card.Card]js.DOMElement),
+	}
+
+	boardDiv.Clear()
+
+	// Create all card elements upfront
+	for _, c := range g.AllCards() {
+		b.cardToDOM[c] = createCardElement(doc, c)
+	}
+
+	// Create pile elements
+	for name := range g.GetAllPiles() {
+		pileDiv := createDiv(doc, attr.Class("pile"))
+		b.pileToDOM[name] = pileDiv
+		boardDiv.Append(pileDiv)
+	}
+
+	g.AddListener(b.Render)
+	b.Render()
+
+	return b
 }
 
 func (b *Board) Render() {
-	// ... implementation to follow
+	if b.game.CheckWin() {
+		winDiv := createDiv(b.document, attr.Class("win-div"))
+		winDiv.Append(b.document.CreateElement("h1").SetText("You Win!"))
+		b.boardDiv.Append(winDiv)
+		return
+	}
+
+	for _, c := range b.game.AllCards() {
+		cardDiv := b.cardToDOM[c]
+		if c == b.game.SelectedCard() {
+			cardDiv.AddClass("selected-card")
+		} else {
+			cardDiv.RemoveClass("selected-card")
+		}
+	}
+
+	for name, pile := range b.game.GetAllPiles() {
+		pileDiv := b.pileToDOM[name]
+		pileDiv.Clear()
+		layout := b.game.GetPileLayout(name)
+
+		if pile.Len() == 0 {
+			placeholder := createDiv(b.document, attr.Class("card-placeholder"))
+			pileDiv.Append(placeholder)
+			continue
+		}
+
+		start := 0
+		if layout.MaxVisible > 0 && pile.Len() > layout.MaxVisible {
+			start = pile.Len() - layout.MaxVisible
+		}
+
+		for i := start; i < pile.Len(); i++ {
+			card := pile[i]
+			cardDiv := b.cardToDOM[card]
+			resetCardPosition(cardDiv)
+			cardDiv.Clear()
+
+			if layout.Direction == Horizontal {
+				cardDiv.SetStyle(style.Left(fmt.Sprintf("%dpx", (i-start)*layout.CardOffset)))
+			} else {
+				cardDiv.SetStyle(style.Top(fmt.Sprintf("%dpx", i*layout.CardOffset)))
+			}
+
+			if card.FaceUp {
+				cardDiv.SetAttr("draggable", true)
+				cardDiv.RemoveClass("face-down-card")
+				cardDiv.AddClass("face-up-card")
+				populateCardElement(b.document, cardDiv, card)
+			} else {
+				cardDiv.SetAttr("draggable", false)
+				cardDiv.RemoveClass("face-up-card")
+				cardDiv.AddClass("face-down-card")
+			}
+			pileDiv.Append(cardDiv)
+		}
+	}
+}
+
+func createCardElement(doc js.DOMDocument, c *card.Card) js.DOMElement {
+	cardDiv := createDiv(doc, attr.Class("card"))
+	dragdrop.NewDraggable(cardDiv, func(e js.DOMEvent) {
+		//klondikeGame.SelectedCard = c
+	})
+	cardDiv.AddEventListener("click", func(el js.DOMElement, e js.DOMEvent) {
+		// if klondikeGame.SelectedCard == c {
+		// 	klondikeGame.SelectedCard = nil
+		// } else {
+		// 	klondikeGame.SelectedCard = c
+		// }
+		// klondikeGame.NotifyListeners()
+	})
+	cardDiv.AddEventListener("dblclick", func(el js.DOMElement, e js.DOMEvent) {
+		// if !c.FaceUp {
+		// 	return
+		// }
+		// for i := range klondikeGame.Foundations {
+		// 	if klondikeGame.CanMoveToFoundation(c, i) {
+		// 		klondikeGame.SelectedCard = c
+		// 		klondikeGame.MoveSelectedToFoundation(i)
+		// 		return
+		// 	}
+		// }
+	})
+	return cardDiv
+}
+
+func createDiv(doc js.DOMDocument, attrs ...attr.Attr) js.DOMElement {
+	return doc.CreateElement("div", attrs...)
+}
+
+func populateCardElement(doc js.DOMDocument, cardDiv js.DOMElement, c *card.Card) {
+	topSuit := createDiv(doc, attr.Class("suit-top-left")).SetStyle(style.Color(c.Suit.Color()))
+	topSuit.SetText(c.Suit.String())
+	cardDiv.Append(topSuit)
+
+	topRank := createDiv(doc, attr.Class("rank-top-right")).SetStyle(style.Color(c.Suit.Color()))
+	topRank.SetText(c.Rank.String())
+	cardDiv.Append(topRank)
+
+	bottomRank := createDiv(doc, attr.Class("rank-bottom-left")).SetStyle(style.Color(c.Suit.Color()))
+	bottomRank.SetText(c.Rank.String())
+	cardDiv.Append(bottomRank)
+
+	bottomSuit := createDiv(doc, attr.Class("suit-bottom-right")).SetStyle(style.Color(c.Suit.Color()))
+	bottomSuit.SetText(c.Suit.String())
+	cardDiv.Append(bottomSuit)
+}
+
+func resetCardPosition(cardDiv js.DOMElement) {
+	cardDiv.ClearStyles("top", "left")
 }
