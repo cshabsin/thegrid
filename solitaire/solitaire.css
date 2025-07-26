@@ -7,6 +7,7 @@ body {
     grid-template-columns: repeat(7, 110px);
     justify-content: center;
     grid-row-gap: 40px;
+    grid-column-gap: 20px;
 	max-width: 800px;
 	margin: auto;
 }
