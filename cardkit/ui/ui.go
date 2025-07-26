@@ -105,15 +105,6 @@ func NewBoard(g Game, doc js.DOMDocument, boardDiv js.DOMElement) *Board {
 }
 
 func (b *Board) Render() {
-	if b.game.CheckWin() {
-		overlay := createDiv(b.document, attr.Class("win-overlay"))
-		winDiv := createDiv(b.document, attr.Class("win-div"))
-		winDiv.Append(b.document.CreateElement("h1").SetText("You Win!"))
-		overlay.Append(winDiv)
-		b.boardDiv.Append(overlay)
-		return
-	}
-
 	for _, c := range b.game.AllCards() {
 		cardDiv := b.cardToDOM[c]
 		if c == b.game.SelectedCard() {
@@ -181,6 +172,14 @@ func (b *Board) Render() {
 			}
 			pileDiv.Append(cardDiv)
 		}
+	}
+	if b.game.CheckWin() {
+		overlay := createDiv(b.document, attr.Class("win-overlay"))
+		winDiv := createDiv(b.document, attr.Class("win-div"))
+		winDiv.Append(b.document.CreateElement("h1").SetText("You Win!"))
+		overlay.Append(winDiv)
+		b.boardDiv.Append(overlay)
+		return
 	}
 }
 
