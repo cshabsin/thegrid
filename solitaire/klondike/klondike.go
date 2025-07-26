@@ -225,6 +225,12 @@ func (g *Klondike) ToggleDebugWin() {
 	g.NotifyListeners()
 }
 
+func (g *Klondike) NewGame() {
+	newG := New()
+	*g = *newG
+	g.NotifyListeners()
+}
+
 func (g *Klondike) AddListener(listener func()) {
 	g.listeners = append(g.listeners, listener)
 }

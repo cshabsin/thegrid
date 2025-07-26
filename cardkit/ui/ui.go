@@ -41,6 +41,7 @@ type Game interface {
 	FlipCard(*card.Card)
 	StockClicked()
 	ToggleDebugWin()
+	NewGame()
 }
 
 type Board struct {
@@ -184,6 +185,11 @@ func (b *Board) Render() {
 		overlay := createDiv(b.document, attr.Class("win-overlay"))
 		winDiv := createDiv(b.document, attr.Class("win-div"))
 		winDiv.Append(b.document.CreateElement("h1").SetText("You Win!"))
+		newGameButton := createDiv(b.document, attr.Class("button")).SetText("New Game")
+		newGameButton.AddEventListener("click", func(_ js.DOMElement, _ js.DOMEvent) {
+			b.game.NewGame()
+		})
+		winDiv.Append(newGameButton)
 		overlay.Append(winDiv)
 		b.boardDiv.Append(overlay)
 		return

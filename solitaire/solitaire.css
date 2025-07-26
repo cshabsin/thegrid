@@ -39,6 +39,18 @@ body {
     padding: 40px;
     box-shadow: 0 0 30px rgba(0,0,0,0.7);
     text-shadow: 2px 2px 4px #000000;
+    text-align: center;
+}
+
+.button {
+    font-size: 0.5em;
+    padding: 10px 20px;
+    background-color: #DAA520;
+    color: black;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 20px;
+    display: inline-block;
 }
 
 .card-placeholder {
