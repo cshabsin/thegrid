@@ -142,6 +142,16 @@ func (g *Klondike) MoveSelectedToPile(pileName string) {
 	}
 }
 
+func (g *Klondike) FlipCard(c *card.Card) {
+	for i, p := range g.Tableau {
+		if p.Len() > 0 && p.Peek() == c && !c.FaceUp {
+			g.Tableau[i].Peek().FaceUp = true
+			g.NotifyListeners()
+			return
+		}
+	}
+}
+
 func (g *Klondike) MoveSelectedToTableau(tableauIndex int) {
 	if !g.CanMoveToTableau(g.selectedCard, tableauIndex) {
 		return

@@ -37,6 +37,7 @@ type Game interface {
 	SetSelectedCard(*card.Card)
 	MoveToFoundation(*card.Card)
 	MoveSelectedToPile(string)
+	FlipCard(*card.Card)
 }
 
 type Board struct {
@@ -166,6 +167,10 @@ func (b *Board) createCardElement(doc js.DOMDocument, c *card.Card) js.DOMElemen
 		b.game.SetSelectedCard(c)
 	})
 	cardDiv.AddEventListener("click", func(el js.DOMElement, e js.DOMEvent) {
+		if !c.FaceUp {
+			b.game.FlipCard(c)
+			return
+		}
 		if b.game.SelectedCard() == c {
 			b.game.SetSelectedCard(nil)
 		} else {
