@@ -53,6 +53,13 @@ body {
     display: inline-block;
 }
 
+#new-game-button {
+    grid-row: 1;
+    grid-column: 7;
+    align-self: center;
+    justify-self: end;
+}
+
 .card-placeholder {
 	border: 1px solid black;
 	width: 100px;

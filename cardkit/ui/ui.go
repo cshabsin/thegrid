@@ -45,20 +45,20 @@ type Game interface {
 }
 
 type Board struct {
-	game        Game
-	document    js.DOMDocument
-	boardDiv    js.DOMElement
-	pileToDOM   map[string]js.DOMElement
-	cardToDOM   map[*card.Card]js.DOMElement
+	game      Game
+	document  js.DOMDocument
+	boardDiv  js.DOMElement
+	pileToDOM map[string]js.DOMElement
+	cardToDOM map[*card.Card]js.DOMElement
 }
 
 func NewBoard(g Game, doc js.DOMDocument, boardDiv js.DOMElement) *Board {
 	b := &Board{
-		game:        g,
-		document:    doc,
-		boardDiv:    boardDiv,
-		pileToDOM:   make(map[string]js.DOMElement),
-		cardToDOM:   make(map[*card.Card]js.DOMElement),
+		game:      g,
+		document:  doc,
+		boardDiv:  boardDiv,
+		pileToDOM: make(map[string]js.DOMElement),
+		cardToDOM: make(map[*card.Card]js.DOMElement),
 	}
 
 	boardDiv.Clear()
@@ -100,6 +100,12 @@ func NewBoard(g Game, doc js.DOMDocument, boardDiv js.DOMElement) *Board {
 		}
 	}
 
+	newGameButton := createDiv(doc, attr.Class("button"), attr.ID("new-game-button")).SetText("New Game")
+	newGameButton.AddEventListener("click", func(_ js.DOMElement, _ js.DOMEvent) {
+		b.game.NewGame()
+	})
+	boardDiv.Append(newGameButton)
+
 	g.AddListener(b.Render)
 	b.Render()
 
@@ -138,7 +144,7 @@ func (b *Board) Render() {
 		cardWidth := 100
 		cardHeight := 140
 		dropTargetBuffer := 10 // Add a small buffer to the drop target size
-		if pile.Len() > 1 { // Only adjust if there's more than one card
+		if pile.Len() > 1 {    // Only adjust if there's more than one card
 			if layout.Direction == Vertical {
 				height := cardHeight + (pile.Len()-1)*layout.CardOffset + dropTargetBuffer
 				pileDiv.SetStyle(style.Height(fmt.Sprintf("%dpx", height)))
