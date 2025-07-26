@@ -154,6 +154,9 @@ func (el DOMElement) QuerySelectorAll(selector string) []DOMElement {
 
 func (document DOMDocument) QuerySelector(selector string) DOMElement {
 	elemVal := document.Call("querySelector", selector)
+	if elemVal.IsNull() {
+		return DOMElement{Value: js.Null()}
+	}
 	return DOMElement{elemVal, document, Style{elemVal.Get("style")}}
 }
 
