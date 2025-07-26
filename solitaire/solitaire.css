@@ -4,15 +4,16 @@ body {
 
 #game-board {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
-	grid-template-rows: repeat(2, 1fr);
-	grid-row-gap: 20px;
+    grid-template-columns: repeat(7, 110px);
+    justify-content: center;
+    grid-row-gap: 20px;
+	max-width: 800px;
+	margin: auto;
 }
 
 .pile {
 	position: relative;
 	z-index: 1;
-	height: 140px;
 }
 
 .win-div {
