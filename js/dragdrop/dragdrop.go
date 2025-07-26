@@ -7,14 +7,20 @@ import (
 type Draggable struct {
 	js.DOMElement
 	OnDragStart func(js.DOMEvent)
+	OnDragEnd   func(js.DOMEvent)
 }
 
-func NewDraggable(el js.DOMElement, onDragStart func(js.DOMEvent)) *Draggable {
-	d := &Draggable{el, onDragStart}
+func NewDraggable(el js.DOMElement, onDragStart, onDragEnd func(js.DOMEvent)) *Draggable {
+	d := &Draggable{el, onDragStart, onDragEnd}
 	d.AddEventListener("dragstart", func(_ js.DOMElement, e js.DOMEvent) {
 		e.Value.Get("dataTransfer").Call("setData", "text/plain", "")
 		if d.OnDragStart != nil {
 			d.OnDragStart(e)
+		}
+	})
+	d.AddEventListener("dragend", func(_ js.DOMElement, e js.DOMEvent) {
+		if d.OnDragEnd != nil {
+			d.OnDragEnd(e)
 		}
 	})
 	return d

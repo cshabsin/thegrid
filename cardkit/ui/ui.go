@@ -168,6 +168,9 @@ func (b *Board) createCardElement(doc js.DOMDocument, c *card.Card) js.DOMElemen
 	cardDiv := createDiv(doc, attr.Class("card"))
 	dragdrop.NewDraggable(cardDiv, func(e js.DOMEvent) {
 		b.game.SetSelectedCard(c)
+		cardDiv.AddClass("dragging-source")
+	}, func(e js.DOMEvent) {
+		cardDiv.RemoveClass("dragging-source")
 	})
 	cardDiv.AddEventListener("click", func(el js.DOMElement, e js.DOMEvent) {
 		if !c.FaceUp {

@@ -38,6 +38,10 @@ body {
 	border: 2px solid yellow;
 }
 
+.dragging-source {
+    opacity: 0.5;
+}
+
 .face-down-card {
 	background-color: blue;
 }
