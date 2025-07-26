@@ -130,12 +130,13 @@ func (b *Board) Render() {
 		// Card dimensions are hardcoded for now, matching the CSS.
 		cardWidth := 100
 		cardHeight := 140
+		dropTargetBuffer := 10 // Add a small buffer to the drop target size
 		if pile.Len() > 1 { // Only adjust if there's more than one card
 			if layout.Direction == Vertical {
-				height := cardHeight + (pile.Len()-1)*layout.CardOffset
+				height := cardHeight + (pile.Len()-1)*layout.CardOffset + dropTargetBuffer
 				pileDiv.SetStyle(style.Height(fmt.Sprintf("%dpx", height)))
 			} else if layout.Direction == Horizontal {
-				width := cardWidth + (pile.Len()-1)*layout.CardOffset
+				width := cardWidth + (pile.Len()-1)*layout.CardOffset + dropTargetBuffer
 				pileDiv.SetStyle(style.Width(fmt.Sprintf("%dpx", width)))
 			}
 		} else {
