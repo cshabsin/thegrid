@@ -113,6 +113,12 @@ func NewBoard(g Game, doc js.DOMDocument, boardDiv js.DOMElement) *Board {
 }
 
 func (b *Board) Render() {
+	// Always remove the win overlay first, we'll add it back if needed.
+	winOverlay := b.document.QuerySelector(".win-overlay")
+	if !winOverlay.IsNull() {
+		winOverlay.Remove()
+	}
+
 	for _, c := range b.game.AllCards() {
 		cardDiv := b.cardToDOM[c]
 		if c == b.game.SelectedCard() {

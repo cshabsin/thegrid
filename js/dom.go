@@ -111,6 +111,10 @@ func (el DOMElement) Clear() {
 	el.Call("replaceChildren")
 }
 
+func (el DOMElement) Remove() {
+	el.Call("remove")
+}
+
 func (el DOMElement) SetAttr(name string, value interface{}) {
 	el.Call("setAttribute", name, value)
 }
@@ -146,6 +150,11 @@ func (el DOMElement) QuerySelectorAll(selector string) []DOMElement {
 		elements = append(elements, DOMElement{node, el.document, Style{node.Get("style")}})
 	}
 	return elements
+}
+
+func (document DOMDocument) QuerySelector(selector string) DOMElement {
+	elemVal := document.Call("querySelector", selector)
+	return DOMElement{elemVal, document, Style{elemVal.Get("style")}}
 }
 
 func (el DOMElement) GetBoundingClientRect() js.Value {
