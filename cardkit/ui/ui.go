@@ -64,12 +64,6 @@ func NewBoard(g Game, doc js.DOMDocument, boardDiv js.DOMElement) *Board {
 		b.cardToDOM[c] = b.createCardElement(doc, c)
 	}
 
-	// Create top row and tableau row elements
-	topRow := createDiv(doc, attr.Class("top-row"))
-	boardDiv.Append(topRow)
-	tableauRow := createDiv(doc, attr.Class("tableau-row"))
-	boardDiv.Append(tableauRow)
-
 	// Create pile elements
 	var pileNames []string
 	for name := range g.GetAllPiles() {
@@ -82,12 +76,11 @@ func NewBoard(g Game, doc js.DOMDocument, boardDiv js.DOMElement) *Board {
 		if layout.GridColumn > 0 {
 			pileDiv.SetStyle(style.GridColumn(fmt.Sprintf("%d", layout.GridColumn)))
 		}
-		b.pileToDOM[name] = pileDiv
-		if layout.GridRow == 1 {
-			topRow.Append(pileDiv)
-		} else {
-			tableauRow.Append(pileDiv)
+		if layout.GridRow > 0 {
+			pileDiv.SetStyle(style.GridRow(fmt.Sprintf("%d", layout.GridRow)))
 		}
+		b.pileToDOM[name] = pileDiv
+		boardDiv.Append(pileDiv)
 		func(name string) {
 			dragdrop.NewDropTarget(pileDiv, func(e js.DOMEvent) {
 				b.game.MoveSelectedToPile(name)

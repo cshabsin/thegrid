@@ -232,22 +232,19 @@ func (g *Klondike) GetAllPiles() map[string]pile.Pile {
 }
 
 func (g *Klondike) GetPileLayout(name string) ui.PileLayout {
-	switch name {
-	case "stock":
+	switch {
+	case name == "stock":
 		return ui.PileLayout{GridRow: 1, GridColumn: 1}
-	case "waste":
+	case name == "waste":
 		return ui.PileLayout{GridRow: 1, GridColumn: 2, Direction: ui.Horizontal, CardOffset: 20, MaxVisible: 3}
-	default:
-		if strings.HasPrefix(name, "foundation-") {
-			var i int
-			fmt.Sscanf(name, "foundation-%d", &i)
-			return ui.PileLayout{GridRow: 1, GridColumn: i + 4}
-		}
-		if strings.HasPrefix(name, "tableau-") {
-			var i int
-			fmt.Sscanf(name, "tableau-%d", &i)
-			return ui.PileLayout{GridRow: 2, GridColumn: i + 1, Direction: ui.Vertical, CardOffset: 30}
-		}
-		return ui.PileLayout{}
+	case strings.HasPrefix(name, "foundation-"):
+		var i int
+		fmt.Sscanf(name, "foundation-%d", &i)
+		return ui.PileLayout{GridRow: 1, GridColumn: i + 4}
+	case strings.HasPrefix(name, "tableau-"):
+		var i int
+		fmt.Sscanf(name, "tableau-%d", &i)
+		return ui.PileLayout{GridRow: 2, GridColumn: i + 1, Direction: ui.Vertical, CardOffset: 30}
 	}
+	return ui.PileLayout{}
 }
