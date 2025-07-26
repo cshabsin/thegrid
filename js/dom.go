@@ -62,6 +62,14 @@ func (document DOMDocument) GetElementByID(id string) DOMElement {
 	return DOMElement{elemVal, document, Style{elemVal.Get("style")}}
 }
 
+func (document DOMDocument) AddEventListener(eventName string, fn func(el DOMElement, e DOMEvent)) {
+	document.Call("addEventListener", eventName, js.FuncOf(
+		func(this js.Value, args []js.Value) interface{} {
+			fn(DOMElement{this, document, Style{this.Get("style")}}, DOMEvent{args[0]})
+			return nil
+		}))
+}
+
 type DOMElement struct {
 	js.Value
 	document DOMDocument
@@ -150,6 +158,10 @@ type DOMEvent struct {
 
 func (el DOMEvent) GetEventType() string {
 	return el.Value.Get("type").String()
+}
+
+func (el DOMEvent) Key() string {
+	return el.Value.Get("key").String()
 }
 
 func RequestAnimationFrame(fn func(timestamp float64)) {

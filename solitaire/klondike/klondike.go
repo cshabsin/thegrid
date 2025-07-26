@@ -17,6 +17,7 @@ type Klondike struct {
 	Waste        pile.Pile
 	selectedCard *card.Card
 	listeners    []func()
+	debugWin     bool
 }
 
 func New() *Klondike {
@@ -208,12 +209,20 @@ func (g *Klondike) SetSelectedCard(c *card.Card) {
 }
 
 func (g *Klondike) CheckWin() bool {
+	if g.debugWin {
+		return true
+	}
 	for _, f := range g.Foundations {
 		if f.Len() != 13 {
 			return false
 		}
 	}
 	return true
+}
+
+func (g *Klondike) ToggleDebugWin() {
+	g.debugWin = !g.debugWin
+	g.NotifyListeners()
 }
 
 func (g *Klondike) AddListener(listener func()) {

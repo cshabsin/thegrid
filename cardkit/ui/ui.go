@@ -40,6 +40,7 @@ type Game interface {
 	MoveSelectedToPile(string)
 	FlipCard(*card.Card)
 	StockClicked()
+	ToggleDebugWin()
 }
 
 type Board struct {
@@ -100,6 +101,12 @@ func NewBoard(g Game, doc js.DOMDocument, boardDiv js.DOMElement) *Board {
 
 	g.AddListener(b.Render)
 	b.Render()
+
+	doc.AddEventListener("keydown", func(_ js.DOMElement, e js.DOMEvent) {
+		if e.Key() == "w" {
+			g.ToggleDebugWin()
+		}
+	})
 
 	return b
 }
