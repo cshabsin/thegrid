@@ -152,6 +152,14 @@ func (g *Klondike) FlipCard(c *card.Card) {
 	}
 }
 
+func (g *Klondike) StockClicked() {
+	if g.Stock.Len() > 0 {
+		g.DrawCards()
+	} else {
+		g.RecycleWaste()
+	}
+}
+
 func (g *Klondike) MoveSelectedToTableau(tableauIndex int) {
 	if !g.CanMoveToTableau(g.selectedCard, tableauIndex) {
 		return

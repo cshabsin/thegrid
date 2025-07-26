@@ -38,6 +38,7 @@ type Game interface {
 	MoveToFoundation(*card.Card)
 	MoveSelectedToPile(string)
 	FlipCard(*card.Card)
+	StockClicked()
 }
 
 type Board struct {
@@ -86,6 +87,11 @@ func NewBoard(g Game, doc js.DOMDocument, boardDiv js.DOMElement) *Board {
 				b.game.MoveSelectedToPile(name)
 			})
 		}(name)
+		if name == "stock" {
+			pileDiv.AddEventListener("click", func(el js.DOMElement, e js.DOMEvent) {
+				b.game.StockClicked()
+			})
+		}
 	}
 
 	g.AddListener(b.Render)
