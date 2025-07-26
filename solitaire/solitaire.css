@@ -14,6 +14,10 @@ body {
 	height: 140px;
 }
 
+.tableau-pile {
+    margin-top: 20px;
+}
+
 .win-div {
 	position: absolute;
 	top: 50%;

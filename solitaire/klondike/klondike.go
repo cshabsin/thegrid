@@ -252,7 +252,7 @@ func (g *Klondike) GetPileLayout(name string) ui.PileLayout {
 	case strings.HasPrefix(name, "tableau-"):
 		var i int
 		fmt.Sscanf(name, "tableau-%d", &i)
-		return ui.PileLayout{GridRow: 2, GridColumn: i + 1, Direction: ui.Vertical, CardOffset: 30}
+		return ui.PileLayout{GridRow: 2, GridColumn: i + 1, Direction: ui.Vertical, CardOffset: 30, ClassName: "tableau-pile"}
 	}
 	return ui.PileLayout{}
 }

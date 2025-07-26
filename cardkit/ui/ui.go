@@ -25,6 +25,7 @@ type PileLayout struct {
 	Direction  LayoutDirection
 	CardOffset int
 	MaxVisible int
+	ClassName  string
 }
 
 type Game interface {
@@ -74,6 +75,9 @@ func NewBoard(g Game, doc js.DOMDocument, boardDiv js.DOMElement) *Board {
 	for _, name := range pileNames {
 		pileDiv := createDiv(doc, attr.Class("pile"))
 		layout := g.GetPileLayout(name)
+		if layout.ClassName != "" {
+			pileDiv.AddClass(layout.ClassName)
+		}
 		if layout.GridColumn > 0 {
 			pileDiv.SetStyle(style.GridColumn(fmt.Sprintf("%d", layout.GridColumn)))
 		}
