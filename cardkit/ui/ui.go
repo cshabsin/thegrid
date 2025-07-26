@@ -126,6 +126,23 @@ func (b *Board) Render() {
 		pileDiv.Clear()
 		layout := b.game.GetPileLayout(name)
 
+		// Dynamically set pile size to encompass all cards for drop targets.
+		// Card dimensions are hardcoded for now, matching the CSS.
+		cardWidth := 100
+		cardHeight := 140
+		if pile.Len() > 1 { // Only adjust if there's more than one card
+			if layout.Direction == Vertical {
+				height := cardHeight + (pile.Len()-1)*layout.CardOffset
+				pileDiv.SetStyle(style.Height(fmt.Sprintf("%dpx", height)))
+			} else if layout.Direction == Horizontal {
+				width := cardWidth + (pile.Len()-1)*layout.CardOffset
+				pileDiv.SetStyle(style.Width(fmt.Sprintf("%dpx", width)))
+			}
+		} else {
+			// Reset to default size if it was previously larger
+			pileDiv.ClearStyles("height", "width")
+		}
+
 		if pile.Len() == 0 {
 			placeholder := createDiv(b.document, attr.Class("card-placeholder"))
 			pileDiv.Append(placeholder)

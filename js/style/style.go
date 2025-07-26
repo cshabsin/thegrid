@@ -56,3 +56,11 @@ func FontSize(value string) Style {
 func Transform(value string) Style {
 	return Make("transform", value)
 }
+
+func Height(value string) Style {
+	return Make("height", value)
+}
+
+func Width(value string) Style {
+	return Make("width", value)
+}
