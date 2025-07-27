@@ -37,7 +37,7 @@ func main() {
 func drawGraph(timestamp float64) *svg.G {
 	var g svg.G
 	for i := 0; i < 10000; i += 70 {
-		i64 := math.Mod(float64(i)+timestamp*8.5, 10000)
+		i64 := math.Mod(float64(i)+timestamp, 10000)
 		var p svg.Path
 		p.MoveAbs(svg.Coord{X: i64, Y: 0}, false)
 		p.MoveAbs(svg.Coord{X: 0, Y: 10000 - i64}, true)
