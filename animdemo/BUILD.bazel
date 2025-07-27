@@ -1,4 +1,5 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
+load("@rules_pkg//:pkg.bzl", "pkg_zip")
 
 go_library(
     name = "animdemo_lib",
@@ -10,4 +11,23 @@ go_library(
         "//js/attr",
         "//js/svg",
     ],
+)
+
+go_binary(
+    name = "animdemo.wasm",
+    embed = [":animdemo_lib"],
+    goarch = "wasm",
+    goos = "js",
+    visibility = ["//visibility:public"],
+)
+
+pkg_zip(
+    name = "animdemo_pkg",
+    srcs = [
+        "index.html",
+        "animdemo.css",
+        "wasm_exec.js",
+        ":animdemo.wasm",
+    ],
+    visibility = ["//server:__pkg__"],
 )
