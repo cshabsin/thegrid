@@ -1,8 +1,10 @@
-refactor(animdemo): Use Canvas API for animation
+fix(animdemo): Correct canvas scaling and size
 
-This change refactors the animdemo service to use the Canvas 2D API
-instead of SVG for rendering the animation. This provides a significant
-performance improvement, as the Canvas API is better suited for drawing
-a large number of simple shapes.
+This change addresses an issue where the canvas-based animation was
+rendering at an excessively large size. The canvas resolution is now
+set to a more reasonable 1000x1000, and CSS is used to scale the
+canvas to fit the browser window while maintaining its aspect ratio.
+The drawing context is also scaled to ensure the animation renders
+correctly within the new resolution.
 
-Gemini commit: is there some other way besides svg to do this? how about drawing on a canvas instead of adding path to an svg? it's just lines.
+Gemini commit: relative size of the new canvas-based solution seems too big

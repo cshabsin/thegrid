@@ -5,14 +5,14 @@ import (
 	"math"
 
 	"github.com/cshabsin/thegrid/js"
+	"github.com/cshabsin/thegrid/js/canvas"
 )
 
 func main() {
-	document := js.Document()
-	canvas := document.GetElementByID("map-canvas")
+	canvas := canvas.Get("map-canvas")
 	ctx := canvas.GetContext("2d")
 
-	ctx.Call("scale", 0.1, 0.1)
+	ctx.Scale(0.1, 0.1)
 
 	width := canvas.Get("width").Float() * 10
 	height := canvas.Get("height").Float() * 10
@@ -25,31 +25,30 @@ func main() {
 		}
 		elapsed := timestamp - startTime
 
-		ctx.Call("clearRect", 0, 0, width, height)
+		ctx.ClearRect(0, 0, width, height)
 
 		for i := 0; i < 10000; i += 70 {
-			i64 := math.Mod(float64(i)+elapsed, 10000)
-			ctx.Set("strokeStyle", fmt.Sprintf("hsl(%d, 100%%, 50%%)", i*360/10000))
-			ctx.Set("lineWidth", 3)
-			ctx.Call("beginPath")
-			ctx.Call("moveTo", i64, 0)
-			ctx.Call("lineTo", 0, 10000-i64)
-			ctx.Call("stroke")
+			i64 := math.Mod(float64(i*70)+elapsed*8.5, 10000)
+			ctx.SetStrokeStyle(fmt.Sprintf("hsl(%d, 100%%, 50%%)", i*360/10000))
+			ctx.BeginPath()
+			ctx.MoveTo(i64, 0)
+			ctx.LineTo(0, 10000-i64)
+			ctx.Stroke()
 
-			ctx.Call("beginPath")
-			ctx.Call("moveTo", 10000-i64, 10000)
-			ctx.Call("lineTo", 0, 10000-i64)
-			ctx.Call("stroke")
+			ctx.BeginPath()
+			ctx.MoveTo(10000-i64, 10000)
+			ctx.LineTo(0, 10000-i64)
+			ctx.Stroke()
 
-			ctx.Call("beginPath")
-			ctx.Call("moveTo", 10000-i64, 10000)
-			ctx.Call("lineTo", 10000, i64)
-			ctx.Call("stroke")
+			ctx.BeginPath()
+			ctx.MoveTo(10000-i64, 10000)
+			ctx.LineTo(10000, i64)
+			ctx.Stroke()
 
-			ctx.Call("beginPath")
-			ctx.Call("moveTo", i64, 0)
-			ctx.Call("lineTo", 10000, i64)
-			ctx.Call("stroke")
+			ctx.BeginPath()
+			ctx.MoveTo(i64, 0)
+			ctx.LineTo(10000, i64)
+			ctx.Stroke()
 		}
 
 		js.RequestAnimationFrame(animate)

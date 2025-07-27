@@ -1,0 +1,9 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "canvas",
+    srcs = ["canvas.go"],
+    importpath = "github.com/cshabsin/thegrid/js/canvas",
+    visibility = ["//visibility:public"],
+    deps = ["//js"],
+)
