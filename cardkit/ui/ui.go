@@ -158,6 +158,7 @@ func (b *Board) Render() {
 		}
 
 		if pile.Len() == 0 {
+			pileDiv.SetStyle(style.Height("140px"))
 			placeholder := createDiv(b.document, attr.Class("card-placeholder"))
 			pileDiv.Append(placeholder)
 			continue

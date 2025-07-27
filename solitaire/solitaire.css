@@ -15,7 +15,6 @@ body {
 .pile {
 	position: relative;
 	z-index: 1;
-    min-height: 150px;
 }
 
 .win-overlay {
