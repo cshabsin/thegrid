@@ -96,9 +96,11 @@ func (b *Board) reset(doc js.DOMDocument, boardDiv js.DOMElement) {
 
 	newGameButton := createDiv(doc, attr.Class("button"), attr.ID("new-game-button")).SetText("New Game")
 	newGameButton.AddEventListener("click", func(_ js.DOMElement, _ js.DOMEvent) {
-		b.game.NewGame()
-		b.reset(doc, boardDiv)
-		b.Render()
+		if js.Global().Call("confirm", "Are you sure you want to start a new game?").Bool() {
+			b.game.NewGame()
+			b.reset(doc, boardDiv)
+			b.Render()
+		}
 	})
 	boardDiv.Append(newGameButton)
 }
