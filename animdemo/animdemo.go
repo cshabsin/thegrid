@@ -30,6 +30,7 @@ func main() {
 		for i := 0; i < 10000; i += 70 {
 			i64 := math.Mod(float64(i*70)+elapsed*8.5, 10000)
 			ctx.SetStrokeStyle(fmt.Sprintf("hsl(%d, 100%%, 50%%)", i*360/10000))
+			ctx.SetLineWidth(3)
 			ctx.BeginPath()
 			ctx.MoveTo(i64, 0)
 			ctx.LineTo(0, 10000-i64)

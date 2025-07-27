@@ -44,6 +44,10 @@ func (c Context) SetStrokeStyle(style string) {
 	c.Set("strokeStyle", style)
 }
 
+func (c Context) SetLineWidth(width int) {
+	c.Set("lineWidth", width)
+}
+
 func (c Context) Scale(x, y float64) {
 	c.Call("scale", x, y)
 }

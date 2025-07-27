@@ -1,10 +1,8 @@
-fix(animdemo): Correct canvas scaling and size
+feat: Create canvas abstraction layer
 
-This change addresses an issue where the canvas-based animation was
-rendering at an excessively large size. The canvas resolution is now
-set to a more reasonable 1000x1000, and CSS is used to scale the
-canvas to fit the browser window while maintaining its aspect ratio.
-The drawing context is also scaled to ensure the animation renders
-correctly within the new resolution.
+This change introduces a new `js/canvas` package that provides a more
+idiomatic, Go-friendly abstraction over the HTML Canvas 2D API. The
+`animdemo` service has been refactored to use this new package, resulting
+in cleaner and more maintainable drawing code.
 
-Gemini commit: relative size of the new canvas-based solution seems too big
+Gemini commit: ok, let's build some abstractions around our interactions with the canvas
