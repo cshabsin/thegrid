@@ -55,9 +55,10 @@ body {
 
 #new-game-button {
     grid-row: 1;
-    grid-column: 7;
+    grid-column: 3;
     align-self: center;
-    justify-self: end;
+    justify-self: center;
+    z-index: 10;
 }
 
 .card-placeholder {
