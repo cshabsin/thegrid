@@ -2,23 +2,22 @@ package main
 
 import (
 	"archive/zip"
+	"fmt"
 	"log"
 	"net/http"
 )
 
+func registerApp(name, zipPath string) {
+	zipReader, err := zip.OpenReader(zipPath)
+	if err != nil {
+		log.Fatalf("failed to open %s: %v", zipPath, err)
+	}
+	http.Handle(fmt.Sprintf("/%s/", name), http.StripPrefix(fmt.Sprintf("/%s/", name), http.FileServer(http.FS(zipReader))))
+}
+
 func main() {
-	solitaireZipReader, err := zip.OpenReader("solitaire/solitaire_pkg.zip")
-	if err != nil {
-		log.Fatalf("failed to open solitaire.zip: %v", err)
-	}
-
-	exampleZipReader, err := zip.OpenReader("example/example_pkg.zip")
-	if err != nil {
-		log.Fatalf("failed to open example.zip: %v", err)
-	}
-
-	http.Handle("/solitaire/", http.StripPrefix("/solitaire/", http.FileServer(http.FS(solitaireZipReader))))
-	http.Handle("/example/", http.StripPrefix("/example/", http.FileServer(http.FS(exampleZipReader))))
+	registerApp("solitaire", "solitaire/solitaire_pkg.zip")
+	registerApp("example", "example/example_pkg.zip")
 
 	log.Println("Listening on :8080...")
 	log.Fatal(http.ListenAndServe(":8080", nil))
