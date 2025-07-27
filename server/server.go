@@ -55,10 +55,13 @@ func main() {
 			</html>
 		`)
 		if err != nil {
+			log.Printf("template parse error: %v", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		t.Execute(w, registeredApps)
+		if err := t.Execute(w, registeredApps); err != nil {
+			log.Printf("template execute error: %v", err)
+		}
 	})
 
 	log.Println("Listening on :8080...")
