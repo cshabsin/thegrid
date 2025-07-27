@@ -26,7 +26,6 @@ pkg_zip(
     srcs = [
         "index.html",
         "solitaire.css",
-        "wasm_exec.js",
         ":solitaire.wasm",
     ],
     visibility = ["//server:__pkg__"],

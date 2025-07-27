@@ -30,7 +30,6 @@ pkg_zip(
     srcs = [
         "index.html",
         "map-display.css",
-        "wasm_exec.js",
         ":example.wasm",
     ],
     visibility = ["//server:__pkg__"],

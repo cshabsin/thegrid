@@ -1,5 +1,5 @@
-feat: Add root handler to list available services
+fix: Add animdemo package to server data dependencies
 
-This change adds a new handler for the root URL (/) that displays a list of links to the registered applications, making the server more user-friendly.
+This change updates the server's BUILD.bazel file to include the newly created animdemo_pkg as a data dependency, ensuring it is available to the server at runtime.
 
-Gemini commit: now that apps are registered, let's handle the / url by emitting a list of links to the available services
+Gemini commit: still need to add it to server/BUILD.bazel

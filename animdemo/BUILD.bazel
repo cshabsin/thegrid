@@ -26,7 +26,6 @@ pkg_zip(
     srcs = [
         "index.html",
         "animdemo.css",
-        "wasm_exec.js",
         ":animdemo.wasm",
     ],
     visibility = ["//server:__pkg__"],
