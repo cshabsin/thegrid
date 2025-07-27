@@ -28,8 +28,9 @@ func main() {
 		ctx.Call("clearRect", 0, 0, width, height)
 
 		for i := 0; i < 10000; i += 70 {
-			i64 := math.Mod(float64(i*70)+elapsed*8.5, 10000)
+			i64 := math.Mod(float64(i)+elapsed, 10000)
 			ctx.Set("strokeStyle", fmt.Sprintf("hsl(%d, 100%%, 50%%)", i*360/10000))
+			ctx.Set("lineWidth", 3)
 			ctx.Call("beginPath")
 			ctx.Call("moveTo", i64, 0)
 			ctx.Call("lineTo", 0, 10000-i64)
