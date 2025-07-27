@@ -7,14 +7,28 @@ import (
 )
 
 type Path struct {
-	path  string
-	attrs []attr.Attr
+	path    string
+	attrs   []attr.Attr
+	element Element
 }
 
 func (p *Path) ToElement(svg SVG, attrs ...attr.Attr) Element {
-	attrs = append(attrs, p.attrs...)
-	attrs = append(attrs, attr.Attr{Name: "d", Value: p.path})
-	return svg.CreateElement("path", attrs...)
+	if p.element.Value.IsNull() {
+		attrs = append(attrs, p.attrs...)
+		attrs = append(attrs, attr.Attr{Name: "d", Value: p.path})
+		p.element = svg.CreateElement("path", attrs...)
+	}
+	return p.element
+}
+
+func (p *Path) Update() {
+	if !p.element.Value.IsNull() {
+		p.element.SetAttr("d", p.path)
+	}
+}
+
+func (p *Path) Reset() {
+	p.path = ""
 }
 
 func (p *Path) WithAttrs(attrs ...attr.Attr) *Path {
