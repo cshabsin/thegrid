@@ -12,8 +12,10 @@ func main() {
 	canvas := document.GetElementByID("map-canvas")
 	ctx := canvas.GetContext("2d")
 
-	width := canvas.Get("width").Float()
-	height := canvas.Get("height").Float()
+	ctx.Call("scale", 0.1, 0.1)
+
+	width := canvas.Get("width").Float() * 10
+	height := canvas.Get("height").Float() * 10
 
 	var startTime float64
 	var animate func(timestamp float64)

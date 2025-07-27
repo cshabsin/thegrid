@@ -1,9 +1,8 @@
-refactor(animdemo): Optimize animation loop
+refactor(animdemo): Use Canvas API for animation
 
-This change refactors the animdemo animation loop to be more efficient.
-Instead of recreating the SVG path elements on every frame, this change
-creates them once and then updates their `d` attribute in the animation
-loop. This avoids the overhead of creating and destroying DOM elements
-on every tick, resulting in a smoother animation.
+This change refactors the animdemo service to use the Canvas 2D API
+instead of SVG for rendering the animation. This provides a significant
+performance improvement, as the Canvas API is better suited for drawing
+a large number of simple shapes.
 
-Gemini commit: let's change tracks. reload animdemo and take a look at the code. is there any way we can make the animation loop more efficient? We're rebuilding the entire path every time, which might have object creation/deletion costs, maybe we can get rid of that by just updating the coordinates of the existing paths?
+Gemini commit: is there some other way besides svg to do this? how about drawing on a canvas instead of adding path to an svg? it's just lines.
