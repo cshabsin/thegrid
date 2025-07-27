@@ -1,0 +1,13 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "animdemo_lib",
+    srcs = ["animdemo.go"],
+    importpath = "github.com/cshabsin/thegrid/animdemo",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//js",
+        "//js/attr",
+        "//js/svg",
+    ],
+)

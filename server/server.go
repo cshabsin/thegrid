@@ -22,6 +22,7 @@ func registerApp(name, zipPath string) {
 func main() {
 	registerApp("solitaire", "solitaire/solitaire_pkg.zip")
 	registerApp("example", "example/example_pkg.zip")
+	registerApp("animdemo", "animdemo/animdemo_pkg.zip")
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		t, err := template.New("index").Parse(`

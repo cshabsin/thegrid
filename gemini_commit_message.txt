@@ -1,3 +1,5 @@
-fix: Correctly position placeholders in empty piles
+feat: Add root handler to list available services
 
-Gemini commit: two things: the new game button doesn't do anything, and an empty pile has a placeholder that has been shifted down a fair bit
+This change adds a new handler for the root URL (/) that displays a list of links to the registered applications, making the server more user-friendly.
+
+Gemini commit: now that apps are registered, let's handle the / url by emitting a list of links to the available services
