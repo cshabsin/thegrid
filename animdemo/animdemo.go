@@ -17,7 +17,7 @@ func main() {
 	svgElem.SetAttr("viewBox", "0 0 10000 10000")
 
 	var paths []*svg.Path
-	for i := 0; i < 10000; i += 70 {
+	for i := 0; i < 10000; i += 200 {
 		path := &svg.Path{}
 		path.SetAttr(attr.Make("style", fmt.Sprintf("fill: none; stroke: hsl(%d, 100%%, 50%%); stroke-width: 10px", i*360/10000)))
 		svgElem.Append(path.ToElement(svgElem))
@@ -33,7 +33,7 @@ func main() {
 		elapsed := timestamp - startTime
 
 		for i, path := range paths {
-			i64 := math.Mod(float64(i*70)+elapsed*8.5, 10000)
+			i64 := math.Mod(float64(i*200)+elapsed, 10000)
 			path.Reset()
 			path.MoveAbs(svg.Coord{X: i64, Y: 0}, false)
 			path.MoveAbs(svg.Coord{X: 0, Y: 10000 - i64}, true)

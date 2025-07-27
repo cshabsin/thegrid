@@ -13,7 +13,7 @@ type Path struct {
 }
 
 func (p *Path) ToElement(svg SVG, attrs ...attr.Attr) Element {
-	if p.element.Value.IsNull() {
+	if p.element.IsUndefined() || p.element.IsNull() {
 		attrs = append(attrs, p.attrs...)
 		attrs = append(attrs, attr.Attr{Name: "d", Value: p.path})
 		p.element = svg.CreateElement("path", attrs...)
@@ -22,7 +22,7 @@ func (p *Path) ToElement(svg SVG, attrs ...attr.Attr) Element {
 }
 
 func (p *Path) Update() {
-	if !p.element.Value.IsNull() {
+	if !p.element.IsNull() {
 		p.element.SetAttr("d", p.path)
 	}
 }
