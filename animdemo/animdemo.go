@@ -5,24 +5,15 @@ import (
 	"math"
 
 	"github.com/cshabsin/thegrid/js"
-	"github.com/cshabsin/thegrid/js/attr"
-	"github.com/cshabsin/thegrid/js/svg"
 )
 
 func main() {
 	document := js.Document()
-	svgElem := svg.GetSVGById(document, "map-svg")
-	svgElem.SetAttr("height", "100%")
-	svgElem.SetAttr("width", "100%")
-	svgElem.SetAttr("viewBox", "0 0 10000 10000")
+	canvas := document.GetElementByID("map-canvas")
+	ctx := canvas.GetContext("2d")
 
-	var paths []*svg.Path
-	for i := 0; i < 10000; i += 200 {
-		path := &svg.Path{}
-		path.SetAttr(attr.Make("style", fmt.Sprintf("fill: none; stroke: hsl(%d, 100%%, 50%%); stroke-width: 10px", i*360/10000)))
-		svgElem.Append(path.ToElement(svgElem))
-		paths = append(paths, path)
-	}
+	width := canvas.Get("width").Float()
+	height := canvas.Get("height").Float()
 
 	var startTime float64
 	var animate func(timestamp float64)
@@ -32,21 +23,30 @@ func main() {
 		}
 		elapsed := timestamp - startTime
 
-		for i, path := range paths {
-			i64 := math.Mod(float64(i*200)+elapsed, 10000)
-			path.Reset()
-			path.MoveAbs(svg.Coord{X: i64, Y: 0}, false)
-			path.MoveAbs(svg.Coord{X: 0, Y: 10000 - i64}, true)
+		ctx.Call("clearRect", 0, 0, width, height)
 
-			path.MoveAbs(svg.Coord{X: 10000 - i64, Y: 10000}, false)
-			path.MoveAbs(svg.Coord{X: 0, Y: 10000 - i64}, true)
+		for i := 0; i < 10000; i += 70 {
+			i64 := math.Mod(float64(i*70)+elapsed*8.5, 10000)
+			ctx.Set("strokeStyle", fmt.Sprintf("hsl(%d, 100%%, 50%%)", i*360/10000))
+			ctx.Call("beginPath")
+			ctx.Call("moveTo", i64, 0)
+			ctx.Call("lineTo", 0, 10000-i64)
+			ctx.Call("stroke")
 
-			path.MoveAbs(svg.Coord{X: 10000 - i64, Y: 10000}, false)
-			path.MoveAbs(svg.Coord{X: 10000, Y: i64}, true)
+			ctx.Call("beginPath")
+			ctx.Call("moveTo", 10000-i64, 10000)
+			ctx.Call("lineTo", 0, 10000-i64)
+			ctx.Call("stroke")
 
-			path.MoveAbs(svg.Coord{X: i64, Y: 0}, false)
-			path.MoveAbs(svg.Coord{X: 10000, Y: i64}, true)
-			path.Update()
+			ctx.Call("beginPath")
+			ctx.Call("moveTo", 10000-i64, 10000)
+			ctx.Call("lineTo", 10000, i64)
+			ctx.Call("stroke")
+
+			ctx.Call("beginPath")
+			ctx.Call("moveTo", i64, 0)
+			ctx.Call("lineTo", 10000, i64)
+			ctx.Call("stroke")
 		}
 
 		js.RequestAnimationFrame(animate)

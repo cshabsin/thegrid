@@ -1,5 +1,9 @@
-fix: Add animdemo package to server data dependencies
+refactor(animdemo): Optimize animation loop
 
-This change updates the server's BUILD.bazel file to include the newly created animdemo_pkg as a data dependency, ensuring it is available to the server at runtime.
+This change refactors the animdemo animation loop to be more efficient.
+Instead of recreating the SVG path elements on every frame, this change
+creates them once and then updates their `d` attribute in the animation
+loop. This avoids the overhead of creating and destroying DOM elements
+on every tick, resulting in a smoother animation.
 
-Gemini commit: still need to add it to server/BUILD.bazel
+Gemini commit: let's change tracks. reload animdemo and take a look at the code. is there any way we can make the animation loop more efficient? We're rebuilding the entire path every time, which might have object creation/deletion costs, maybe we can get rid of that by just updating the coordinates of the existing paths?

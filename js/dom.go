@@ -164,6 +164,10 @@ func (el DOMElement) GetBoundingClientRect() js.Value {
 	return el.Call("getBoundingClientRect")
 }
 
+func (el DOMElement) GetContext(contextType string) js.Value {
+	return el.Call("getContext", contextType)
+}
+
 type DOMEvent struct {
 	js.Value
 }
