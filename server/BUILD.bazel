@@ -19,6 +19,7 @@ go_binary(
     data = [
         "//example:example_pkg",
         "//solitaire:solitaire_pkg",
+        "//animdemo:animdemo_pkg",
     ],
     embed = [":server_lib"],
     visibility = ["//visibility:public"],
