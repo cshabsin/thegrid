@@ -24,17 +24,6 @@ func registerApp(name, zipPath string) {
 	log.Printf("Registered app '%s' from %s", name, zipPath)
 }
 
-func contentTypeMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if strings.HasSuffix(r.URL.Path, ".js") {
-			w.Header().Set("Content-Type", "application/javascript")
-		} else if strings.HasSuffix(r.URL.Path, ".css") {
-			w.Header().Set("Content-Type", "text/css")
-		}
-		next.ServeHTTP(w, r)
-	})
-}
-
 func main() {
 	filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -47,8 +36,7 @@ func main() {
 		return nil
 	})
 
-	staticHandler := http.StripPrefix("/static/", http.FileServer(http.Dir("server/static")))
-	http.Handle("/static/", contentTypeMiddleware(staticHandler))
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("server/static"))))
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		t, err := template.New("index").Parse(`

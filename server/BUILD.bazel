@@ -6,6 +6,7 @@ go_binary(
         "//example:example_pkg",
         "//solitaire:solitaire_pkg",
         "//animdemo:animdemo_pkg",
+        ":static/wasm_exec.js",
     ],
     embed = [":server_lib"],
     visibility = ["//visibility:public"],
