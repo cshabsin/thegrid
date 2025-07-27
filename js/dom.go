@@ -186,3 +186,7 @@ func RequestAnimationFrame(fn func(timestamp float64)) {
 func Global() js.Value {
 	return js.Global()
 }
+
+func Confirm(message string) bool {
+	return js.Global().Call("confirm", message).Bool()
+}
