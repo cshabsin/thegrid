@@ -1,19 +1,5 @@
 load("@rules_go//go:def.bzl", "go_binary", "go_library")
 
-genrule(
-    name = "solitaire_zip",
-    srcs = ["//solitaire:solitaire_pkg"],
-    outs = ["solitaire.zip"],
-    cmd = "cp $(location //solitaire:solitaire_pkg) $@",
-)
-
-genrule(
-    name = "example_zip",
-    srcs = ["//example:example_pkg"],
-    outs = ["example.zip"],
-    cmd = "cp $(location //example:example_pkg) $@",
-)
-
 go_binary(
     name = "server",
     data = [
