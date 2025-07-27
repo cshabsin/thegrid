@@ -6,6 +6,9 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
 )
 
 var registeredApps []string
@@ -13,16 +16,25 @@ var registeredApps []string
 func registerApp(name, zipPath string) {
 	zipReader, err := zip.OpenReader(zipPath)
 	if err != nil {
-		log.Fatalf("failed to open %s: %v", zipPath, err)
+		log.Printf("failed to open %s: %v. Skipping.", zipPath, err)
+		return
 	}
 	http.Handle(fmt.Sprintf("/%s/", name), http.StripPrefix(fmt.Sprintf("/%s/", name), http.FileServer(http.FS(zipReader))))
 	registeredApps = append(registeredApps, name)
+	log.Printf("Registered app '%s' from %s", name, zipPath)
 }
 
 func main() {
-	registerApp("solitaire", "solitaire/solitaire_pkg.zip")
-	registerApp("example", "example/example_pkg.zip")
-	registerApp("animdemo", "animdemo/animdemo_pkg.zip")
+	filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() && strings.HasSuffix(info.Name(), "_pkg.zip") {
+			appName := strings.TrimSuffix(info.Name(), "_pkg.zip")
+			registerApp(appName, path)
+		}
+		return nil
+	})
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		t, err := template.New("index").Parse(`
