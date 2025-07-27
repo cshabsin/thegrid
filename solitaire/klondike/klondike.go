@@ -230,7 +230,6 @@ func (g *Klondike) NewGame() {
 	newG := New()
 	*g = *newG
 	g.listeners = listeners
-	g.NotifyListeners()
 }
 
 func (g *Klondike) AddListener(listener func()) {

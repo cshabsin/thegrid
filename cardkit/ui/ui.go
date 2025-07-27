@@ -52,31 +52,25 @@ type Board struct {
 	cardToDOM map[*card.Card]js.DOMElement
 }
 
-func NewBoard(g Game, doc js.DOMDocument, boardDiv js.DOMElement) *Board {
-	b := &Board{
-		game:      g,
-		document:  doc,
-		boardDiv:  boardDiv,
-		pileToDOM: make(map[string]js.DOMElement),
-		cardToDOM: make(map[*card.Card]js.DOMElement),
-	}
-
+func (b *Board) reset(doc js.DOMDocument, boardDiv js.DOMElement) {
 	boardDiv.Clear()
+	b.pileToDOM = make(map[string]js.DOMElement)
+	b.cardToDOM = make(map[*card.Card]js.DOMElement)
 
 	// Create all card elements upfront
-	for _, c := range g.AllCards() {
+	for _, c := range b.game.AllCards() {
 		b.cardToDOM[c] = b.createCardElement(doc, c)
 	}
 
 	// Create pile elements
 	var pileNames []string
-	for name := range g.GetAllPiles() {
+	for name := range b.game.GetAllPiles() {
 		pileNames = append(pileNames, name)
 	}
 	sort.Strings(pileNames)
 	for _, name := range pileNames {
 		pileDiv := createDiv(doc, attr.Class("pile"))
-		layout := g.GetPileLayout(name)
+		layout := b.game.GetPileLayout(name)
 		if layout.ClassName != "" {
 			pileDiv.AddClass(layout.ClassName)
 		}
@@ -103,9 +97,19 @@ func NewBoard(g Game, doc js.DOMDocument, boardDiv js.DOMElement) *Board {
 	newGameButton := createDiv(doc, attr.Class("button"), attr.ID("new-game-button")).SetText("New Game")
 	newGameButton.AddEventListener("click", func(_ js.DOMElement, _ js.DOMEvent) {
 		b.game.NewGame()
+		b.reset(doc, boardDiv)
+		b.Render()
 	})
 	boardDiv.Append(newGameButton)
+}
 
+func NewBoard(g Game, doc js.DOMDocument, boardDiv js.DOMElement) *Board {
+	b := &Board{
+		game:      g,
+		document:  doc,
+		boardDiv:  boardDiv,
+	}
+	b.reset(doc, boardDiv)
 	g.AddListener(b.Render)
 	b.Render()
 
