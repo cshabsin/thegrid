@@ -1,0 +1,3 @@
+fix: Correctly position placeholders in empty piles
+
+Gemini commit: two things: the new game button doesn't do anything, and an empty pile has a placeholder that has been shifted down a fair bit
