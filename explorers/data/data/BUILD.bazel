@@ -1,11 +1,13 @@
 load("@rules_go//go:def.bzl", "go_library")
 
+exports_files(["mapdata.go", "pathdata.go"])
+
 go_library(
     name = "data",
     srcs = [
         "mapdata.go",
         "pathdata.go",
     ],
-    importpath = "github.com/cshabsin/thegrid/explorers/server/data",
+    importpath = "github.com/cshabsin/thegrid/explorers/data/data",
     visibility = ["//visibility:public"],
 )

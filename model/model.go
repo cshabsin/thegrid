@@ -7,9 +7,15 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/cshabsin/thegrid/explorers/server/data"
-	"github.com/cshabsin/thegrid/explorers/view"
+	"github.com/cshabsin/thegrid/explorers/data/data"
 )
+
+type Entity interface {
+	Name() string
+	Label() string
+	HasCircle() bool
+	Description() string
+}
 
 func FromURL(url url.URL) (*MapData, error) {
 	jsonData, err := http.Get(url.String())
@@ -28,9 +34,9 @@ func FromJSON(r io.Reader) (*MapData, error) {
 	}
 	numRows := md.MaxRow - md.MinRow + 1
 	numCols := md.MaxCol - md.MinCol + 1
-	hexGrid := make([][]view.Entity, numCols)
+	hexGrid := make([][]Entity, numCols)
 	for col := range hexGrid {
-		hexGrid[col] = make([]view.Entity, numRows)
+		hexGrid[col] = make([]Entity, numRows)
 		for row := range hexGrid[col] {
 			hexGrid[col][row] = emptySystem{sysCol: col + md.MinCol, sysRow: row + md.MinRow}
 		}
@@ -57,10 +63,10 @@ func FromJSON(r io.Reader) (*MapData, error) {
 
 type MapData struct {
 	FirstCol, FirstRow int // offsets for viewing
-	HexGrid            [][]view.Entity
+	HexGrid            [][]Entity
 }
 
-func (md MapData) GetCell(col, row int) view.Entity {
+func (md MapData) GetCell(col, row int) Entity {
 	c := md.HexGrid[col]
 	return c[row]
 }

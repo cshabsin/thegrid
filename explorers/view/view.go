@@ -1,23 +1,17 @@
 package view
 
 import (
-	"github.com/cshabsin/thegrid/explorers/server/data"
+	"github.com/cshabsin/thegrid/explorers/data/data"
 	"github.com/cshabsin/thegrid/hexmap"
 	"github.com/cshabsin/thegrid/js"
 	"github.com/cshabsin/thegrid/js/attr"
 	"github.com/cshabsin/thegrid/js/svg"
+	"github.com/cshabsin/thegrid/model"
 )
 
 type Parsec struct {
 	Anchor  svg.Element
 	hexagon svg.Element
-}
-
-type Entity interface {
-	Name() string
-	Label() string
-	HasCircle() bool
-	Description() string
 }
 
 type MapView struct {
@@ -27,7 +21,7 @@ type MapView struct {
 	DataElement js.DOMElement
 }
 
-func (mv *MapView) NewParsec(col, row int, e Entity) *Parsec {
+func (mv *MapView) NewParsec(col, row int, e model.Entity) *Parsec {
 	hexAnchor := mv.SVG.CreateElement("a", attr.Class("map-anchor"), mv.HexMap.CellTranslate(col, row))
 	hexagon := mv.HexMap.HexPath(mv.SVG, "map-hexagon")
 	hexAnchor.Append(hexagon) // TODO: just hexagon, but tweak the class with events
