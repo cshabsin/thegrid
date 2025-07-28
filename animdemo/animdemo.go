@@ -27,22 +27,27 @@ func main() {
 
 		ctx.ClearRect(0, 0, width, height)
 
-		for i := 0; i < 10000; i += 70 {
-			i64 := math.Mod(float64(i*70)+elapsed*8.5, 10000)
-			ctx.SetStrokeStyle(fmt.Sprintf("hsl(%d, 100%%, 50%%)", i*360/10000))
-			ctx.SetLineWidth(3)
+		steps := 10000
+		phase := 720
+		speed := 1
+		thicknessSpeed := 300
+
+		for i := 0; i < steps; i += 10 {
+			i64 := math.Mod(float64(i)+elapsed*float64(speed), float64(steps))
+			ctx.SetStrokeStyle(fmt.Sprintf("hsl(%d, 100%%, 50%%)", (i*phase/steps)%360))
+			ctx.SetLineWidth(int(math.Sin(timestamp/float64(thicknessSpeed))*5 + 6))
 			ctx.BeginPath()
 			ctx.MoveTo(i64, 0)
+			ctx.LineTo(0, float64(steps)-i64)
+			ctx.Stroke()
+
+			ctx.BeginPath()
+			ctx.MoveTo(10000-i64, float64(steps))
 			ctx.LineTo(0, 10000-i64)
 			ctx.Stroke()
 
 			ctx.BeginPath()
-			ctx.MoveTo(10000-i64, 10000)
-			ctx.LineTo(0, 10000-i64)
-			ctx.Stroke()
-
-			ctx.BeginPath()
-			ctx.MoveTo(10000-i64, 10000)
+			ctx.MoveTo(10000-i64, float64(steps))
 			ctx.LineTo(10000, i64)
 			ctx.Stroke()
 
