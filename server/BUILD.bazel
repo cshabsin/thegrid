@@ -17,4 +17,7 @@ go_library(
     srcs = ["server.go"],
     importpath = "github.com/cshabsin/thegrid/server",
     visibility = ["//visibility:private"],
+    deps = [
+        "//explorers/server/data",
+    ],
 )

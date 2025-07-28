@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"path"
 
 	"github.com/cshabsin/thegrid/explorers/server/data"
 	"github.com/cshabsin/thegrid/explorers/view"
@@ -27,7 +26,7 @@ func main() {
 	mapGroup.Append(hm.GridMesh().ToElement(svgElem, attr.Class("map-mesh")))
 
 	newURL := *url
-	newURL.Path = path.Join(newURL.Path, "/data")
+	newURL.Path = "/explorers/data"
 	explorersSystemData, err := model.FromURL(newURL)
 	if err != nil {
 		fmt.Println(err)

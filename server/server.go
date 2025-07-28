@@ -2,6 +2,7 @@ package main
 
 import (
 	"archive/zip"
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"log"
@@ -9,6 +10,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/cshabsin/thegrid/explorers/server/data"
 )
 
 var registeredApps []string
@@ -62,6 +65,16 @@ func main() {
 		if err := t.Execute(w, registeredApps); err != nil {
 			log.Printf("template execute error: %v", err)
 		}
+	})
+
+	http.HandleFunc("/explorers/data", func(w http.ResponseWriter, r *http.Request) {
+		jsonData, err := json.Marshal(data.ExplorersMapData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(jsonData)
 	})
 
 	log.Println("Listening on :8080...")
