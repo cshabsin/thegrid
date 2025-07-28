@@ -6,7 +6,7 @@ go_library(
     importpath = "github.com/cshabsin/thegrid/model",
     visibility = ["//visibility:public"],
     deps = [
-        "//example/server/data",
-        "//example/view",
+        "//explorers/server/data",
+        "//explorers/view",
     ],
 )

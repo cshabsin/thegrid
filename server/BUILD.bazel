@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_binary", "go_library")
 go_binary(
     name = "server",
     data = [
-        "//example:example_pkg",
+        "//explorers:explorers_pkg",
         "//solitaire:solitaire_pkg",
         "//animdemo:animdemo_pkg",
         ":static/wasm_exec.js",

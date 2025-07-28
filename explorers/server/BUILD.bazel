@@ -1,15 +1,15 @@
 load("@rules_go//go:def.bzl", "go_binary", "go_library")
 
 go_library(
-    name = "example_server",
+    name = "explorers_server",
     srcs = ["server.go"],
-    importpath = "github.com/cshabsin/thegrid/example/server",
+    importpath = "github.com/cshabsin/thegrid/explorers/server",
     visibility = ["//visibility:private"],
-    deps = ["//example/server/data"],
+    deps = ["//explorers/server/data"],
 )
 
 go_binary(
     name = "server",
-    embed = [":example_server"],
+    embed = [":explorers_server"],
     visibility = ["//visibility:public"],
 )

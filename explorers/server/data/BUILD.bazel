@@ -6,6 +6,6 @@ go_library(
         "mapdata.go",
         "pathdata.go",
     ],
-    importpath = "github.com/cshabsin/thegrid/example/server/data",
+    importpath = "github.com/cshabsin/thegrid/explorers/server/data",
     visibility = ["//visibility:public"],
 )

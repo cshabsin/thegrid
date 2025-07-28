@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"path"
 
-	"github.com/cshabsin/thegrid/example/server/data"
-	"github.com/cshabsin/thegrid/example/view"
+	"github.com/cshabsin/thegrid/explorers/server/data"
+	"github.com/cshabsin/thegrid/explorers/view"
 	"github.com/cshabsin/thegrid/hexmap"
 	"github.com/cshabsin/thegrid/js"
 	"github.com/cshabsin/thegrid/js/attr"

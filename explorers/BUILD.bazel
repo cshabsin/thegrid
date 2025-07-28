@@ -2,13 +2,13 @@ load("@rules_go//go:def.bzl", "go_binary", "go_library")
 load("@rules_pkg//:pkg.bzl", "pkg_zip")
 
 go_library(
-    name = "example",
-    srcs = ["example.go"],
-    importpath = "github.com/cshabsin/thegrid/example",
+    name = "explorers",
+    srcs = ["explorers.go"],
+    importpath = "github.com/cshabsin/thegrid/explorers",
     visibility = ["//visibility:private"],
     deps = [
-        "//example/server/data",
-        "//example/view",
+        "//explorers/server/data",
+        "//explorers/view",
         "//hexmap",
         "//js",
         "//js/attr",
@@ -18,19 +18,19 @@ go_library(
 )
 
 go_binary(
-    name = "example.wasm",
-    embed = [":example"],
+    name = "explorers.wasm",
+    embed = [":explorers"],
     goarch = "wasm",
     goos = "js",
     visibility = ["//visibility:public"],
 )
 
 pkg_zip(
-    name = "example_pkg",
+    name = "explorers_pkg",
     srcs = [
         "index.html",
         "map-display.css",
-        ":example.wasm",
+        ":explorers.wasm",
     ],
     visibility = ["//server:__pkg__"],
 )

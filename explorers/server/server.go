@@ -8,7 +8,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/cshabsin/thegrid/example/server/data"
+	"github.com/cshabsin/thegrid/explorers/server/data"
 )
 
 var (

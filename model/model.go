@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/cshabsin/thegrid/example/server/data"
-	"github.com/cshabsin/thegrid/example/view"
+	"github.com/cshabsin/thegrid/explorers/server/data"
+	"github.com/cshabsin/thegrid/explorers/view"
 )
 
 func FromURL(url url.URL) (*MapData, error) {
