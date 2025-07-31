@@ -23,6 +23,7 @@ func main() {
 	hm := hexmap.NewHexMap(10, 11, 70, false)
 
 	mapGroup := svgElem.CreateElement("g", attr.Make("class", "map-anchor-group"), attr.Make("transform", "translate(10,10)"))
+	view.CreateStarfieldPattern(svgElem)
 	mapGroup.Append(hm.GridMesh().ToElement(svgElem, attr.Class("map-mesh")))
 
 	newURL := *url

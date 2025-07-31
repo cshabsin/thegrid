@@ -1,0 +1,7 @@
+feat(explorers): add starfield pattern
+
+This commit adds a starfield pattern to the explorers app, which is
+used to fill empty hexes. This provides a more visually appealing
+background for the map.
+
+Gemini commit: let's add function to generate the "starfield" pattern to the explorers code
