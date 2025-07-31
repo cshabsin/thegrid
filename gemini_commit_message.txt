@@ -1,10 +1,7 @@
-feat(lissajous): implement adaptive resolution
+feat(lissajous): add fps display
 
-This commit implements an adaptive resolution for the lissajous curve
-drawing. The app now targets a smooth 60 FPS by automatically
-adjusting the drawing resolution based on the observed frame rate. If
-the animation slows down, the resolution is decreased to speed up
-rendering. If the animation is running smoothly, the resolution is
-increased to provide more detail.
+This commit adds a frames per second (FPS) display to the lissajous
+app. This makes it easy to see the effect of the adaptive resolution
+feature and monitor the performance of the animation.
 
-Gemini commit: maybe we should automatically vary resolution based on observed frame rate - aim for 60 fps, so reduce resolution automatically when it gets too slow, increase it when it speeds up?
+Gemini commit: add a frames per second display

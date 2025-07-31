@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math"
 	"strconv"
 
@@ -38,6 +39,8 @@ func main() {
 
 	var startTime, lastFrameTime float64
 	resol := 0.001 // Initial resolution
+	fpsDisplay := doc.GetElementByID("fps")
+	var frameCount int
 
 	var renderFrame func(timestamp float64)
 	renderFrame = func(timestamp float64) {
@@ -54,6 +57,12 @@ func main() {
 			resol *= 1.1 // Decrease resolution
 		} else if fps > 60 && resol > 0.0001 {
 			resol *= 0.9 // Increase resolution
+		}
+
+		// Update FPS display every 10 frames
+		frameCount++
+		if frameCount%10 == 0 {
+			fpsDisplay.SetText(fmt.Sprintf("%.1f FPS", fps))
 		}
 
 		elapsed := timestamp - startTime
