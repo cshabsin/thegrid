@@ -1,8 +1,10 @@
-refactor(lissajous): calculate cycles from frequency
+feat(lissajous): implement adaptive resolution
 
-This commit refactors the lissajous app to automatically calculate the
-number of cycles required to draw a closed curve based on the frequency
-ratio. This simplifies the UI by removing the "Cycles" slider and makes
-the animation more mathematically correct.
+This commit implements an adaptive resolution for the lissajous curve
+drawing. The app now targets a smooth 60 FPS by automatically
+adjusting the drawing resolution based on the observed frame rate. If
+the animation slows down, the resolution is decreased to speed up
+rendering. If the animation is running smoothly, the resolution is
+increased to provide more detail.
 
-Gemini commit: can we just calculate cycles from frequency?
+Gemini commit: maybe we should automatically vary resolution based on observed frame rate - aim for 60 fps, so reduce resolution automatically when it gets too slow, increase it when it speeds up?
