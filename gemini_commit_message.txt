@@ -1,5 +1,7 @@
-feat(canvas): add FullSize method
+feat(lissajous): implement animation
 
-This adds a `FullSize` method to the `canvas.Canvas` type. This method resizes the canvas's drawing buffer to match its display size, which is a common requirement to avoid stretched or blurry graphics.
+This commit implements the Lissajous curve animation using
+`requestAnimationFrame` and double buffering. The animation loop is
+handled in Go, and the drawing is done on an HTML canvas.
 
-Gemini commit: what did you want FullSize to do? Should we add it to the canvas api?
+Gemini commit: yes. I want to use it as a way to familiarize myself with requestAnimationFrame and double buffering, can you do all that?

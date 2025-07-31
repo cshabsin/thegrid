@@ -6,7 +6,7 @@ go_library(
     srcs = ["lissajous.go"],
     importpath = "github.com/cshabsin/thegrid/apps/lissajous",
     visibility = ["//visibility:private"],
-    deps = ["//js/canvas"],
+    deps = ["//js/canvas", "//js"],
 )
 
 go_binary(
