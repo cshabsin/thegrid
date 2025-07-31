@@ -1,0 +1,8 @@
+feat(lissajous): add interactive sliders
+
+This commit adds sliders to the lissajous app, allowing the user to
+interactively control the parameters of the curve, such as size,
+frequency, and speed. This makes it easier to explore the different
+patterns that can be generated.
+
+Gemini commit: let's put in sliders for the different parameters defined at the top of the file - let the user vary them.
