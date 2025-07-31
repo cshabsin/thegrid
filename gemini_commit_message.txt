@@ -1,8 +1,3 @@
-feat: Create canvas abstraction layer
+refactor: move model to apps/explorers
 
-This change introduces a new `js/canvas` package that provides a more
-idiomatic, Go-friendly abstraction over the HTML Canvas 2D API. The
-`animdemo` service has been refactored to use this new package, resulting
-in cleaner and more maintainable drawing code.
-
-Gemini commit: ok, let's build some abstractions around our interactions with the canvas
+Gemini commit: Let's work in the thegrid directory. I'd like to start small, let's move "model" under the "apps/explorers" directory because it is explorers-specific code.

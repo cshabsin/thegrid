@@ -11,6 +11,6 @@ go_library(
         "//js",
         "//js/attr",
         "//js/svg",
-        "//model",
+        "//apps/explorers/model",
     ],
 )

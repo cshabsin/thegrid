@@ -9,7 +9,7 @@ import (
 	"github.com/cshabsin/thegrid/js"
 	"github.com/cshabsin/thegrid/js/attr"
 	"github.com/cshabsin/thegrid/js/svg"
-	"github.com/cshabsin/thegrid/model"
+	"github.com/cshabsin/thegrid/apps/explorers/model"
 )
 
 func main() {
