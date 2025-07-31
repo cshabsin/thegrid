@@ -45,8 +45,8 @@ func NewDropTarget(el js.DOMElement, onDrop func(js.DOMEvent)) *DropTarget {
 			d.OnDragOver(e)
 		}
 	})
-		d.AddEventListener("drop", func(_ js.DOMElement, e js.DOMEvent) {
-			e.Value.Call("preventDefault")
+	d.AddEventListener("drop", func(_ js.DOMElement, e js.DOMEvent) {
+		e.Value.Call("preventDefault")
 		if d.OnDrop != nil {
 			d.OnDrop(e)
 		}

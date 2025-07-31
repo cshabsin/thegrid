@@ -107,9 +107,9 @@ func (b *Board) reset(doc js.DOMDocument, boardDiv js.DOMElement) {
 
 func NewBoard(g Game, doc js.DOMDocument, boardDiv js.DOMElement) *Board {
 	b := &Board{
-		game:      g,
-		document:  doc,
-		boardDiv:  boardDiv,
+		game:     g,
+		document: doc,
+		boardDiv: boardDiv,
 	}
 	b.reset(doc, boardDiv)
 	g.AddListener(b.Render)

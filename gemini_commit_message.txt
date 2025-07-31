@@ -1,7 +1,7 @@
-feat(explorers): add starfield pattern
+chore: format all go files with goimports
 
-This commit adds a starfield pattern to the explorers app, which is
-used to fill empty hexes. This provides a more visually appealing
-background for the map.
+This commit formats all Go files in the project with `goimports`.
+This ensures that all files are consistently formatted and that all
+imports are correctly organized.
 
-Gemini commit: let's add function to generate the "starfield" pattern to the explorers code
+Gemini commit: let's use gofmt and goimports to clean up go code before trying to compile it... see if that helps some

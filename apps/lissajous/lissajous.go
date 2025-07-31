@@ -10,9 +10,9 @@ import (
 )
 
 type params struct {
-	size    float64
-	freq    float64
-	speed   float64
+	size  float64
+	freq  float64
+	speed float64
 }
 
 func main() {
@@ -30,9 +30,9 @@ func main() {
 	ctx.Call("translate", width/2, height/2)
 
 	p := &params{
-		size:    200,
-		freq:    3.0,
-		speed:   0.001,
+		size:  200,
+		freq:  3.0,
+		speed: 0.001,
 	}
 
 	setupControls(doc, p)
