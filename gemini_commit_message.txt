@@ -1,3 +1,5 @@
-feat: add lissajous app
+feat(canvas): add FullSize method
 
-Gemini commit: Let's create a new app with nothing but a blank canvas, just as a starting point. Call it "lissajous".
+This adds a `FullSize` method to the `canvas.Canvas` type. This method resizes the canvas's drawing buffer to match its display size, which is a common requirement to avoid stretched or blurry graphics.
+
+Gemini commit: what did you want FullSize to do? Should we add it to the canvas api?

@@ -16,6 +16,13 @@ func (c Canvas) GetContext(contextType string) Context {
 	return Context{js.DOMElement{Value: c.DOMElement.GetContext(contextType)}}
 }
 
+func (c Canvas) FullSize() {
+	width := c.Get("clientWidth").Float()
+	height := c.Get("clientHeight").Float()
+	c.SetAttr("width", width)
+	c.SetAttr("height", height)
+}
+
 type Context struct {
 	js.DOMElement
 }
