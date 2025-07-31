@@ -8,6 +8,6 @@ go_library(
         "mapdata.go",
         "pathdata.go",
     ],
-    importpath = "github.com/cshabsin/thegrid/explorers/data/data",
+    importpath = "github.com/cshabsin/thegrid/apps/explorers/data/data",
     visibility = ["//visibility:public"],
 )

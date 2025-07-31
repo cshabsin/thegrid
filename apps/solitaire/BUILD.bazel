@@ -4,12 +4,12 @@ load("@rules_pkg//:pkg.bzl", "pkg_zip")
 go_library(
     name = "solitaire",
     srcs = ["solitaire.go"],
-    importpath = "github.com/cshabsin/thegrid/solitaire",
+    importpath = "github.com/cshabsin/apps/thegrid/solitaire",
     visibility = ["//visibility:private"],
     deps = [
         "//cardkit/ui",
         "//js",
-        "//solitaire/klondike",
+        "//apps/solitaire/klondike",
     ],
 )
 

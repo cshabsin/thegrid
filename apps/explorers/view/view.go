@@ -1,7 +1,7 @@
 package view
 
 import (
-	"github.com/cshabsin/thegrid/explorers/data/data"
+	"github.com/cshabsin/thegrid/apps/explorers/data/data"
 	"github.com/cshabsin/thegrid/hexmap"
 	"github.com/cshabsin/thegrid/js"
 	"github.com/cshabsin/thegrid/js/attr"

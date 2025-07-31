@@ -3,10 +3,10 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "view",
     srcs = ["view.go"],
-    importpath = "github.com/cshabsin/thegrid/explorers/view",
+    importpath = "github.com/cshabsin/thegrid/apps/explorers/view",
     visibility = ["//visibility:public"],
     deps = [
-        "//explorers/data/data",
+        "//apps/explorers/data/data",
         "//hexmap",
         "//js",
         "//js/attr",

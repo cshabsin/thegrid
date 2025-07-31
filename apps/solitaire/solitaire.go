@@ -1,9 +1,9 @@
 package main
 
 import (
+	"github.com/cshabsin/thegrid/apps/solitaire/klondike"
 	"github.com/cshabsin/thegrid/cardkit/ui"
 	"github.com/cshabsin/thegrid/js"
-	"github.com/cshabsin/thegrid/solitaire/klondike"
 )
 
 func main() {

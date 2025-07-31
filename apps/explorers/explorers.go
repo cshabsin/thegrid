@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/cshabsin/thegrid/explorers/data/data"
-	"github.com/cshabsin/thegrid/explorers/view"
+	"github.com/cshabsin/thegrid/apps/explorers/data/data"
+	"github.com/cshabsin/thegrid/apps/explorers/view"
 	"github.com/cshabsin/thegrid/hexmap"
 	"github.com/cshabsin/thegrid/js"
 	"github.com/cshabsin/thegrid/js/attr"
@@ -40,7 +40,7 @@ func main() {
 		}
 	}
 
-		for _, seg := range data.ExplorersPathData.Segments {
+	for _, seg := range data.ExplorersPathData.Segments {
 		mapGroup.Append(mapView.NewPathSegment(seg, "spiny-rat"))
 	}
 

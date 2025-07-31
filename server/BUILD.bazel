@@ -3,9 +3,9 @@ load("@rules_go//go:def.bzl", "go_binary", "go_library")
 go_binary(
     name = "server",
     data = [
-        "//explorers:explorers_pkg",
-        "//solitaire:solitaire_pkg",
-        "//animdemo:animdemo_pkg",
+        "//apps/explorers:explorers_pkg",
+        "//apps/solitaire:solitaire_pkg",
+        "//apps/animdemo:animdemo_pkg",
         ":static/wasm_exec.js",
     ],
     embed = [":server_lib"],
@@ -18,6 +18,6 @@ go_library(
     importpath = "github.com/cshabsin/thegrid/server",
     visibility = ["//visibility:private"],
     deps = [
-        "//explorers/data/data",
+        "//apps/explorers/data/data",
     ],
 )
