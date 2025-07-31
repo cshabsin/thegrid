@@ -19,7 +19,8 @@ func (svg SVG) Defs() Defs {
 	return Defs{DOMElement: defsEl, document: svg.document}
 }
 
-func (d Defs) CreatePattern(attrs ...attr.Attr) Pattern {
+func (d Defs) CreatePattern(id string, attrs ...attr.Attr) Pattern {
+	attrs = append(attrs, attr.Make("id", id))
 	p := NewPattern(d.document, attrs...)
 	d.Append(p)
 	return p

@@ -1,9 +1,0 @@
-refactor(svg): move pattern creation to factory
-
-This commit refactors the SVG pattern creation logic to improve
-encapsulation. The `CreatePattern` method in `defs.go` now uses a
-`NewPattern` factory function in `pattern.go` to create the `<pattern>`
-element. This makes the `pattern.go` file solely responsible for the
-lifecycle of `Pattern` objects.
-
-Gemini commit: move the CreateElement call for the pattern out of defs.go, into a factory method in pattern.go.

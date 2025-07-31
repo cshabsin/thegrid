@@ -4,12 +4,12 @@ import (
 	"fmt"
 
 	"github.com/cshabsin/thegrid/apps/explorers/data"
+	"github.com/cshabsin/thegrid/apps/explorers/model"
 	"github.com/cshabsin/thegrid/apps/explorers/view"
 	"github.com/cshabsin/thegrid/hexmap"
 	"github.com/cshabsin/thegrid/js"
 	"github.com/cshabsin/thegrid/js/attr"
 	"github.com/cshabsin/thegrid/js/svg"
-	"github.com/cshabsin/thegrid/apps/explorers/model"
 )
 
 func main() {
