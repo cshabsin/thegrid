@@ -1,7 +1,11 @@
-feat(lissajous): implement animation
+refactor(lissajous): use timestamp and draw a single cycle
 
-This commit implements the Lissajous curve animation using
-`requestAnimationFrame` and double buffering. The animation loop is
-handled in Go, and the drawing is done on an HTML canvas.
+This refactors the lissajous animation to be more efficient and robust.
 
-Gemini commit: yes. I want to use it as a way to familiarize myself with requestAnimationFrame and double buffering, can you do all that?
+- It now uses the `timestamp` from `requestAnimationFrame` to drive the
+  animation, making it independent of the frame rate.
+- It draws a single, complete cycle of the curve on each frame, rather
+  than continuously extending the curve. The animation is achieved by
+  varying the phase of the y-oscillator.
+
+Gemini commit: it seems strange to draw from 0 to t when t grows unbounded. Shouldn't it only draw one circuit of the curve? Also, we're not using timestamp anywhere, wouldn't that be better to use than t, since it will make the animation run consistently even when frame rate goes down?
