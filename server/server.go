@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/cshabsin/thegrid/apps/explorers/data/data"
+	"github.com/cshabsin/thegrid/apps/explorers/data"
 )
 
 var registeredApps []string

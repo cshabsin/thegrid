@@ -7,7 +7,7 @@ go_library(
     importpath = "github.com/cshabsin/thegrid/explorers",
     visibility = ["//visibility:private"],
     deps = [
-        "//apps/explorers/data/data",
+        "//apps/explorers/data",
         "//apps/explorers/view",
         "//hexmap",
         "//js",

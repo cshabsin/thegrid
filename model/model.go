@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/cshabsin/thegrid/apps/explorers/data/data"
+	"github.com/cshabsin/thegrid/apps/explorers/data"
 )
 
 type Entity interface {
