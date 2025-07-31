@@ -1,14 +1,9 @@
-feat(svg): add pattern support
+refactor(svg): move pattern creation to factory
 
-This commit adds support for SVG patterns, which are used to create
-reusable, complex fills for shapes. This is useful for creating
-textures like starfields or forests on a hex map.
+This commit refactors the SVG pattern creation logic to improve
+encapsulation. The `CreatePattern` method in `defs.go` now uses a
+`NewPattern` factory function in `pattern.go` to create the `<pattern>`
+element. This makes the `pattern.go` file solely responsible for the
+lifecycle of `Pattern` objects.
 
-The new API includes:
-
-- A `<defs>` manager to ensure all patterns are stored in one place.
-- A `CreatePattern` method to create new `<pattern>` elements.
-- An `Append` method on the `Pattern` object to allow for composable
-  patterns.
-
-Gemini commit: Let's add a mechanism for adding pattern definitions to an SVG in js/svg's API, so we can make a sparse starfield or trees as a pattern for filling a hex in a hexgrid.
+Gemini commit: move the CreateElement call for the pattern out of defs.go, into a factory method in pattern.go.

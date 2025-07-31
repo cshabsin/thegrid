@@ -20,9 +20,7 @@ func (svg SVG) Defs() Defs {
 }
 
 func (d Defs) CreatePattern(attrs ...attr.Attr) Pattern {
-	p := Pattern{
-		DOMElement: d.document.CreateElementNS("http://www.w3.org/2000/svg", "pattern", attrs...),
-	}
+	p := NewPattern(d.document, attrs...)
 	d.Append(p)
 	return p
 }
