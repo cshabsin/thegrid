@@ -1,7 +1,14 @@
-feat(lissajous): add fps display
+feat(svg): add pattern support
 
-This commit adds a frames per second (FPS) display to the lissajous
-app. This makes it easy to see the effect of the adaptive resolution
-feature and monitor the performance of the animation.
+This commit adds support for SVG patterns, which are used to create
+reusable, complex fills for shapes. This is useful for creating
+textures like starfields or forests on a hex map.
 
-Gemini commit: add a frames per second display
+The new API includes:
+
+- A `<defs>` manager to ensure all patterns are stored in one place.
+- A `CreatePattern` method to create new `<pattern>` elements.
+- An `Append` method on the `Pattern` object to allow for composable
+  patterns.
+
+Gemini commit: Let's add a mechanism for adding pattern definitions to an SVG in js/svg's API, so we can make a sparse starfield or trees as a pattern for filling a hex in a hexgrid.
