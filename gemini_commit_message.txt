@@ -1,3 +1,3 @@
-refactor: move model to apps/explorers
+feat: add lissajous app
 
-Gemini commit: Let's work in the thegrid directory. I'd like to start small, let's move "model" under the "apps/explorers" directory because it is explorers-specific code.
+Gemini commit: Let's create a new app with nothing but a blank canvas, just as a starting point. Call it "lissajous".

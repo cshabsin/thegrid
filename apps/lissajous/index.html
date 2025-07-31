@@ -1,0 +1,15 @@
+<html>
+	<head>
+		<script src="/static/wasm_exec.js"></script>
+		<script>
+			const go = new Go();
+			WebAssembly.instantiateStreaming(fetch("/lissajous/lissajous.wasm"), go.importObject).then((result) => {
+				go.run(result.instance);
+			});
+		</script>
+		<link rel="stylesheet" href="/lissajous/lissajous.css">
+	</head>
+	<body>
+		<canvas id="canvas"></canvas>
+	</body>
+</html>
