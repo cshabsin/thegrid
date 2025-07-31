@@ -1,8 +1,8 @@
-feat(lissajous): add interactive sliders
+refactor(lissajous): calculate cycles from frequency
 
-This commit adds sliders to the lissajous app, allowing the user to
-interactively control the parameters of the curve, such as size,
-frequency, and speed. This makes it easier to explore the different
-patterns that can be generated.
+This commit refactors the lissajous app to automatically calculate the
+number of cycles required to draw a closed curve based on the frequency
+ratio. This simplifies the UI by removing the "Cycles" slider and makes
+the animation more mathematically correct.
 
-Gemini commit: let's put in sliders for the different parameters defined at the top of the file - let the user vary them.
+Gemini commit: can we just calculate cycles from frequency?

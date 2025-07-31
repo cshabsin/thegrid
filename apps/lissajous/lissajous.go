@@ -10,7 +10,6 @@ import (
 
 type params struct {
 	size    float64
-	cycles  float64
 	resol   float64
 	freq    float64
 	speed   float64
@@ -32,7 +31,6 @@ func main() {
 
 	p := &params{
 		size:    200,
-		cycles:  5,
 		resol:   0.001,
 		freq:    3.0,
 		speed:   0.001,
@@ -53,10 +51,20 @@ func main() {
 		// Clear the entire canvas (the back buffer).
 		ctx.ClearRect(-width/2, -height/2, width, height)
 
+		// Calculate cycles needed to close the curve.
+		// The curve repeats after `y` completes `a` cycles and `x` completes `b` cycles,
+		// where `a/b` is the reduced fraction of `freq`.
+		// We can use GCD to find this.
+		// For floating point, we can multiply by a large number and then find the GCD.
+		num := int(p.freq * 1000)
+		den := 1000
+		g := gcd(num, den)
+		cycles := float64(num / g)
+
 		ctx.BeginPath()
 		// Draw one complete, closed curve on each frame.
 		// The animation comes from varying the phase, not from drawing more of the curve.
-		for t := 0.0; t < p.cycles*2*math.Pi; t += p.resol {
+		for t := 0.0; t < cycles*2*math.Pi; t += p.resol {
 			x := math.Sin(t)
 			y := math.Sin(t*p.freq + phase)
 			screenX := x * p.size
@@ -93,8 +101,14 @@ func setupControls(doc js.DOMDocument, p *params) {
 	}
 
 	addSlider("size", func(v float64) { p.size = v })
-	addSlider("cycles", func(v float64) { p.cycles = v })
 	addSlider("resol", func(v float64) { p.resol = v })
 	addSlider("freq", func(v float64) { p.freq = v })
 	addSlider("speed", func(v float64) { p.speed = v })
+}
+
+func gcd(a, b int) int {
+	for b != 0 {
+		a, b = b, a%b
+	}
+	return a
 }
