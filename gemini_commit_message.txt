@@ -1,7 +1,0 @@
-chore: format all go files with goimports
-
-This commit formats all Go files in the project with `goimports`.
-This ensures that all files are consistently formatted and that all
-imports are correctly organized.
-
-Gemini commit: let's use gofmt and goimports to clean up go code before trying to compile it... see if that helps some

@@ -12,6 +12,10 @@ type Path struct {
 	element Element
 }
 
+func (p *Path) D() string {
+	return p.path
+}
+
 func (p *Path) ToElement(svg SVG, attrs ...attr.Attr) Element {
 	if p.element.IsUndefined() || p.element.IsNull() {
 		attrs = append(attrs, p.attrs...)

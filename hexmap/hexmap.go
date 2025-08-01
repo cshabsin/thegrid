@@ -7,12 +7,30 @@ import (
 	"github.com/cshabsin/thegrid/js/svg"
 )
 
-type gridEntry struct {
-	x         int
-	y         int
-	meshShown bool
-	centerX   float64
-	centerY   float64
+type Hex struct {
+	Col, Row         int
+	CenterX, CenterY float64
+	Fill             string
+	class            string
+}
+
+func (h *Hex) Path(radius float64) *svg.Path {
+	var p svg.Path
+	for i, coord := range Hexagon(radius) {
+		p.MoveRel(coord, i != 0)
+	}
+	return &p
+}
+
+func (h *Hex) ToElement(svg svg.SVG, radius float64) svg.Element {
+	attrs := []attr.Attr{
+		attr.Class(h.class),
+		attr.Make("stroke", "none"),
+	}
+	if h.Fill != "" {
+		attrs = append(attrs, attr.Make("fill", h.Fill))
+	}
+	return h.Path(radius).ToElement(svg, attrs...)
 }
 
 type HexMap struct {
@@ -23,7 +41,11 @@ type HexMap struct {
 
 	dx   float64
 	dy   float64
-	grid [][]gridEntry
+	Grid [][]*Hex
+}
+
+func (h *HexMap) Radius() float64 {
+	return h.radius
 }
 
 var SinPiOver3 = math.Sin(math.Pi / 3)
@@ -37,22 +59,32 @@ func NewHexMap(width, height int, radius float64, staggerUp bool) *HexMap {
 		dx:        radius * 1.5,
 		dy:        radius * 2 * SinPiOver3,
 	}
-	grid := make([][]gridEntry, width)
+	grid := make([][]*Hex, width)
 	for col := range grid {
-		grid[col] = make([]gridEntry, height)
+		grid[col] = make([]*Hex, height)
 		for row := range grid[col] {
 			center := hexmap.CellCenter(col, row)
-			grid[col][row] = gridEntry{
-				x:         col,
-				y:         row,
-				meshShown: true,
-				centerX:   center.X,
-				centerY:   center.Y,
+			grid[col][row] = &Hex{
+				Col:       col,
+				Row:       row,
+				CenterX:   center.X,
+				CenterY:   center.Y,
+				class:     "map-hexagon",
 			}
 		}
 	}
-	hexmap.grid = grid
+	hexmap.Grid = grid
 	return hexmap
+}
+
+func (h *HexMap) CreateFillsGroup(svg svg.SVG) svg.Element {
+	group := svg.CreateElement("g", attr.Class("fills-group"))
+	for _, col := range h.Grid {
+		for _, hex := range col {
+			group.Append(hex.ToElement(svg, h.radius))
+		}
+	}
+	return group
 }
 
 // Returns true if the cell is a "down" cell in its row.
@@ -94,9 +126,6 @@ func (h HexMap) GridMesh() *svg.Path {
 
 	for col := 0; col < h.width; col++ {
 		for row := 0; row < h.height; row++ {
-			if !h.showMesh(col, row) {
-				continue
-			}
 			path.MoveAbs(h.CellCenter(col, row), false)
 			path.MoveRel(hexagon[0], false)
 			drawn[3] = h.isDownRightShown(col, row)
@@ -109,24 +138,12 @@ func (h HexMap) GridMesh() *svg.Path {
 	return &path
 }
 
-func (h HexMap) HexPath(svg svg.SVG, cls string) svg.Element {
-	return h.HexagonPath().ToElement(svg, attr.Class(cls))
-}
-
-func (h HexMap) CellTranslate(col, row int) attr.Attr {
-	return attr.Translate(h.grid[col][row].centerX, h.grid[col][row].centerY)
-}
-
 func (h HexMap) HexagonPath() *svg.Path {
 	var p svg.Path
 	for i, coord := range Hexagon(h.radius) {
 		p.MoveRel(coord, i != 0)
 	}
 	return &p
-}
-
-func (h HexMap) showMesh(col, row int) bool {
-	return h.grid[col][row].meshShown
 }
 
 func (h HexMap) isDownRightShown(col, row int) bool {

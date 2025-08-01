@@ -12,42 +12,46 @@ import (
 	"github.com/cshabsin/thegrid/js/svg"
 )
 
-type Parsec struct {
-	Anchor  svg.Element
-	hexagon svg.Element
-}
-
 type MapView struct {
-	SVG    svg.SVG
-	HexMap *hexmap.HexMap
-
+	SVG         svg.SVG
+	HexMap      *hexmap.HexMap
 	DataElement js.DOMElement
+	Highlighter svg.Element
 }
 
-func (mv *MapView) NewParsec(col, row int, e model.Entity) *Parsec {
-	hexAnchor := mv.SVG.CreateElement("a", attr.Class("map-anchor"), mv.HexMap.CellTranslate(col, row))
-	hexagon := mv.HexMap.HexPath(mv.SVG, "map-hexagon")
-	if e == nil {
-		hexagon.SetAttr("fill", "url(#starfield)")
-	} else {
+// CreateHexAnchor creates the interactive anchor group for a single hex, but does not append it to the map.
+func (mv *MapView) CreateHexAnchor(col, row int, e model.Entity) svg.Element {
+	hex := mv.HexMap.Grid[col][row]
+	// The anchor is the interactive element. It gets positioned at the hex center.
+	hexAnchor := mv.SVG.CreateElement("a", attr.Class("map-anchor"), attr.Translate(hex.CenterX, hex.CenterY))
+
+	// The visible hexagon is a child of the anchor. It has no position itself.
+	hexAnchor.Append(hex.ToElement(mv.SVG, mv.HexMap.Radius()))
+
+	if e != nil {
 		hexAnchor.Append(mv.SVG.Text(e.Label(), attr.Y(50), attr.Class("map-coord")))
 		hexAnchor.Append(mv.SVG.Text(e.Name(), attr.Y(20), attr.Class("map-name")))
 
 		if e.HasCircle() {
 			hexAnchor.Append(mv.SVG.Circle(5, attr.Class("map-planet")))
 		}
-
-		hexAnchor.AddEventListener("mouseenter", func(js.DOMElement, js.DOMEvent) {
-			hexagon.SetAttr("class", "map-hexagon-hilite")
-			mv.DataElement.Set("innerHTML", e.Description())
-		})
-		hexAnchor.AddEventListener("mouseleave", func(js.DOMElement, js.DOMEvent) {
-			hexagon.SetAttr("class", "map-hexagon")
-			mv.DataElement.Set("innerHTML", "")
-		})
 	}
-	hexAnchor.Append(hexagon)
-	return &Parsec{Anchor: hexAnchor, hexagon: hexagon}
+
+	hexAnchor.AddEventListener("mouseenter", func(js.DOMElement, js.DOMEvent) {
+		mv.Highlighter.SetAttr("transform", fmt.Sprintf("translate(%f, %f)", hex.CenterX, hex.CenterY))
+		mv.Highlighter.SetAttr("visibility", "visible")
+		if e != nil {
+			mv.DataElement.Set("innerHTML", e.Description())
+		}
+	})
+	hexAnchor.AddEventListener("mouseleave", func(js.DOMElement, js.DOMEvent) {
+		mv.Highlighter.SetAttr("visibility", "hidden")
+		if e != nil {
+			mv.DataElement.Set("innerHTML", "")
+		}
+	})
+
+	return hexAnchor
 }
 
 func (mv *MapView) NewPathSegment(seg data.PathSegment, cls string, attrs ...attr.Attr) svg.Element {

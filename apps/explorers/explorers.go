@@ -24,7 +24,6 @@ func main() {
 
 	mapGroup := svgElem.CreateElement("g", attr.Make("class", "map-anchor-group"), attr.Make("transform", "translate(10,10)"))
 	view.CreateStarfieldPattern(svgElem)
-	mapGroup.Append(hm.GridMesh().ToElement(svgElem, attr.Class("map-mesh")))
 
 	newURL := *url
 	newURL.Path = "/explorers/data"
@@ -33,13 +32,36 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	mapView := &view.MapView{SVG: svgElem, HexMap: hm, DataElement: document.GetElementByID("data-contents")}
-	for col := range explorersSystemData.HexGrid {
-		for row := range explorersSystemData.HexGrid[col] {
-			parsec := mapView.NewParsec(col, row, explorersSystemData.GetCell(col, row))
-			mapGroup.Append(parsec.Anchor.AsDOM())
+
+	// Set the fill for each hex based on data.
+	for col, colData := range explorersSystemData.HexGrid {
+		for row := range colData {
+			if explorersSystemData.GetCell(col, row) == nil {
+				hm.Grid[col][row].Fill = "url(#starfield)"
+			} else {
+				hm.Grid[col][row].Fill = "#333"
+			}
 		}
 	}
+
+	// The order of appends here is important for layering.
+	// 1. Fills for the hexes.
+	mapGroup.Append(hm.CreateFillsGroup(svgElem))
+
+	// 2. The grid mesh border.
+	mapGroup.Append(hm.GridMesh().ToElement(svgElem, attr.Class("map-mesh")))
+
+	// 3. The interactive elements (planets, labels, event listeners).
+	highlighter := hm.HexagonPath().ToElement(svgElem, attr.ID("highlighter"), attr.Class("map-hexagon-hilite"), attr.Make("visibility", "hidden"))
+	mapView := &view.MapView{SVG: svgElem, HexMap: hm, DataElement: document.GetElementByID("data-contents"), Highlighter: highlighter}
+	for col, colData := range explorersSystemData.HexGrid {
+		for row := range colData {
+			mapGroup.Append(mapView.CreateHexAnchor(col, row, explorersSystemData.GetCell(col, row)))
+		}
+	}
+
+	// 4. The highlighter, which appears on top of everything.
+	mapGroup.Append(highlighter)
 
 	for _, seg := range data.ExplorersPathData.Segments {
 		mapGroup.Append(mapView.NewPathSegment(seg, "spiny-rat"))
