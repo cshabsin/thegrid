@@ -10,14 +10,14 @@ type elementer interface {
 
 type G []elementer
 
-func (p G) ToElement(svg SVG, attrs ...attr.Attr) Element {
+func (g *G) ToElement(svg SVG, attrs ...attr.Attr) Element {
 	gel := svg.CreateElement("g", attrs...)
-	for _, elem := range p {
+	for _, elem := range *g {
 		gel.Append(elem.ToElement(svg))
 	}
 	return gel
 }
 
-func (p G) Append(elem elementer) G {
-	return append(p, elem)
+func (g *G) Append(child elementer) {
+	*g = append(*g, child)
 }
