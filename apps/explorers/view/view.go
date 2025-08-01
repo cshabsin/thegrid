@@ -59,9 +59,20 @@ func (mv *MapView) NewPathSegment(seg data.PathSegment, cls string, attrs ...att
 	var p svg.Path
 	p.MoveAbs(mv.HexMap.CellCenter(seg.StartCoord[0], seg.StartCoord[1]).Translate(float64(seg.StartOffset[0]), float64(seg.StartOffset[1])), false)
 	p.MoveAbs(mv.HexMap.CellCenter(seg.EndCoord[0], seg.EndCoord[1]).Translate(float64(seg.EndOffset[0]), float64(seg.EndOffset[1])), true)
-	g.Append(p.WithAttrs(append(attrs, attr.Make("marker-end", "url(#triangle)"), attr.Class(cls))...))
-	g.Append(p.WithAttrs(attr.Class(cls + "-wide")))
-	return g.ToElement(mv.SVG)
+	path := p.WithAttrs(append(attrs, attr.Make("marker-end", "url(#triangle)"), attr.Class(cls))...)
+	pathWide := p.WithAttrs(attr.Class(cls + "-wide"))
+	g.Append(path)
+	g.Append(pathWide)
+	group := g.ToElement(mv.SVG)
+	group.AddEventListener("mouseenter", func(el js.DOMElement, ev js.DOMEvent) {
+		path.ToElement(mv.SVG).AddClass(cls + "-hilite")
+		mv.DataElement.Set("innerHTML", seg.Description)
+	})
+	group.AddEventListener("mouseleave", func(el js.DOMElement, ev js.DOMEvent) {
+		path.ToElement(mv.SVG).RemoveClass(cls + "-hilite")
+		mv.DataElement.Set("innerHTML", "")
+	})
+	return group
 }
 
 func CreateStarfieldPattern(svgEl svg.SVG) {
