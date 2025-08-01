@@ -52,7 +52,7 @@ func main() {
 	mapGroup.Append(hm.GridMesh().ToElement(svgElem, attr.Class("map-mesh")))
 
 	// 3. The interactive elements (planets, labels, event listeners).
-	highlighter := hm.HexagonPath().ToElement(svgElem, attr.ID("highlighter"), attr.Class("map-hexagon-hilite"), attr.Make("visibility", "hidden"))
+	highlighter := hm.HexagonPath().ToElement(svgElem, attr.ID("highlighter"), attr.Class("map-hexagon-hilite"), attr.Make("visibility", "hidden"), attr.Make("fill", "none"), attr.Make("pointer-events", "none"))
 	mapView := &view.MapView{SVG: svgElem, HexMap: hm, DataElement: document.GetElementByID("data-contents"), Highlighter: highlighter}
 	for col, colData := range explorersSystemData.HexGrid {
 		for row := range colData {
