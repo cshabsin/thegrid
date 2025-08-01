@@ -19,3 +19,4 @@ bazel-bin
 bazel-out
 bazel-testlogs
 bazel-thegrid
+gemini_commit_message.txt
