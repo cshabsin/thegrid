@@ -97,6 +97,11 @@ path.map-hexagon-hilite {
     stroke-width: 4px;
 }
 
+path.map-hexagon-selected {
+    stroke: cyan;
+    stroke-width: 4px;
+}
+
 .map-planet,.map-planet-link {
     fill: cyan;
     pointer-events: none;

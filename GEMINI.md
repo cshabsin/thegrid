@@ -18,3 +18,6 @@ idiomatically. When there's a chance to turn a generic accessor (such as
 
 To rebuild, use `bazel build server:server`, that should have dependencies
 on both solitaire and example.
+
+To update imports in a Go source file, use the "goimports" tool rather than
+editing directly.

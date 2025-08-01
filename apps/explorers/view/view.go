@@ -17,6 +17,7 @@ type MapView struct {
 	HexMap      *hexmap.HexMap
 	DataElement js.DOMElement
 	Highlighter svg.Element
+	selected    js.DOMElement
 }
 
 // CreateHexAnchor creates the interactive anchor group for a single hex, but does not append it to the map.
@@ -40,14 +41,20 @@ func (mv *MapView) CreateHexAnchor(col, row int, e model.Entity) svg.Element {
 	hexAnchor.AddEventListener("mouseenter", func(js.DOMElement, js.DOMEvent) {
 		mv.Highlighter.SetAttr("transform", fmt.Sprintf("translate(%f, %f)", hex.CenterX, hex.CenterY))
 		mv.Highlighter.SetAttr("visibility", "visible")
-		if e != nil {
-			mv.DataElement.Set("innerHTML", e.Description())
-		}
 	})
 	hexAnchor.AddEventListener("mouseleave", func(js.DOMElement, js.DOMEvent) {
 		mv.Highlighter.SetAttr("visibility", "hidden")
+	})
+	hexAnchor.AddEventListener("click", func(js.DOMElement, js.DOMEvent) {
+		if !mv.selected.IsNull() {
+			mv.selected.RemoveClass("map-hexagon-selected")
+		}
+		mv.selected = hex.ToElement(mv.SVG, mv.HexMap.Radius()).AsDOM()
+		mv.selected.AddClass("map-hexagon-selected")
+		mv.selected.SetAttr("transform", fmt.Sprintf("translate(%f, %f)", hex.CenterX, hex.CenterY))
+		mv.SVG.Append(mv.selected)
 		if e != nil {
-			mv.DataElement.Set("innerHTML", "")
+			mv.DataElement.Set("innerHTML", e.Description())
 		}
 	})
 
@@ -71,6 +78,14 @@ func (mv *MapView) NewPathSegment(seg data.PathSegment, cls string, attrs ...att
 	group.AddEventListener("mouseleave", func(el js.DOMElement, ev js.DOMEvent) {
 		path.ToElement(mv.SVG).RemoveClass(cls + "-hilite")
 		mv.DataElement.Set("innerHTML", "")
+	})
+	group.AddEventListener("click", func(el js.DOMElement, ev js.DOMEvent) {
+		if !mv.selected.IsNull() {
+			mv.selected.RemoveClass("path-selected")
+		}
+		mv.selected = path.ToElement(mv.SVG).AsDOM()
+		mv.selected.AddClass("path-selected")
+		mv.DataElement.Set("innerHTML", seg.Description)
 	})
 	return group
 }
