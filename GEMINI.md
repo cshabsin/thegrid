@@ -1,7 +1,8 @@
 For every prompt, once you're done with your work, create a git commit with
 a message containing a brief description of what you did, a blank line, then
 "Gemini commit: " followed by the prompt that generated the code. Write the
-message to a temp file (in /tmp) and then use git commit -F.
+commit message to the temporary file gemini_commit_message.txt, since it is
+in .gitignore.
 
 In general, when you are editing code that uses `interface{}` replace it with
 the new modern `any`.

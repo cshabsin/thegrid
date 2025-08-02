@@ -7,18 +7,18 @@ import (
 	"github.com/cshabsin/thegrid/apps/explorers/model"
 	"github.com/cshabsin/thegrid/apps/explorers/view"
 	"github.com/cshabsin/thegrid/hexmap"
-	"github.com/cshabsin/thegrid/js"
+	gojs "github.com/cshabsin/thegrid/js"
 	"github.com/cshabsin/thegrid/js/attr"
 	"github.com/cshabsin/thegrid/js/svg"
 )
 
 func main() {
-	url, err := js.URL()
+	url, err := gojs.URL()
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	document := js.Document()
+	document := gojs.Document()
 	svgElem := svg.GetSVGById(document, "map-svg")
 	hm := hexmap.NewHexMap(10, 11, 70, false)
 
@@ -59,15 +59,18 @@ func main() {
 
 	// 4. The interactive elements (planets, labels, event listeners).
 	highlighter := hm.HexagonPath().ToElement(svgElem, attr.ID("highlighter"), attr.Class("map-hexagon-hilite"), attr.Make("visibility", "hidden"), attr.Make("fill", "none"), attr.Make("pointer-events", "none"))
+	selector := hm.HexagonPath().ToElement(svgElem, attr.ID("selector"), attr.Class("map-hexagon-selected"), attr.Make("visibility", "hidden"), attr.Make("fill", "none"), attr.Make("pointer-events", "none"))
 	mapView.Highlighter = highlighter
+	mapView.Selector = selector
 	for col, colData := range explorersSystemData.HexGrid {
 		for row := range colData {
 			mapGroup.Append(mapView.CreateHexAnchor(col, row, explorersSystemData.GetCell(col, row)))
 		}
 	}
 
-	// 5. The highlighter, which appears on top of everything.
+	// 5. The highlighter and selector, which appear on top of everything.
 	mapGroup.Append(highlighter)
+	mapGroup.Append(selector)
 
 	svgElem.SetAttr("height", fmt.Sprintf("%fpx", hm.GetPixHeight()+20))
 	svgElem.SetAttr("width", fmt.Sprintf("%fpx", hm.GetPixWidth()+20))
