@@ -7,7 +7,7 @@ import (
 	"github.com/cshabsin/thegrid/apps/explorers/data"
 	"github.com/cshabsin/thegrid/apps/explorers/model"
 	"github.com/cshabsin/thegrid/hexmap"
-	gojs "github.com/cshabsin/thegrid/js"
+	"github.com/cshabsin/thegrid/js"
 	"github.com/cshabsin/thegrid/js/attr"
 	"github.com/cshabsin/thegrid/js/svg"
 )
@@ -15,10 +15,10 @@ import (
 type MapView struct {
 	SVG         svg.SVG
 	HexMap      *hexmap.HexMap
-	DataElement gojs.DOMElement
+	DataElement js.DOMElement
 	Highlighter svg.Element
 	Selector    svg.Element
-	selected    gojs.DOMElement
+	selected    js.DOMElement
 }
 
 // CreateHexAnchor creates the interactive anchor group for a single hex, but does not append it to the map.
@@ -39,17 +39,17 @@ func (mv *MapView) CreateHexAnchor(col, row int, e model.Entity) svg.Element {
 		}
 	}
 
-	hexAnchor.AddEventListener("mouseenter", func(el gojs.DOMElement, ev gojs.DOMEvent) {
+	hexAnchor.AddEventListener("mouseenter", func(el js.DOMElement, ev js.DOMEvent) {
 		mv.Highlighter.SetAttr("transform", fmt.Sprintf("translate(%f, %f)", hex.CenterX, hex.CenterY))
 		mv.Highlighter.SetAttr("visibility", "visible")
 	})
-	hexAnchor.AddEventListener("mouseleave", func(el gojs.DOMElement, ev gojs.DOMEvent) {
+	hexAnchor.AddEventListener("mouseleave", func(el js.DOMElement, ev js.DOMEvent) {
 		mv.Highlighter.SetAttr("visibility", "hidden")
 	})
-	hexAnchor.AddEventListener("click", func(el gojs.DOMElement, ev gojs.DOMEvent) {
+	hexAnchor.AddEventListener("click", func(el js.DOMElement, ev js.DOMEvent) {
 		if mv.selected.Equal(el) {
 			mv.Selector.SetAttr("visibility", "hidden")
-			mv.selected = gojs.Null()
+			mv.selected = js.Null()
 			mv.DataElement.Set("innerHTML", "")
 			return
 		}
@@ -75,18 +75,18 @@ func (mv *MapView) NewPathSegment(seg data.PathSegment, cls string, attrs ...att
 	g.Append(path)
 	g.Append(pathWide)
 	group := g.ToElement(mv.SVG)
-	group.AddEventListener("mouseenter", func(el gojs.DOMElement, ev gojs.DOMEvent) {
+	group.AddEventListener("mouseenter", func(el js.DOMElement, ev js.DOMEvent) {
 		path.ToElement(mv.SVG).AddClass(cls + "-hilite")
 		mv.DataElement.Set("innerHTML", seg.Description)
 	})
-	group.AddEventListener("mouseleave", func(el gojs.DOMElement, ev gojs.DOMEvent) {
+	group.AddEventListener("mouseleave", func(el js.DOMElement, ev js.DOMEvent) {
 		path.ToElement(mv.SVG).RemoveClass(cls + "-hilite")
 		mv.DataElement.Set("innerHTML", "")
 	})
-	group.AddEventListener("click", func(el gojs.DOMElement, ev gojs.DOMEvent) {
+	group.AddEventListener("click", func(el js.DOMElement, ev js.DOMEvent) {
 		if mv.selected.Equal(el) {
 			mv.Selector.SetAttr("visibility", "hidden")
-			mv.selected = gojs.Null()
+			mv.selected = js.Null()
 			mv.DataElement.Set("innerHTML", "")
 			return
 		}

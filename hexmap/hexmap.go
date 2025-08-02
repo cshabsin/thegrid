@@ -65,11 +65,11 @@ func NewHexMap(width, height int, radius float64, staggerUp bool) *HexMap {
 		for row := range grid[col] {
 			center := hexmap.CellCenter(col, row)
 			grid[col][row] = &Hex{
-				Col:       col,
-				Row:       row,
-				CenterX:   center.X,
-				CenterY:   center.Y,
-				class:     "map-hexagon",
+				Col:     col,
+				Row:     row,
+				CenterX: center.X,
+				CenterY: center.Y,
+				class:   "map-hexagon",
 			}
 		}
 	}

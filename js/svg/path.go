@@ -2,6 +2,7 @@ package svg
 
 import (
 	"fmt"
+
 	"github.com/cshabsin/thegrid/js/attr"
 )
 
