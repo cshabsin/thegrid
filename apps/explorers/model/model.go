@@ -17,7 +17,7 @@ type Entity interface {
 	Description() string
 }
 
-func FromURL(url url.URL) (*MapData, error) {
+func FromURL(url *url.URL) (*MapData, error) {
 	jsonData, err := http.Get(url.String())
 	if err != nil {
 		return nil, err

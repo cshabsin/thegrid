@@ -2,31 +2,30 @@ package main
 
 import (
 	"fmt"
+	"net/url"
 
 	"github.com/cshabsin/thegrid/apps/explorers/data"
 	"github.com/cshabsin/thegrid/apps/explorers/model"
 	"github.com/cshabsin/thegrid/apps/explorers/view"
 	"github.com/cshabsin/thegrid/hexmap"
-	gojs "github.com/cshabsin/thegrid/js"
+	"github.com/cshabsin/thegrid/js"
 	"github.com/cshabsin/thegrid/js/attr"
 	"github.com/cshabsin/thegrid/js/svg"
 )
 
 func main() {
-	url, err := gojs.URL()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	document := gojs.Document()
+	document := js.Document()
 	svgElem := svg.GetSVGById(document, "map-svg")
 	hm := hexmap.NewHexMap(10, 11, 70, false)
 
 	mapGroup := svgElem.CreateElement("g", attr.Make("class", "map-anchor-group"), attr.Make("transform", "translate(10,10)"))
 	view.CreateStarfieldPattern(svgElem)
 
-	newURL := *url
-	newURL.Path = "/explorers/data"
+	newURL, err := url.Parse("data")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	explorersSystemData, err := model.FromURL(newURL)
 	if err != nil {
 		fmt.Println(err)
