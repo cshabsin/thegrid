@@ -66,8 +66,8 @@ func main() {
 	}
 
 	// 5. The highlighter and selector, which appear on top of everything.
-	mapGroup.Append(highlighter)
 	mapGroup.Append(selector)
+	mapGroup.Append(highlighter)
 
 	svgElem.SetAttr("height", fmt.Sprintf("%fpx", hm.GetPixHeight()+20))
 	svgElem.SetAttr("width", fmt.Sprintf("%fpx", hm.GetPixWidth()+20))
