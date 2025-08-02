@@ -3,7 +3,6 @@ package view
 import (
 	"fmt"
 	"math/rand"
-	"syscall/js"
 
 	"github.com/cshabsin/thegrid/apps/explorers/data"
 	"github.com/cshabsin/thegrid/apps/explorers/model"
@@ -19,7 +18,7 @@ type MapView struct {
 	DataElement gojs.DOMElement
 	Highlighter svg.Element
 	Selector    svg.Element
-	selected    js.Value
+	selected    gojs.DOMElement
 }
 
 // CreateHexAnchor creates the interactive anchor group for a single hex, but does not append it to the map.
@@ -48,16 +47,16 @@ func (mv *MapView) CreateHexAnchor(col, row int, e model.Entity) svg.Element {
 		mv.Highlighter.SetAttr("visibility", "hidden")
 	})
 	hexAnchor.AddEventListener("click", func(el gojs.DOMElement, ev gojs.DOMEvent) {
-		if mv.selected.Equal(el.Value) {
+		if mv.selected.Equal(el) {
 			mv.Selector.SetAttr("visibility", "hidden")
-			mv.selected = js.Null()
+			mv.selected = gojs.Null()
 			mv.DataElement.Set("innerHTML", "")
 			return
 		}
 		mv.Selector.SetAttr("d", hex.Path(mv.HexMap.Radius()).D())
 		mv.Selector.SetAttr("transform", fmt.Sprintf("translate(%f, %f)", hex.CenterX, hex.CenterY))
 		mv.Selector.SetAttr("visibility", "visible")
-		mv.selected = el.Value
+		mv.selected = el
 		if e != nil {
 			mv.DataElement.Set("innerHTML", e.Description())
 		}
@@ -85,16 +84,16 @@ func (mv *MapView) NewPathSegment(seg data.PathSegment, cls string, attrs ...att
 		mv.DataElement.Set("innerHTML", "")
 	})
 	group.AddEventListener("click", func(el gojs.DOMElement, ev gojs.DOMEvent) {
-		if mv.selected.Equal(el.Value) {
+		if mv.selected.Equal(el) {
 			mv.Selector.SetAttr("visibility", "hidden")
-			mv.selected = js.Null()
+			mv.selected = gojs.Null()
 			mv.DataElement.Set("innerHTML", "")
 			return
 		}
 		mv.Selector.SetAttr("d", p.D())
 		mv.Selector.SetAttr("transform", "")
 		mv.Selector.SetAttr("visibility", "visible")
-		mv.selected = el.Value
+		mv.selected = el
 		mv.DataElement.Set("innerHTML", seg.Description)
 	})
 	return group

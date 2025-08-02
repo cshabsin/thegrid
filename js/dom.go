@@ -64,7 +64,7 @@ func (document DOMDocument) GetElementByID(id string) DOMElement {
 
 func (document DOMDocument) AddEventListener(eventName string, fn func(el DOMElement, e DOMEvent)) {
 	document.Call("addEventListener", eventName, js.FuncOf(
-		func(this js.Value, args []js.Value) interface{} {
+		func(this js.Value, args []js.Value) any {
 			fn(DOMElement{this, document, Style{this.Get("style")}}, DOMEvent{args[0]})
 			return nil
 		}))
@@ -74,6 +74,14 @@ type DOMElement struct {
 	js.Value
 	document DOMDocument
 	style    Style
+}
+
+func (el DOMElement) IsNull() bool {
+	return el.Value.IsNull()
+}
+
+func (el DOMElement) Equal(other DOMElement) bool {
+	return el.Value.Equal(other.Value)
 }
 
 func (el DOMElement) Style() Style {
@@ -115,7 +123,7 @@ func (el DOMElement) Remove() {
 	el.Call("remove")
 }
 
-func (el DOMElement) SetAttr(name string, value interface{}) {
+func (el DOMElement) SetAttr(name string, value any) {
 	el.Call("setAttribute", name, value)
 }
 
@@ -136,7 +144,7 @@ func (el DOMElement) SetText(text string) DOMElement {
 
 func (el DOMElement) AddEventListener(eventName string, fn func(el DOMElement, e DOMEvent)) {
 	el.Call("addEventListener", eventName, js.FuncOf(
-		func(this js.Value, args []js.Value) interface{} {
+		func(this js.Value, args []js.Value) any {
 			fn(el, DOMEvent{args[0]})
 			return nil
 		}))
@@ -181,7 +189,7 @@ func (el DOMEvent) Key() string {
 }
 
 func RequestAnimationFrame(fn func(timestamp float64)) {
-	js.Global().Call("requestAnimationFrame", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+	js.Global().Call("requestAnimationFrame", js.FuncOf(func(this js.Value, args []js.Value) any {
 		fn(args[0].Float())
 		return nil
 	}))
@@ -193,4 +201,8 @@ func Global() js.Value {
 
 func Confirm(message string) bool {
 	return js.Global().Call("confirm", message).Bool()
+}
+
+func Null() DOMElement {
+	return DOMElement{Value: js.Null()}
 }
