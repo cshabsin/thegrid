@@ -50,21 +50,19 @@ func main() {
 	// 2. The grid mesh border.
 	mapGroup.Append(hm.GridMesh().ToElement(svgElem, attr.Class("map-mesh")))
 
-	// 3. The path segments.
-	mapView := &view.MapView{SVG: svgElem, HexMap: hm, DataElement: document.GetElementByID("data-contents")}
-	for _, seg := range data.ExplorersPathData.Segments {
-		mapGroup.Append(mapView.NewPathSegment(seg, "spiny-rat"))
-	}
-
-	// 4. The interactive elements (planets, labels, event listeners).
+	// 3. The interactive elements (planets, labels, event listeners).
 	highlighter := hm.HexagonPath().ToElement(svgElem, attr.ID("highlighter"), attr.Class("map-hexagon-hilite"), attr.Make("visibility", "hidden"), attr.Make("fill", "none"), attr.Make("pointer-events", "none"))
 	selector := hm.HexagonPath().ToElement(svgElem, attr.ID("selector"), attr.Class("map-hexagon-selected"), attr.Make("visibility", "hidden"), attr.Make("fill", "none"), attr.Make("pointer-events", "none"))
-	mapView.Highlighter = highlighter
-	mapView.Selector = selector
+	mapView := &view.MapView{SVG: svgElem, HexMap: hm, DataElement: document.GetElementByID("data-contents"), Highlighter: highlighter, Selector: selector}
 	for col, colData := range explorersSystemData.HexGrid {
 		for row := range colData {
 			mapGroup.Append(mapView.CreateHexAnchor(col, row, explorersSystemData.GetCell(col, row)))
 		}
+	}
+
+	// 4. The path segments.
+	for _, seg := range data.ExplorersPathData.Segments {
+		mapGroup.Append(mapView.NewPathSegment(seg, "spiny-rat"))
 	}
 
 	// 5. The highlighter and selector, which appear on top of everything.
