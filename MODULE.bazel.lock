@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 3,
-  "moduleFileHash": "6294e9ddaad6d17d934d07c88bcd65b119a1822ec21e45e8929505ec153a795f",
+  "moduleFileHash": "694804b1a84c09652fa6c764f6795d854f6465f0526a4694141b283c81ce1d77",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -20,7 +20,7 @@
       "name": "thegrid",
       "version": "0.1.0",
       "key": "<root>",
-      "repoName": "thegrid",
+      "repoName": "cshabsin_thegrid",
       "executionPlatformsToRegister": [],
       "toolchainsToRegister": [],
       "extensionUsages": [
@@ -30,7 +30,7 @@
           "usingModule": "<root>",
           "location": {
             "file": "@@//:MODULE.bazel",
-            "line": 10,
+            "line": 11,
             "column": 23
           },
           "imports": {},
@@ -44,7 +44,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 14,
+                "line": 12,
                 "column": 17
               }
             }
@@ -58,10 +58,14 @@
           "usingModule": "<root>",
           "location": {
             "file": "@@//:MODULE.bazel",
-            "line": 16,
+            "line": 14,
             "column": 24
           },
-          "imports": {},
+          "imports": {
+            "org_golang_google_api": "org_golang_google_api",
+            "com_google_firebase_go_v4": "com_google_firebase_go_v4",
+            "com_google_cloud_go_firestore": "com_google_cloud_go_firestore"
+          },
           "devImports": [],
           "tags": [
             {
@@ -72,7 +76,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 17,
+                "line": 15,
                 "column": 18
               }
             }
