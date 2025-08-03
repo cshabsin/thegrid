@@ -7,9 +7,9 @@ go_library(
     importpath = "github.com/cshabsin/apps/thegrid/solitaire",
     visibility = ["//visibility:private"],
     deps = [
+        "//apps/solitaire/klondike",
         "//cardkit/ui",
         "//js",
-        "//apps/solitaire/klondike",
     ],
 )
 

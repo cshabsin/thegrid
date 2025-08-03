@@ -1,14 +1,14 @@
 load("@rules_go//go:def.bzl", "go_binary", "go_library")
 
 go_library(
-    name = "solitaire_server",
+    name = "server_lib",
     srcs = ["server.go"],
-    importpath = "github.com/cshabsin/thegrid/solitaire/server",
+    importpath = "github.com/cshabsin/thegrid/apps/solitaire/server",
     visibility = ["//visibility:private"],
 )
 
 go_binary(
     name = "server",
-    embed = [":solitaire_server"],
+    embed = [":server_lib"],
     visibility = ["//visibility:public"],
 )

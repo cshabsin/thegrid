@@ -7,10 +7,10 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//apps/explorers/data",
+        "//apps/explorers/model",
         "//hexmap",
         "//js",
         "//js/attr",
         "//js/svg",
-        "//apps/explorers/model",
     ],
 )
