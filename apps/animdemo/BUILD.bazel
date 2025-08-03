@@ -4,7 +4,7 @@ load("@rules_pkg//:pkg.bzl", "pkg_zip")
 go_library(
     name = "animdemo_lib",
     srcs = ["animdemo.go"],
-    importpath = "github.com/cshabsin/thegrid/animdemo",
+    importpath = "github.com/cshabsin/thegrid/apps/animdemo",
     visibility = ["//visibility:public"],
     deps = [
         "//js",
@@ -23,8 +23,8 @@ go_binary(
 pkg_zip(
     name = "animdemo_pkg",
     srcs = [
-        "index.html",
         "animdemo.css",
+        "index.html",
         ":animdemo.wasm",
     ],
     visibility = ["//server:__pkg__"],
