@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 3,
-  "moduleFileHash": "05c86ad9fdf0effabdc36f1d5948422d1a3e3b61388252e57c3b7ba8ea8ee3c5",
+  "moduleFileHash": "6294e9ddaad6d17d934d07c88bcd65b119a1822ec21e45e8929505ec153a795f",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -25,30 +25,27 @@
       "toolchainsToRegister": [],
       "extensionUsages": [
         {
-          "extensionBzlFile": "//:MODULE.bazel",
-          "extensionName": "_repo_rules",
+          "extensionBzlFile": "@rules_go//go:extensions.bzl",
+          "extensionName": "go_sdk",
           "usingModule": "<root>",
           "location": {
             "file": "@@//:MODULE.bazel",
-            "line": 0,
-            "column": 0
+            "line": 10,
+            "column": 23
           },
-          "imports": {
-            "go_sdk": "go_sdk"
-          },
+          "imports": {},
           "devImports": [],
           "tags": [
             {
-              "tagName": "@rules_go//go:def.bzl%go_sdk",
+              "tagName": "from_file",
               "attributeValues": {
-                "version": "1.23.0",
-                "name": "go_sdk"
+                "go_mod": "//:go.mod"
               },
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 12,
-                "column": 7
+                "line": 14,
+                "column": 17
               }
             }
           ],
@@ -61,7 +58,7 @@
           "usingModule": "<root>",
           "location": {
             "file": "@@//:MODULE.bazel",
-            "line": 17,
+            "line": 16,
             "column": 24
           },
           "imports": {},
@@ -75,7 +72,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 18,
+                "line": 17,
                 "column": 18
               }
             }
@@ -2621,10 +2618,182 @@
       "os:linux,arch:amd64": {
         "bzlTransitiveDigest": "2PzIKcICYKJnje21L1R3ZCVw1BPfp7tcgYnsgIlDk74=",
         "accumulatedFileDigests": {
+          "@@//:go.mod": "fff4c9028d19b9a39a953f8b953a352f95a4a8b926f83781a75bce2dcc031adf",
           "@@rules_go~0.55.1//:go.mod": "347d7e7bf6a0315723e54c1e866c1d3aafe7be4b01d42667b1b11d01b83f2219"
         },
         "envVariables": {},
         "generatedRepoSpecs": {
+          "main___download_0_darwin_amd64": {
+            "bzlFile": "@@rules_go~0.55.1//go/private:sdk.bzl",
+            "ruleClassName": "go_download_sdk_rule",
+            "attributes": {
+              "name": "rules_go~0.55.1~go_sdk~main___download_0_darwin_amd64",
+              "goos": "darwin",
+              "goarch": "amd64",
+              "sdks": {},
+              "experiments": [],
+              "patches": [],
+              "patch_strip": 0,
+              "urls": [
+                "https://dl.google.com/go/{}"
+              ],
+              "version": "1.24.4",
+              "strip_prefix": "go"
+            }
+          },
+          "main___download_0": {
+            "bzlFile": "@@rules_go~0.55.1//go/private:sdk.bzl",
+            "ruleClassName": "go_download_sdk_rule",
+            "attributes": {
+              "name": "rules_go~0.55.1~go_sdk~main___download_0",
+              "goos": "",
+              "goarch": "",
+              "sdks": {},
+              "experiments": [],
+              "patches": [],
+              "patch_strip": 0,
+              "urls": [
+                "https://dl.google.com/go/{}"
+              ],
+              "version": "1.24.4",
+              "strip_prefix": "go"
+            }
+          },
+          "rules_go__download_0_darwin_arm64": {
+            "bzlFile": "@@rules_go~0.55.1//go/private:sdk.bzl",
+            "ruleClassName": "go_download_sdk_rule",
+            "attributes": {
+              "name": "rules_go~0.55.1~go_sdk~rules_go__download_0_darwin_arm64",
+              "goos": "darwin",
+              "goarch": "arm64",
+              "sdks": {},
+              "experiments": [],
+              "patches": [],
+              "patch_strip": 0,
+              "urls": [
+                "https://dl.google.com/go/{}"
+              ],
+              "version": "1.23.6",
+              "strip_prefix": "go"
+            }
+          },
+          "go_host_compatible_sdk_label": {
+            "bzlFile": "@@rules_go~0.55.1//go/private:extensions.bzl",
+            "ruleClassName": "host_compatible_toolchain",
+            "attributes": {
+              "name": "rules_go~0.55.1~go_sdk~go_host_compatible_sdk_label",
+              "toolchain": "@main___download_0//:ROOT"
+            }
+          },
+          "rules_go__download_0_darwin_amd64": {
+            "bzlFile": "@@rules_go~0.55.1//go/private:sdk.bzl",
+            "ruleClassName": "go_download_sdk_rule",
+            "attributes": {
+              "name": "rules_go~0.55.1~go_sdk~rules_go__download_0_darwin_amd64",
+              "goos": "darwin",
+              "goarch": "amd64",
+              "sdks": {},
+              "experiments": [],
+              "patches": [],
+              "patch_strip": 0,
+              "urls": [
+                "https://dl.google.com/go/{}"
+              ],
+              "version": "1.23.6",
+              "strip_prefix": "go"
+            }
+          },
+          "go_toolchains": {
+            "bzlFile": "@@rules_go~0.55.1//go/private:sdk.bzl",
+            "ruleClassName": "go_multiple_toolchains",
+            "attributes": {
+              "name": "rules_go~0.55.1~go_sdk~go_toolchains",
+              "prefixes": [
+                "_0000_main___download_0_",
+                "_0001_main___download_0_darwin_amd64_",
+                "_0002_main___download_0_darwin_arm64_",
+                "_0003_main___download_0_linux_arm64_",
+                "_0004_main___download_0_windows_amd64_",
+                "_0005_main___download_0_windows_arm64_",
+                "_0006_go_default_sdk_",
+                "_0007_rules_go__download_0_darwin_amd64_",
+                "_0008_rules_go__download_0_darwin_arm64_",
+                "_0009_rules_go__download_0_linux_arm64_",
+                "_0010_rules_go__download_0_windows_amd64_",
+                "_0011_rules_go__download_0_windows_arm64_"
+              ],
+              "geese": [
+                "",
+                "darwin",
+                "darwin",
+                "linux",
+                "windows",
+                "windows",
+                "",
+                "darwin",
+                "darwin",
+                "linux",
+                "windows",
+                "windows"
+              ],
+              "goarchs": [
+                "",
+                "amd64",
+                "arm64",
+                "arm64",
+                "amd64",
+                "arm64",
+                "",
+                "amd64",
+                "arm64",
+                "arm64",
+                "amd64",
+                "arm64"
+              ],
+              "sdk_repos": [
+                "main___download_0",
+                "main___download_0_darwin_amd64",
+                "main___download_0_darwin_arm64",
+                "main___download_0_linux_arm64",
+                "main___download_0_windows_amd64",
+                "main___download_0_windows_arm64",
+                "go_default_sdk",
+                "rules_go__download_0_darwin_amd64",
+                "rules_go__download_0_darwin_arm64",
+                "rules_go__download_0_linux_arm64",
+                "rules_go__download_0_windows_amd64",
+                "rules_go__download_0_windows_arm64"
+              ],
+              "sdk_types": [
+                "remote",
+                "remote",
+                "remote",
+                "remote",
+                "remote",
+                "remote",
+                "remote",
+                "remote",
+                "remote",
+                "remote",
+                "remote",
+                "remote"
+              ],
+              "sdk_versions": [
+                "1.24.4",
+                "1.24.4",
+                "1.24.4",
+                "1.24.4",
+                "1.24.4",
+                "1.24.4",
+                "1.23.6",
+                "1.23.6",
+                "1.23.6",
+                "1.23.6",
+                "1.23.6",
+                "1.23.6"
+              ]
+            }
+          },
           "io_bazel_rules_nogo": {
             "bzlFile": "@@rules_go~0.55.1//go/private:nogo.bzl",
             "ruleClassName": "go_register_nogo",
@@ -2635,6 +2804,60 @@
                 "'@@//:__subpackages__'"
               ],
               "excludes": []
+            }
+          },
+          "main___download_0_windows_amd64": {
+            "bzlFile": "@@rules_go~0.55.1//go/private:sdk.bzl",
+            "ruleClassName": "go_download_sdk_rule",
+            "attributes": {
+              "name": "rules_go~0.55.1~go_sdk~main___download_0_windows_amd64",
+              "goos": "windows",
+              "goarch": "amd64",
+              "sdks": {},
+              "experiments": [],
+              "patches": [],
+              "patch_strip": 0,
+              "urls": [
+                "https://dl.google.com/go/{}"
+              ],
+              "version": "1.24.4",
+              "strip_prefix": "go"
+            }
+          },
+          "main___download_0_linux_arm64": {
+            "bzlFile": "@@rules_go~0.55.1//go/private:sdk.bzl",
+            "ruleClassName": "go_download_sdk_rule",
+            "attributes": {
+              "name": "rules_go~0.55.1~go_sdk~main___download_0_linux_arm64",
+              "goos": "linux",
+              "goarch": "arm64",
+              "sdks": {},
+              "experiments": [],
+              "patches": [],
+              "patch_strip": 0,
+              "urls": [
+                "https://dl.google.com/go/{}"
+              ],
+              "version": "1.24.4",
+              "strip_prefix": "go"
+            }
+          },
+          "main___download_0_windows_arm64": {
+            "bzlFile": "@@rules_go~0.55.1//go/private:sdk.bzl",
+            "ruleClassName": "go_download_sdk_rule",
+            "attributes": {
+              "name": "rules_go~0.55.1~go_sdk~main___download_0_windows_arm64",
+              "goos": "windows",
+              "goarch": "arm64",
+              "sdks": {},
+              "experiments": [],
+              "patches": [],
+              "patch_strip": 0,
+              "urls": [
+                "https://dl.google.com/go/{}"
+              ],
+              "version": "1.24.4",
+              "strip_prefix": "go"
             }
           },
           "rules_go__download_0_windows_arm64": {
@@ -2691,11 +2914,11 @@
               "strip_prefix": "go"
             }
           },
-          "rules_go__download_0_darwin_arm64": {
+          "main___download_0_darwin_arm64": {
             "bzlFile": "@@rules_go~0.55.1//go/private:sdk.bzl",
             "ruleClassName": "go_download_sdk_rule",
             "attributes": {
-              "name": "rules_go~0.55.1~go_sdk~rules_go__download_0_darwin_arm64",
+              "name": "rules_go~0.55.1~go_sdk~main___download_0_darwin_arm64",
               "goos": "darwin",
               "goarch": "arm64",
               "sdks": {},
@@ -2705,89 +2928,8 @@
               "urls": [
                 "https://dl.google.com/go/{}"
               ],
-              "version": "1.23.6",
+              "version": "1.24.4",
               "strip_prefix": "go"
-            }
-          },
-          "go_host_compatible_sdk_label": {
-            "bzlFile": "@@rules_go~0.55.1//go/private:extensions.bzl",
-            "ruleClassName": "host_compatible_toolchain",
-            "attributes": {
-              "name": "rules_go~0.55.1~go_sdk~go_host_compatible_sdk_label",
-              "toolchain": "@go_default_sdk//:ROOT"
-            }
-          },
-          "rules_go__download_0_darwin_amd64": {
-            "bzlFile": "@@rules_go~0.55.1//go/private:sdk.bzl",
-            "ruleClassName": "go_download_sdk_rule",
-            "attributes": {
-              "name": "rules_go~0.55.1~go_sdk~rules_go__download_0_darwin_amd64",
-              "goos": "darwin",
-              "goarch": "amd64",
-              "sdks": {},
-              "experiments": [],
-              "patches": [],
-              "patch_strip": 0,
-              "urls": [
-                "https://dl.google.com/go/{}"
-              ],
-              "version": "1.23.6",
-              "strip_prefix": "go"
-            }
-          },
-          "go_toolchains": {
-            "bzlFile": "@@rules_go~0.55.1//go/private:sdk.bzl",
-            "ruleClassName": "go_multiple_toolchains",
-            "attributes": {
-              "name": "rules_go~0.55.1~go_sdk~go_toolchains",
-              "prefixes": [
-                "_0000_go_default_sdk_",
-                "_0001_rules_go__download_0_darwin_amd64_",
-                "_0002_rules_go__download_0_darwin_arm64_",
-                "_0003_rules_go__download_0_linux_arm64_",
-                "_0004_rules_go__download_0_windows_amd64_",
-                "_0005_rules_go__download_0_windows_arm64_"
-              ],
-              "geese": [
-                "",
-                "darwin",
-                "darwin",
-                "linux",
-                "windows",
-                "windows"
-              ],
-              "goarchs": [
-                "",
-                "amd64",
-                "arm64",
-                "arm64",
-                "amd64",
-                "arm64"
-              ],
-              "sdk_repos": [
-                "go_default_sdk",
-                "rules_go__download_0_darwin_amd64",
-                "rules_go__download_0_darwin_arm64",
-                "rules_go__download_0_linux_arm64",
-                "rules_go__download_0_windows_amd64",
-                "rules_go__download_0_windows_arm64"
-              ],
-              "sdk_types": [
-                "remote",
-                "remote",
-                "remote",
-                "remote",
-                "remote",
-                "remote"
-              ],
-              "sdk_versions": [
-                "1.23.6",
-                "1.23.6",
-                "1.23.6",
-                "1.23.6",
-                "1.23.6",
-                "1.23.6"
-              ]
             }
           },
           "rules_go__download_0_windows_amd64": {
