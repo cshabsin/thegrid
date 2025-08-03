@@ -4,7 +4,7 @@ go_library(
     name = "dataservice",
     srcs = ["client.go"],
     importpath = "github.com/cshabsin/thegrid/apps/explorers/dataservice",
-    visibility = ["//apps/explorers:__pkg__"],
+    visibility = ["//apps/explorers:__subpackages__"],
     deps = [
         "//apps/explorers/data",
         "@com_google_cloud_go_firestore//:go_default_library",

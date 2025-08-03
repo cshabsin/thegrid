@@ -8,6 +8,11 @@ bazel_dep(name = "rules_go", version = "0.55.1", repo_name = "rules_go")
 bazel_dep(name = "gazelle", version = "0.44.0", repo_name = "gazelle")
 bazel_dep(name = "rules_pkg", version = "1.1.0", repo_name = "rules_pkg")
 
+local_path_override(
+    module_name="gazelle",
+    path="../../bazel-contrib/bazel-gazelle",
+)
+
 go_deps = use_extension("@gazelle//:extensions.bzl", "go_deps")
 go_deps.from_file(go_mod = "//:go.mod")
 
