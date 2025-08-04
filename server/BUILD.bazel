@@ -8,6 +8,7 @@ go_binary(
         "//apps/explorers:explorers_pkg",
         "//apps/lissajous:lissajous_pkg",
         "//apps/solitaire:solitaire_pkg",
+        "//apps/delta:delta_pkg",
     ],
     embed = [":server_lib"],
     visibility = ["//visibility:public"],

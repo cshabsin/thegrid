@@ -1,0 +1,32 @@
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
+load("@rules_pkg//:pkg.bzl", "pkg_zip")
+
+go_library(
+    name = "delta",
+    srcs = ["delta.go"],
+    importpath = "github.com/cshabsin/apps/thegrid/delta",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//cardkit/card",
+        "//cardkit/ui",
+        "//js",
+    ],
+)
+
+go_binary(
+    name = "delta.wasm",
+    embed = [":delta"],
+    goarch = "wasm",
+    goos = "js",
+    visibility = ["//visibility:public"],
+)
+
+pkg_zip(
+    name = "delta_pkg",
+    srcs = [
+        "index.html",
+        "delta.css",
+        ":delta.wasm",
+    ],
+    visibility = ["//server:__pkg__"],
+)
