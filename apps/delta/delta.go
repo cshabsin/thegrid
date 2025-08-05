@@ -66,9 +66,9 @@ func (g *Game) GetPileLayout(name string) ui.PileLayout {
 		CardOffset: 20,
 	}
 	if player == g.povPlayer {
-		layout.CardOffset = 110
+		layout.CardOffset = 120
 		layout.Top = 600
-		layout.Left = 450
+		layout.Left = 440
 	} else {
 		// Arrange other players in a semicircle at the top of the board.
 		numOtherPlayers := numPlayers - 1
