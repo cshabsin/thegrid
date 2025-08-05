@@ -96,13 +96,22 @@ func (g *Game) ToggleDebugWin()             {}
 func (g *Game) NewGame()                    {}
 
 func main() {
-	doc := js.Document()
-	doc.AddEventListener("DOMContentLoaded", func(_ js.DOMElement, _ js.DOMEvent) {
+	setup := func() {
 		fmt.Println("Hello, Delta!")
 		game := New(0)
+		doc := js.Document()
 		boardDiv := doc.GetElementByID("game-board")
 		ui.NewBoard(game, doc, boardDiv)
-	})
+	}
+
+	doc := js.Document()
+	if doc.ReadyState() == "loading" {
+		doc.AddEventListener("DOMContentLoaded", func(_ js.DOMElement, _ js.DOMEvent) {
+			setup()
+		})
+	} else {
+		setup()
+	}
 
 	select {}
 }

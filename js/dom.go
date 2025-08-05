@@ -34,6 +34,10 @@ func Document() DOMDocument {
 	return DOMDocument{js.Global().Get("document")}
 }
 
+func (document DOMDocument) ReadyState() string {
+	return document.Get("readyState").String()
+}
+
 func (document DOMDocument) Body() DOMElement {
 	bodyVal := document.Get("body")
 	return DOMElement{bodyVal, document, Style{bodyVal.Get("style")}}
