@@ -46,7 +46,6 @@ func (g *Game) AllCards() []*card.Card {
 	for _, hand := range g.hands {
 		cards = append(cards, hand...)
 	}
-	cards = append(cards, g.deck...)
 	return cards
 }
 

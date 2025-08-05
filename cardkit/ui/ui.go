@@ -71,8 +71,7 @@ func (b *Board) reset(doc js.DOMDocument, boardDiv js.DOMElement) {
 	for _, name := range pileNames {
 		pileDiv := createDiv(doc, attr.Class("pile"))
 		layout := b.game.GetPileLayout(name)
-		if layout.ClassName != "" {
-			pileDiv.AddClass(layout.ClassName)
+		pileDiv.AddClass(layout.ClassName)
 		}
 		if layout.GridColumn > 0 {
 			pileDiv.SetStyle(style.GridColumn(fmt.Sprintf("%d", layout.GridColumn)))
