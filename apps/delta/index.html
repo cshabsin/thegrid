@@ -2,7 +2,35 @@
     <head>
         <meta charset="utf-8"/>
         <script src="/static/wasm_exec.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-auth-compat.js"></script>
         <script>
+            // TODO: Replace with your web app's Firebase configuration
+            const firebaseConfig = {
+              apiKey: "API_KEY",
+              authDomain: "PROJECT_ID.firebaseapp.com",
+              projectId: "PROJECT_ID",
+              storageBucket: "PROJECT_ID.appspot.com",
+              messagingSenderId: "SENDER_ID",
+              appId: "APP_ID"
+            };
+
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+
+            window.signIn = () => {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                firebase.auth().signInWithPopup(provider);
+            };
+
+            window.signOut = () => {
+                firebase.auth().signOut();
+            };
+
+            window.onAuthStateChanged = (callback) => {
+                firebase.auth().onAuthStateChanged(callback);
+            };
+
             const go = new Go();
             WebAssembly.instantiateStreaming(fetch("delta.wasm"), go.importObject).then((result) => {
                 go.run(result.instance);
@@ -14,6 +42,9 @@
 </head>
     <body>
         <div id="game-board">
+        </div>
+        <div id="login-button-container">
+            <button id="login-button">Login</button>
         </div>
     </body>
 </html>

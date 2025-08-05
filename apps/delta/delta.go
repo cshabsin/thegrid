@@ -63,12 +63,12 @@ func (g *Game) GetPileLayout(name string) ui.PileLayout {
 	fmt.Sscanf(name, "hand-%d", &player)
 	layout := ui.PileLayout{
 		Direction:  ui.Horizontal,
-		CardOffset: 20,
+		CardOffset: 25,
 	}
 	if player == g.povPlayer {
-		layout.CardOffset = 120
+		layout.CardOffset = 25
 		layout.Top = 600
-		layout.Left = 440
+		layout.Left = 495
 	} else {
 		// Arrange other players in a semicircle at the top of the board.
 		numOtherPlayers := numPlayers - 1
@@ -111,6 +111,21 @@ func main() {
 		doc := js.Document()
 		boardDiv := doc.GetElementByID("game-board")
 		ui.NewBoard(game, doc, boardDiv)
+
+		loginButton := doc.GetElementByID("login-button")
+		loginButton.AddEventListener("click", func(_ js.DOMElement, _ js.DOMEvent) {
+			js.Global().Call("signIn")
+		})
+
+		js.Global().Call("onAuthStateChanged", js.FuncOf(func(this js.Value, args []js.Value) any {
+			user := args[0]
+			if !user.IsNull() {
+				fmt.Println("User is signed in:", user.Get("displayName").String())
+			} else {
+				fmt.Println("User is signed out")
+			}
+			return nil
+		}))
 	}
 
 	doc := js.Document()
