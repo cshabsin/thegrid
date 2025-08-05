@@ -4,24 +4,8 @@
         <script src="/static/wasm_exec.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-auth-compat.js"></script>
+        <script src="auth.js"></script>
         <script>
-            window.initializeApp = (config) => {
-                firebase.initializeApp(config);
-            };
-
-            window.signIn = () => {
-                const provider = new firebase.auth.GoogleAuthProvider();
-                firebase.auth().signInWithPopup(provider);
-            };
-
-            window.signOut = () => {
-                firebase.auth().signOut();
-            };
-
-            window.onAuthStateChanged = (callback) => {
-                firebase.auth().onAuthStateChanged(callback);
-            };
-
             const go = new Go();
             WebAssembly.instantiateStreaming(fetch("delta.wasm"), go.importObject).then((result) => {
                 go.run(result.instance);

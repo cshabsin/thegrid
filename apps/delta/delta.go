@@ -3,11 +3,13 @@ package main
 import (
 	"fmt"
 	"math"
+	"syscall/js"
 
 	"github.com/cshabsin/thegrid/cardkit/card"
 	"github.com/cshabsin/thegrid/cardkit/deck"
 	"github.com/cshabsin/thegrid/cardkit/pile"
 	"github.com/cshabsin/thegrid/cardkit/ui"
+	"github.com/cshabsin/thegrid/firebase/auth"
 	"github.com/cshabsin/thegrid/js"
 )
 
@@ -109,24 +111,22 @@ func main() {
 		fmt.Println("Hello, Delta!")
 		game := New(0)
 		doc := js.Document()
-		js.Global().Call("initializeApp", game.FirebaseConfig())
+		auth.InitializeApp(firebaseConfig)
 		boardDiv := doc.GetElementByID("game-board")
 		ui.NewBoard(game, doc, boardDiv)
 
 		loginButton := doc.GetElementByID("login-button")
 		loginButton.AddEventListener("click", func(_ js.DOMElement, _ js.DOMEvent) {
-			js.Global().Call("signIn")
+			auth.SignIn()
 		})
 
-		js.Global().Call("onAuthStateChanged", js.FuncOf(func(this js.Value, args []js.Value) any {
-			user := args[0]
+		auth.OnAuthStateChanged(func(user js.Value) {
 			if !user.IsNull() {
 				fmt.Println("User is signed in:", user.Get("displayName").String())
 			} else {
 				fmt.Println("User is signed out")
 			}
-			return nil
-		}))
+		})
 	}
 
 	doc := js.Document()

@@ -14,6 +14,7 @@ go_library(
         "//cardkit/deck",
         "//cardkit/pile",
         "//cardkit/ui",
+        "//firebase/auth",
         "//js",
     ],
 )
@@ -30,6 +31,7 @@ pkg_zip(
     name = "delta_pkg",
     srcs = [
         "//cardkit/ui:css",
+        "//firebase/auth:js",
         "delta.css",
         "index.html",
         ":delta.wasm",
