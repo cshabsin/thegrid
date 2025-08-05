@@ -4,14 +4,17 @@ import (
 	"fmt"
 
 	"github.com/cshabsin/thegrid/cardkit/card"
+	"github.com/cshabsin/thegrid/cardkit/deck"
 	"github.com/cshabsin/thegrid/cardkit/pile"
 	"github.com/cshabsin/thegrid/cardkit/ui"
 	"github.com/cshabsin/thegrid/js"
 )
 
-type Game struct{}
+type Game struct {
+	deck deck.Deck
+}
 
-func (g *Game) AllCards() []*card.Card                  { return nil }
+func (g *Game) AllCards() []*card.Card                  { return g.deck }
 func (g *Game) GetAllPiles() map[string]pile.Pile       { return nil }
 func (g *Game) GetPileLayout(name string) ui.PileLayout { return ui.PileLayout{} }
 func (g *Game) AddListener(func())                      {}
@@ -29,7 +32,9 @@ func main() {
 	doc := js.Document()
 	doc.AddEventListener("DOMContentLoaded", func(_ js.DOMElement, _ js.DOMEvent) {
 		fmt.Println("Hello, Delta!")
-		game := &Game{}
+		game := &Game{
+			deck: deck.NewStandard52(),
+		}
 		ui.NewBoard(game, doc, doc.GetElementByID("game-board"))
 	})
 

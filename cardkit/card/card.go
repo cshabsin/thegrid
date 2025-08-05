@@ -2,8 +2,6 @@ package card
 
 import (
 	"fmt"
-	"math/rand"
-	"time"
 )
 
 type Suit int
@@ -76,32 +74,4 @@ type Card struct {
 	Suit   Suit
 	Rank   Rank
 	FaceUp bool
-}
-
-type Deck []*Card
-
-func NewStandard52() Deck {
-	deck := make(Deck, 0, 52)
-	for suit := Clubs; suit <= Spades; suit++ {
-		for rank := Ace; rank <= King; rank++ {
-			deck = append(deck, &Card{Suit: suit, Rank: rank})
-		}
-	}
-	return deck
-}
-
-func (d Deck) Shuffle() {
-	rand.Seed(time.Now().UnixNano())
-	rand.Shuffle(len(d), func(i, j int) {
-		d[i], d[j] = d[j], d[i]
-	})
-}
-
-func (d *Deck) Draw() *Card {
-	if len(*d) == 0 {
-		return nil
-	}
-	card := (*d)[0]
-	*d = (*d)[1:]
-	return card
 }

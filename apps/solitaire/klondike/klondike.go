@@ -5,12 +5,13 @@ import (
 	"strings"
 
 	"github.com/cshabsin/thegrid/cardkit/card"
+	"github.com/cshabsin/thegrid/cardkit/deck"
 	"github.com/cshabsin/thegrid/cardkit/pile"
 	"github.com/cshabsin/thegrid/cardkit/ui"
 )
 
 type Klondike struct {
-	Deck         card.Deck
+	Deck         deck.Deck
 	Tableau      [7]pile.Pile
 	Foundations  [4]pile.Pile
 	Stock        pile.Pile
@@ -21,7 +22,7 @@ type Klondike struct {
 }
 
 func New() *Klondike {
-	deck := card.NewStandard52()
+	deck := deck.NewStandard52()
 	deck.Shuffle()
 
 	game := &Klondike{
