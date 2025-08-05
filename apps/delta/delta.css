@@ -8,4 +8,12 @@ body {
     height: 768px;
     background-color: green;
     border: 1px solid black;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: repeat(8, 1fr);
+}
+
+.hand-0 {
+    grid-row: 2;
+    grid-column: 4 / span 2;
 }
