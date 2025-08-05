@@ -66,7 +66,8 @@ func (g *Game) GetPileLayout(name string) ui.PileLayout {
 	}
 	if player == g.povPlayer {
 		layout.CardOffset = 110
-		layout.ClassName = fmt.Sprintf("hand-%d", player)
+		layout.GridRow = 2
+		layout.GridColumn = 4
 	} else {
 		layout.GridRow = 1
 		layout.GridColumn = player + 1
@@ -99,7 +100,8 @@ func main() {
 	doc.AddEventListener("DOMContentLoaded", func(_ js.DOMElement, _ js.DOMEvent) {
 		fmt.Println("Hello, Delta!")
 		game := New(0)
-		ui.NewBoard(game, doc, doc.GetElementByID("game-board"))
+		boardDiv := doc.GetElementByID("game-board")
+		ui.NewBoard(game, doc, boardDiv)
 	})
 
 	select {}
