@@ -7,6 +7,7 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//cardkit/card",
+        "//cardkit/deck",
         "//cardkit/pile",
         "//cardkit/ui",
     ],

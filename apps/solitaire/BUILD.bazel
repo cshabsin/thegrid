@@ -25,6 +25,7 @@ pkg_zip(
     name = "solitaire_pkg",
     srcs = [
         "index.html",
+        "//cardkit/ui:css",
         "solitaire.css",
         ":solitaire.wasm",
     ],

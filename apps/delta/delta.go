@@ -28,8 +28,8 @@ func New(povPlayer int) *Game {
 		povPlayer: povPlayer,
 	}
 
-	for i := 0; i < numPlayers; i++ {
-		for j := 0; j < 2; j++ {
+	for i := range numPlayers {
+		for range 2 {
 			card := game.deck.Draw()
 			if i == game.povPlayer {
 				card.FaceUp = true
