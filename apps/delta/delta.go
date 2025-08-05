@@ -109,6 +109,7 @@ func main() {
 		fmt.Println("Hello, Delta!")
 		game := New(0)
 		doc := js.Document()
+		js.Global().Call("initializeApp", game.FirebaseConfig())
 		boardDiv := doc.GetElementByID("game-board")
 		ui.NewBoard(game, doc, boardDiv)
 

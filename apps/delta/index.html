@@ -5,18 +5,9 @@
         <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-auth-compat.js"></script>
         <script>
-            // TODO: Replace with your web app's Firebase configuration
-            const firebaseConfig = {
-              apiKey: "API_KEY",
-              authDomain: "PROJECT_ID.firebaseapp.com",
-              projectId: "PROJECT_ID",
-              storageBucket: "PROJECT_ID.appspot.com",
-              messagingSenderId: "SENDER_ID",
-              appId: "APP_ID"
+            window.initializeApp = (config) => {
+                firebase.initializeApp(config);
             };
-
-            // Initialize Firebase
-            firebase.initializeApp(firebaseConfig);
 
             window.signIn = () => {
                 const provider = new firebase.auth.GoogleAuthProvider();

@@ -20,3 +20,4 @@ bazel-out
 bazel-testlogs
 bazel-thegrid
 gemini_commit_message.txt
+apps/delta/config.go
