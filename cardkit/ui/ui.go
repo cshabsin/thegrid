@@ -20,6 +20,8 @@ const (
 )
 
 type PileLayout struct {
+	Top        int
+	Left       int
 	GridRow    int
 	GridColumn int
 	Direction  LayoutDirection
@@ -75,6 +77,12 @@ func (b *Board) reset(doc js.DOMDocument, boardDiv js.DOMElement) {
 			pileDiv.AddClass(layout.ClassName)
 		}
 
+		if layout.Top > 0 {
+			pileDiv.SetStyle(style.Top(fmt.Sprintf("%dpx", layout.Top)))
+		}
+		if layout.Left > 0 {
+			pileDiv.SetStyle(style.Left(fmt.Sprintf("%dpx", layout.Left)))
+		}
 		if layout.GridColumn > 0 {
 			pileDiv.SetStyle(style.GridColumn(fmt.Sprintf("%d", layout.GridColumn)))
 		}

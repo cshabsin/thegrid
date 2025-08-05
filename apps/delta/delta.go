@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 
 	"github.com/cshabsin/thegrid/cardkit/card"
 	"github.com/cshabsin/thegrid/cardkit/deck"
@@ -10,7 +11,7 @@ import (
 	"github.com/cshabsin/thegrid/js"
 )
 
-const numPlayers = 2
+const numPlayers = 6
 
 type Game struct {
 	deck      deck.Deck
@@ -66,11 +67,19 @@ func (g *Game) GetPileLayout(name string) ui.PileLayout {
 	}
 	if player == g.povPlayer {
 		layout.CardOffset = 110
-		layout.GridRow = 2
-		layout.GridColumn = 4
+		layout.Top = 600
+		layout.Left = 450
 	} else {
-		layout.GridRow = 1
-		layout.GridColumn = player + 1
+		// Arrange other players in a semicircle at the top of the board.
+		numOtherPlayers := numPlayers - 1
+		playerIndex := player
+		if player > g.povPlayer {
+			playerIndex--
+		}
+		angle := math.Pi * float64(playerIndex+1) / float64(numOtherPlayers+1)
+		radius := 300.0
+		layout.Left = int(512 - radius*math.Cos(angle) - 50)
+		layout.Top = int(325 - radius*math.Sin(angle))
 	}
 	return layout
 }
