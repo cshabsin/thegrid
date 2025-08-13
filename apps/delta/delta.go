@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"math"
-	syscalljs "syscall/js"
 
 	"github.com/cshabsin/thegrid/cardkit/card"
 	"github.com/cshabsin/thegrid/cardkit/deck"
@@ -120,9 +119,9 @@ func main() {
 			auth.SignIn()
 		})
 
-		auth.OnAuthStateChanged(func(user syscalljs.Value) {
+		auth.OnAuthStateChanged(func(user js.User) {
 			if !user.IsNull() {
-				fmt.Println("User is signed in:", user.Get("displayName").String())
+				fmt.Println("User is signed in:", user.DisplayName())
 			} else {
 				fmt.Println("User is signed out")
 			}

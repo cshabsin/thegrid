@@ -1,7 +1,9 @@
 package auth
 
 import (
-	"syscall/js"
+	syscalljs "syscall/js"
+
+	"github.com/cshabsin/thegrid/js"
 )
 
 type Config struct {
@@ -13,8 +15,8 @@ type Config struct {
 	AppID             string `json:"appId"`
 }
 
-func (c *Config) toJS() js.Value {
-	return js.ValueOf(map[string]any{
+func (c *Config) toJS() syscalljs.Value {
+	return syscalljs.ValueOf(map[string]any{
 		"apiKey":            c.APIKey,
 		"authDomain":        c.AuthDomain,
 		"projectId":         c.ProjectID,
@@ -25,20 +27,20 @@ func (c *Config) toJS() js.Value {
 }
 
 func InitializeApp(config *Config) {
-	js.Global().Get("firebaseAuth").Call("initializeApp", config.toJS())
+	syscalljs.Global().Get("firebaseAuth").Call("initializeApp", config.toJS())
 }
 
 func SignIn() {
-	js.Global().Get("firebaseAuth").Call("signIn")
+	syscalljs.Global().Get("firebaseAuth").Call("signIn")
 }
 
 func SignOut() {
-	js.Global().Get("firebaseAuth").Call("signOut")
+	syscalljs.Global().Get("firebaseAuth").Call("signOut")
 }
 
-func OnAuthStateChanged(callback func(user js.Value)) {
-	js.Global().Get("firebaseAuth").Call("onAuthStateChanged", js.FuncOf(func(this js.Value, args []js.Value) any {
-		callback(args[0])
+func OnAuthStateChanged(callback func(user js.User)) {
+	syscalljs.Global().Get("firebaseAuth").Call("onAuthStateChanged", syscalljs.FuncOf(func(this syscalljs.Value, args []syscalljs.Value) any {
+		callback(js.User{Value: args[0]})
 		return nil
 	}))
 }
