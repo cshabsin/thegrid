@@ -119,7 +119,7 @@ func main() {
 			auth.SignIn()
 		})
 
-		auth.OnAuthStateChanged(func(user js.User) {
+		auth.OnAuthStateChanged(func(user auth.User) {
 			if !user.IsNull() {
 				fmt.Println("User is signed in:", user.DisplayName())
 			} else {

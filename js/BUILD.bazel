@@ -5,7 +5,6 @@ go_library(
     srcs = [
         "dom.go",
         "style.go",
-        "user.go",
     ],
     importpath = "github.com/cshabsin/thegrid/js",
     visibility = ["//visibility:public"],
