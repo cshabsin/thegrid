@@ -2,9 +2,7 @@
     <head>
         <meta charset="utf-8"/>
         <script src="/static/wasm_exec.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-auth-compat.js"></script>
-        <script src="auth.js"></script>
+        <script src="../../firebase/auth/bundle.js"></script>
         <script>
             const go = new Go();
             WebAssembly.instantiateStreaming(fetch("delta.wasm"), go.importObject).then((result) => {

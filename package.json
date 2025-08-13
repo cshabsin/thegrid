@@ -1,0 +1,18 @@
+{
+  "name": "thegrid",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "esbuild firebase/auth/auth.js --bundle --outfile=firebase/auth/bundle.js --format=iife --global-name=theGrid.firebase.auth"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^12.1.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.9"
+  }
+}
