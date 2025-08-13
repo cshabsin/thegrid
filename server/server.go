@@ -67,6 +67,10 @@ func main() {
 		}
 	})
 
+	http.HandleFunc("/firebase/auth/bundle.js", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "firebase/auth/bundle.js")
+	})
+
 	http.HandleFunc("/explorers/data", func(w http.ResponseWriter, r *http.Request) {
 		jsonData, err := json.Marshal(data.ExplorersMapData)
 		if err != nil {

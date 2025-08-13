@@ -6,6 +6,12 @@ filegroup(
     visibility = ["//visibility:public"],
 )
 
+filegroup(
+    name = "bundle",
+    srcs = ["bundle.js"],
+    visibility = ["//visibility:public"],
+)
+
 go_library(
     name = "auth",
     srcs = ["auth.go"],
