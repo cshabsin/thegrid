@@ -110,6 +110,15 @@ func main() {
 		fmt.Println("Hello, Delta!")
 		game := New(0)
 		doc := js.Document()
+				configVal := js.Global().Get("firebaseConfig")
+		firebaseConfig := &auth.Config{
+			APIKey:            configVal.Get("apiKey").String(),
+			AuthDomain:        configVal.Get("authDomain").String(),
+			ProjectID:         configVal.Get("projectId").String(),
+			StorageBucket:     configVal.Get("storageBucket").String(),
+			MessagingSenderID: configVal.Get("messagingSenderId").String(),
+			AppID:             configVal.Get("appId").String(),
+		}
 		auth.InitializeApp(firebaseConfig)
 		boardDiv := doc.GetElementByID("game-board")
 		ui.NewBoard(game, doc, boardDiv)

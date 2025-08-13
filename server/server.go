@@ -27,7 +27,27 @@ func registerApp(name, zipPath string) {
 	log.Printf("Registered app '%s' from %s", name, zipPath)
 }
 
+var config struct {
+	Firebase struct {
+		APIKey            string `json:"apiKey"`
+		AuthDomain        string `json:"authDomain"`
+		ProjectID         string `json:"projectId"`
+		StorageBucket     string `json:"storageBucket"`
+		MessagingSenderID string `json:"messagingSenderId"`
+		AppID             string `json:"appId"`
+	} `json:"firebase"`
+}
+
 func main() {
+	configFile, err := os.Open("server/config.json")
+	if err != nil {
+		log.Fatal("failed to open config file: ", err)
+	}
+	defer configFile.Close()
+	if err := json.NewDecoder(configFile).Decode(&config); err != nil {
+		log.Fatal("failed to decode config file: ", err)
+	}
+
 	filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -46,11 +66,14 @@ func main() {
 			<html>
 				<head>
 					<title>The Grid</title>
+					<script>
+						var firebaseConfig = {{.FirebaseConfig}};
+					</script>
 				</head>
 				<body>
 					<h1>Available Services</h1>
 					<ul>
-						{{range .}}
+						{{range .RegisteredApps}}
 						<li><a href="/{{.}}">{{.}}</a></li>
 						{{end}}
 					</ul>
@@ -62,7 +85,20 @@ func main() {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		if err := t.Execute(w, registeredApps); err != nil {
+		firebaseConfigJSON, err := json.Marshal(config.Firebase)
+		if err != nil {
+			log.Printf("json marshal error: %v", err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		data := struct {
+			RegisteredApps []string
+			FirebaseConfig template.JS
+		}{
+			RegisteredApps: registeredApps,
+			FirebaseConfig: template.JS(firebaseConfigJSON),
+		}
+		if err := t.Execute(w, data); err != nil {
 			log.Printf("template execute error: %v", err)
 		}
 	})

@@ -23,3 +23,4 @@ gemini_commit_message.txt
 apps/delta/config.go
 
 node_modules
+server/config.json

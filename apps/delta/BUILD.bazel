@@ -4,7 +4,6 @@ load("@rules_pkg//:pkg.bzl", "pkg_zip")
 go_library(
     name = "delta",
     srcs = [
-        "config.go",
         "delta.go",
     ],
     importpath = "github.com/cshabsin/apps/thegrid/delta",
