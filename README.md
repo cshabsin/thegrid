@@ -76,7 +76,7 @@ The value of the secret should be a JSON object with the following structure:
 Here is how to find the values for each field in the [Firebase console](https://console.firebase.google.com/):
 
 *   **`apiKey`**: In the Firebase console, go to **Project settings** > **General**. The API key is listed under **Your apps**.
-*   **`authDomain`**: In the Firebase console, go to **Authentication** > **Sign-in method**. The auth domain is listed at the top of the page.
+*   **`authDomain`**: In the Firebase console, go to **Project settings** > **General**. The auth domain is listed in the Firebase SDK snippet under the **Config** option.
 *   **`projectId`**: In the Firebase console, go to **Project settings** > **General**. The project ID is listed under **Your project**.
 *   **`storageBucket`**: In the Firebase console, go to **Storage**. The storage bucket URL is listed at the top of the page. You need to remove the `gs://` prefix.
 *   **`messagingSenderId`**: In the Firebase console, go to **Project settings** > **Cloud Messaging**. The sender ID is listed under **Project credentials**.
