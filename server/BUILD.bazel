@@ -22,5 +22,6 @@ go_library(
     visibility = ["//visibility:private"],
     deps = [
         "//apps/explorers/data",
+        "//secretmanager",
     ],
 )

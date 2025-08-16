@@ -2,6 +2,7 @@ package main
 
 import (
 	"archive/zip"
+	"context"
 	"encoding/json"
 	"fmt"
 	"html/template"
@@ -12,6 +13,7 @@ import (
 	"strings"
 
 	"github.com/cshabsin/thegrid/apps/explorers/data"
+	"github.com/cshabsin/thegrid/secretmanager"
 )
 
 var registeredApps []string
@@ -39,13 +41,13 @@ var config struct {
 }
 
 func main() {
-	configFile, err := os.Open("server/config.json")
+	ctx := context.Background()
+	firebaseConfigJSON, err := secretmanager.GetSecret(ctx, "thegrid-388602", "firebase-config")
 	if err != nil {
-		log.Fatal("failed to open config file: ", err)
+		log.Fatalf("failed to get firebase config from secret manager: %v", err)
 	}
-	defer configFile.Close()
-	if err := json.NewDecoder(configFile).Decode(&config); err != nil {
-		log.Fatal("failed to decode config file: ", err)
+	if err := json.Unmarshal([]byte(firebaseConfigJSON), &config.Firebase); err != nil {
+		log.Fatalf("failed to unmarshal firebase config: %v", err)
 	}
 
 	filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
@@ -98,6 +100,7 @@ func main() {
 			RegisteredApps: registeredApps,
 			FirebaseConfig: template.JS(firebaseConfigJSON),
 		}
+
 		if err := t.Execute(w, data); err != nil {
 			log.Printf("template execute error: %v", err)
 		}
