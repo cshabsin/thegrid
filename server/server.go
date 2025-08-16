@@ -45,15 +45,10 @@ func registerApp(name, zipPath string) {
 					http.Error(w, "failed to parse template", http.StatusInternalServerError)
 					return
 				}
-				firebaseConfigJSON, err := json.Marshal(config.Firebase)
-				if err != nil {
-					http.Error(w, "failed to marshal config", http.StatusInternalServerError)
-					return
-				}
 				data := struct {
-					FirebaseConfig template.JS
+					FirebaseConfig any
 				}{
-					FirebaseConfig: template.JS(firebaseConfigJSON),
+					FirebaseConfig: config.Firebase,
 				}
 				if err := t.Execute(w, data); err != nil {
 					log.Printf("template execute error: %v", err)
@@ -128,18 +123,12 @@ func main() {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		firebaseConfigJSON, err := json.Marshal(config.Firebase)
-		if err != nil {
-			log.Printf("json marshal error: %v", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
 		data := struct {
 			RegisteredApps []string
-			FirebaseConfig template.JS
+			FirebaseConfig any
 		}{
 			RegisteredApps: registeredApps,
-			FirebaseConfig: template.JS(firebaseConfigJSON),
+			FirebaseConfig: config.Firebase,
 		}
 
 		if err := t.Execute(w, data); err != nil {
