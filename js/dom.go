@@ -146,6 +146,10 @@ func (el DOMElement) SetText(text string) DOMElement {
 	return el
 }
 
+func (el DOMElement) SetInnerHTML(html string) {
+	el.Set("innerHTML", html)
+}
+
 func (el DOMElement) AddEventListener(eventName string, fn func(el DOMElement, e DOMEvent)) {
 	el.Call("addEventListener", eventName, js.FuncOf(
 		func(this js.Value, args []js.Value) any {
