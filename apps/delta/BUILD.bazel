@@ -1,12 +1,30 @@
 load("@rules_go//go:def.bzl", "go_binary", "go_library")
 load("@rules_pkg//:pkg.bzl", "pkg_zip")
 
-go_library(
-    name = "delta",
+go_binary(
+    name = "delta.wasm",
+    embed = [":delta_lib"],
+    goarch = "wasm",
+    goos = "js",
+    visibility = ["//visibility:public"],
+)
+
+pkg_zip(
+    name = "delta_pkg",
     srcs = [
-        "delta.go",
+        "delta.css",
+        "index.html",
+        ":delta.wasm",
+        "//cardkit/ui:css",
+        "//firebase/auth:js",
     ],
-    importpath = "github.com/cshabsin/apps/thegrid/delta",
+    visibility = ["//server:__pkg__"],
+)
+
+go_library(
+    name = "delta_lib",
+    srcs = ["delta.go"],
+    importpath = "github.com/cshabsin/thegrid/apps/delta",
     visibility = ["//visibility:private"],
     deps = [
         "//cardkit/card",
@@ -16,24 +34,4 @@ go_library(
         "//firebase/auth",
         "//js",
     ],
-)
-
-go_binary(
-    name = "delta.wasm",
-    embed = [":delta"],
-    goarch = "wasm",
-    goos = "js",
-    visibility = ["//visibility:public"],
-)
-
-pkg_zip(
-    name = "delta_pkg",
-    srcs = [
-        "//cardkit/ui:css",
-        "//firebase/auth:js",
-        "delta.css",
-        "index.html",
-        ":delta.wasm",
-    ],
-    visibility = ["//server:__pkg__"],
 )

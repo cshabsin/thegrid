@@ -5,10 +5,10 @@ go_binary(
     data = [
         ":static/wasm_exec.js",
         "//apps/animdemo:animdemo_pkg",
+        "//apps/delta:delta_pkg",
         "//apps/explorers:explorers_pkg",
         "//apps/lissajous:lissajous_pkg",
         "//apps/solitaire:solitaire_pkg",
-        "//apps/delta:delta_pkg",
         "//firebase/auth:bundle",
     ],
     embed = [":server_lib"],

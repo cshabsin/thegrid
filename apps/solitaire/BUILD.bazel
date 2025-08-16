@@ -2,9 +2,9 @@ load("@rules_go//go:def.bzl", "go_binary", "go_library")
 load("@rules_pkg//:pkg.bzl", "pkg_zip")
 
 go_library(
-    name = "solitaire",
+    name = "solitaire_lib",
     srcs = ["solitaire.go"],
-    importpath = "github.com/cshabsin/apps/thegrid/solitaire",
+    importpath = "github.com/cshabsin/thegrid/apps/solitaire",
     visibility = ["//visibility:private"],
     deps = [
         "//apps/solitaire/klondike",
@@ -15,7 +15,7 @@ go_library(
 
 go_binary(
     name = "solitaire.wasm",
-    embed = [":solitaire"],
+    embed = [":solitaire_lib"],
     goarch = "wasm",
     goos = "js",
     visibility = ["//visibility:public"],
@@ -25,9 +25,9 @@ pkg_zip(
     name = "solitaire_pkg",
     srcs = [
         "index.html",
-        "//cardkit/ui:css",
         "solitaire.css",
         ":solitaire.wasm",
+        "//cardkit/ui:css",
     ],
     visibility = ["//server:__pkg__"],
 )

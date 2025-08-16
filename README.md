@@ -23,6 +23,14 @@ Part of the setup may involve updating the wasm_exec stub that Go provides:
     cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" example/wasm_exec.js
 ```
 
+# Bazel notes
+
+To add a new external dependency, e.g. secretmanager:
+
+Add the import to a Go file somewhere in the directory tree. Run 
+`go mod tidy`, then run `bazel mod tidy`. Then `bazel run //:gazelle`.
+That seems to have done the trick, anyway
+
 # thegrid
 
 (Maybe someday...)

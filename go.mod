@@ -6,6 +6,7 @@ toolchain go1.24.4
 
 require (
 	cloud.google.com/go/firestore v1.18.0
+	cloud.google.com/go/secretmanager v1.14.7
 	firebase.google.com/go/v4 v4.18.0
 	google.golang.org/api v0.244.0
 )

@@ -7,8 +7,8 @@ go_library(
     visibility = ["//apps/explorers:__subpackages__"],
     deps = [
         "//apps/explorers/data",
-        "@com_google_cloud_go_firestore//:go_default_library",
-        "@com_google_firebase_go_v4//:go_default_library",
-        "@org_golang_google_api//iterator:go_default_library",
+        "@com_google_cloud_go_firestore//:firestore",
+        "@com_google_firebase_go_v4//:go",
+        "@org_golang_google_api//iterator",
     ],
 )

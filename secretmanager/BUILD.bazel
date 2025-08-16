@@ -1,0 +1,13 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "secretmanager",
+    srcs = ["client.go"],
+    importpath = "github.com/cshabsin/thegrid/secretmanager",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_google_cloud_go_secretmanager//apiv1",
+        "@com_google_cloud_go_secretmanager//apiv1/secretmanagerpb",
+        "@org_golang_google_api//option",
+    ],
+)
