@@ -1,6 +1,9 @@
 <html>
     <head>
         <meta charset="utf-8"/>
+        <script>
+            var firebaseConfig = {{.FirebaseConfig}};
+        </script>
         <script src="/static/wasm_exec.js"></script>
         <script src="../../firebase/auth/bundle.js"></script>
         <script>
