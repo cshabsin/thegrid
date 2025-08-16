@@ -32,19 +32,39 @@ func registerApp(name, zipPath string) {
 	http.HandleFunc(fmt.Sprintf("/%s/", name), func(w http.ResponseWriter, r *http.Request) {
 		if strings.HasSuffix(r.URL.Path, "/") || strings.HasSuffix(r.URL.Path, "/index.html") {
 			// Look for index.html.tpl
-			tplFile, err := zipReader.Open("index.html.tpl")
+			indexTplFile, err := zipReader.Open("index.html.tpl")
 			if err == nil {
-				defer tplFile.Close()
-				tplContent, err := io.ReadAll(tplFile)
+				defer indexTplFile.Close()
+				indexTplContent, err := io.ReadAll(indexTplFile)
 				if err != nil {
 					http.Error(w, "failed to read template", http.StatusInternalServerError)
 					return
 				}
-				t, err := template.New("index").Parse(string(tplContent))
+
+				authTplFile, err := zipReader.Open("auth.html.tpl")
 				if err != nil {
-					http.Error(w, "failed to parse template", http.StatusInternalServerError)
+					http.Error(w, "failed to open auth template", http.StatusInternalServerError)
 					return
 				}
+								defer authTplFile.Close()
+				authTplContent, err := io.ReadAll(authTplFile)
+				if err != nil {
+					http.Error(w, "failed to read auth template", http.StatusInternalServerError)
+					return
+				}
+
+				t, err := template.New("index").Parse(string(authTplContent))
+				if err != nil {
+					http.Error(w, "failed to parse auth template", http.StatusInternalServerError)
+					return
+				}
+
+				t, err = t.Parse(string(indexTplContent))
+				if err != nil {
+					http.Error(w, "failed to parse index template", http.StatusInternalServerError)
+					return
+				}
+
 				data := struct {
 					FirebaseConfig any
 				}{

@@ -9,6 +9,7 @@ import (
 	"github.com/cshabsin/thegrid/cardkit/pile"
 	"github.com/cshabsin/thegrid/cardkit/ui"
 	"github.com/cshabsin/thegrid/firebase/auth"
+	"github.com/cshabsin/thegrid/firebase/authui"
 	"github.com/cshabsin/thegrid/js"
 )
 
@@ -119,36 +120,9 @@ func main() {
 			MessagingSenderID: configVal.Get("messagingSenderId").String(),
 			AppID:             configVal.Get("appId").String(),
 		}
-		auth.InitializeApp(firebaseConfig)
+		authui.Initialize(firebaseConfig)
 		boardDiv := doc.GetElementByID("game-board")
 		ui.NewBoard(game, doc, boardDiv)
-
-		loginButton := doc.GetElementByID("login-button")
-		loginButton.AddEventListener("click", func(_ js.DOMElement, _ js.DOMEvent) {
-			auth.SignIn()
-		})
-
-		logoutButton := doc.GetElementByID("logout-button")
-		logoutButton.AddEventListener("click", func(_ js.DOMElement, _ js.DOMEvent) {
-			auth.SignOut()
-		})
-
-		loggedOutView := doc.GetElementByID("logged-out-view")
-		loggedInView := doc.GetElementByID("logged-in-view")
-		userName := doc.GetElementByID("user-name")
-
-		auth.OnAuthStateChanged(func(user auth.User) {
-			if !user.IsNull() {
-				fmt.Println("User is signed in:", user.DisplayName())
-				userName.SetInnerHTML(user.DisplayName())
-				loggedOutView.Style().SetProperty("display", "none")
-				loggedInView.Style().SetProperty("display", "block")
-			} else {
-				fmt.Println("User is signed out")
-				loggedOutView.Style().SetProperty("display", "block")
-				loggedInView.Style().SetProperty("display", "none")
-			}
-		})
 	}
 
 	doc := js.Document()
