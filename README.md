@@ -53,3 +53,31 @@ the four directions.
 
 From here... can I move things around enough to make a tower defense game? A
 manufactoria type game? I don't know.
+
+# Firebase Configuration
+
+The server fetches the Firebase configuration from Google Secret Manager. You will need to create a secret named `firebase-config` in your Google Cloud project.
+
+The value of the secret should be a JSON object with the following structure:
+
+```json
+{
+  "firebase": {
+    "apiKey": "YOUR_API_KEY",
+    "authDomain": "YOUR_AUTH_DOMAIN",
+    "projectId": "YOUR_PROJECT_ID",
+    "storageBucket": "YOUR_STORAGE_BUCKET",
+    "messagingSenderId": "YOUR_MESSAGING_SENDER_ID",
+    "appId": "YOUR_APP_ID"
+  }
+}
+```
+
+Here is how to find the values for each field in the [Firebase console](https://console.firebase.google.com/):
+
+*   **`apiKey`**: In the Firebase console, go to **Project settings** > **General**. The API key is listed under **Your apps**.
+*   **`authDomain`**: In the Firebase console, go to **Authentication** > **Sign-in method**. The auth domain is listed at the top of the page.
+*   **`projectId`**: In the Firebase console, go to **Project settings** > **General**. The project ID is listed under **Your project**.
+*   **`storageBucket`**: In the Firebase console, go to **Storage**. The storage bucket URL is listed at the top of the page. You need to remove the `gs://` prefix.
+*   **`messagingSenderId`**: In the Firebase console, go to **Project settings** > **Cloud Messaging**. The sender ID is listed under **Project credentials**.
+*   **`appId`**: In the Firebase console, go to **Project settings** > **General**. The app ID is listed under **Your apps**.
