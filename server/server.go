@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -17,6 +18,7 @@ import (
 )
 
 var registeredApps []string
+var zipReaders = make(map[string]*zip.ReadCloser)
 
 func registerApp(name, zipPath string) {
 	zipReader, err := zip.OpenReader(zipPath)
@@ -24,7 +26,46 @@ func registerApp(name, zipPath string) {
 		log.Printf("failed to open %s: %v. Skipping.", zipPath, err)
 		return
 	}
-	http.Handle(fmt.Sprintf("/%s/", name), http.StripPrefix(fmt.Sprintf("/%s/", name), http.FileServer(http.FS(zipReader))))
+	zipReaders[name] = zipReader
+
+	fileServer := http.FileServer(http.FS(&zipReader.Reader))
+	http.HandleFunc(fmt.Sprintf("/%s/", name), func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasSuffix(r.URL.Path, "/") || strings.HasSuffix(r.URL.Path, "/index.html") {
+			// Look for index.html.tpl
+			tplFile, err := zipReader.Open("index.html.tpl")
+			if err == nil {
+				defer tplFile.Close()
+				tplContent, err := io.ReadAll(tplFile)
+				if err != nil {
+					http.Error(w, "failed to read template", http.StatusInternalServerError)
+					return
+				}
+				t, err := template.New("index").Parse(string(tplContent))
+				if err != nil {
+					http.Error(w, "failed to parse template", http.StatusInternalServerError)
+					return
+				}
+				firebaseConfigJSON, err := json.Marshal(config.Firebase)
+				if err != nil {
+					http.Error(w, "failed to marshal config", http.StatusInternalServerError)
+					return
+				}
+				data := struct {
+					FirebaseConfig template.JS
+				}{
+					FirebaseConfig: template.JS(firebaseConfigJSON),
+				}
+				if err := t.Execute(w, data); err != nil {
+					log.Printf("template execute error: %v", err)
+				}
+				return
+			}
+		}
+
+		// Fallback to serving files from the zip archive
+		http.StripPrefix(fmt.Sprintf("/%s/", name), fileServer).ServeHTTP(w, r)
+	})
+
 	registeredApps = append(registeredApps, name)
 	log.Printf("Registered app '%s' from %s", name, zipPath)
 }
@@ -42,7 +83,7 @@ var config struct {
 
 func main() {
 	ctx := context.Background()
-	firebaseConfigJSON, err := secretmanager.GetSecret(ctx, "thegrid-388602", "firebase-config")
+	firebaseConfigJSON, err := secretmanager.GetSecret(ctx, "shabsin-thegrid", "firebase-config")
 	if err != nil {
 		log.Fatalf("failed to get firebase config from secret manager: %v", err)
 	}
