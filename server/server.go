@@ -37,18 +37,38 @@ func registerApp(name, zipPath string) {
 				defer bodyTplFile.Close()
 				bodyTplContent, err := io.ReadAll(bodyTplFile)
 				if err != nil {
+					log.Printf("failed to read template: %v", err)
 					http.Error(w, "failed to read template", http.StatusInternalServerError)
 					return
 				}
 
 				t, err := template.ParseFiles("server/templates/layout.html.tpl", "firebase/authui/auth_ui.html.tpl")
 				if err != nil {
+					log.Printf("failed to parse layout templates: %v", err)
 					http.Error(w, "failed to parse layout templates", http.StatusInternalServerError)
 					return
 				}
 
+				headTplFile, err := zipReader.Open("head.html.tpl")
+				if err == nil {
+					defer headTplFile.Close()
+					headTplContent, err := io.ReadAll(headTplFile)
+					if err != nil {
+						log.Printf("failed to read head template: %v", err)
+						http.Error(w, "failed to read head template", http.StatusInternalServerError)
+						return
+					}
+					t, err = t.Parse(string(headTplContent))
+					if err != nil {
+						log.Printf("failed to parse head template: %v", err)
+						http.Error(w, "failed to parse head template", http.StatusInternalServerError)
+						return
+					}
+				}
+
 				t, err = t.Parse(string(bodyTplContent))
 				if err != nil {
+					log.Printf("failed to parse body template: %v", err)
 					http.Error(w, "failed to parse body template", http.StatusInternalServerError)
 					return
 				}
@@ -143,6 +163,10 @@ func main() {
 
 	http.HandleFunc("/firebase/auth/bundle.js", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "firebase/auth/bundle.js")
+	})
+
+	http.HandleFunc("/firebase/authui/auth.css", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "firebase/authui/auth.css")
 	})
 
 	http.HandleFunc("/explorers/data", func(w http.ResponseWriter, r *http.Request) {
