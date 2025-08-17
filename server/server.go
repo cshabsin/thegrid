@@ -2,23 +2,95 @@ package main
 
 import (
 	"archive/zip"
+	
 	"context"
 	"encoding/json"
 	"fmt"
 	"html/template"
 	"io"
+	"io/fs"
 	"log"
+	"mime"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
+	
 
 	"github.com/cshabsin/thegrid/apps/explorers/data"
 	"github.com/cshabsin/thegrid/secretmanager"
 )
 
 var registeredApps []string
-var zipReaders = make(map[string]*zip.ReadCloser)
+
+type appHandler struct {
+	name           string
+	zipReader      *zip.ReadCloser
+	firebaseConfig any
+	templates      fs.FS
+}
+
+func (h *appHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	requestedFile := strings.TrimPrefix(r.URL.Path, fmt.Sprintf("/%s/", h.name))
+	if requestedFile == "" {
+		requestedFile = "index.html"
+	}
+
+	// If the request is for index.html, try to render the template.
+	if requestedFile == "index.html" {
+		// Look for index.html.tpl
+		indexTplFile, err := h.zipReader.Open("index.html.tpl")
+		if err == nil {
+			defer indexTplFile.Close()
+			indexTplContent, err := io.ReadAll(indexTplFile)
+			if err != nil {
+				log.Printf("failed to read template: %v", err)
+				http.Error(w, "failed to read template", http.StatusInternalServerError)
+				return
+			}
+
+			t, err := template.ParseFS(h.templates, "layout.html.tpl", "auth_ui.html.tpl")
+			if err != nil {
+				log.Printf("failed to parse layout templates: %v", err)
+				http.Error(w, "failed to parse layout templates", http.StatusInternalServerError)
+				return
+			}
+
+			t, err = t.Parse(string(indexTplContent))
+			if err != nil {
+				log.Printf("failed to parse index template: %v", err)
+				http.Error(w, "failed to parse index template", http.StatusInternalServerError)
+				return
+			}
+
+			data := struct {
+				Title          string
+				FirebaseConfig any
+			}{
+				Title:          h.name,
+				FirebaseConfig: h.firebaseConfig,
+			}
+			if err := t.ExecuteTemplate(w, "layout.html.tpl", data); err != nil {
+				log.Printf("template execute error: %v", err)
+			}
+			return
+		}
+	}
+
+	// Check if the requested file exists in the zip archive
+	f, err := h.zipReader.Open(requestedFile)
+	if err == nil {
+		// File exists, serve it
+		defer f.Close()
+		contentType := mime.TypeByExtension(filepath.Ext(requestedFile))
+		w.Header().Set("Content-Type", contentType)
+		io.Copy(w, f)
+		return
+	}
+
+	// File not found
+	http.NotFound(w, r)
+}
 
 func registerApp(name, zipPath string) {
 	zipReader, err := zip.OpenReader(zipPath)
@@ -26,65 +98,13 @@ func registerApp(name, zipPath string) {
 		log.Printf("failed to open %s: %v. Skipping.", zipPath, err)
 		return
 	}
-	zipReaders[name] = zipReader
 
-	fileServer := http.FileServer(http.FS(&zipReader.Reader))
-	http.HandleFunc(fmt.Sprintf("/%s/", name), func(w http.ResponseWriter, r *http.Request) {
-		requestedFile := strings.TrimPrefix(r.URL.Path, fmt.Sprintf("/%s/", name))
+	templates, err := fs.Sub(os.DirFS("."), "server/templates")
+	if err != nil {
+		log.Fatalf("failed to create templates fs: %v", err)
+	}
 
-		// If the request is for the root or for index.html, try to render the template.
-		if requestedFile == "" || requestedFile == "index.html" {
-			// Look for index.html.tpl
-			indexTplFile, err := zipReader.Open("index.html.tpl")
-			if err == nil {
-				defer indexTplFile.Close()
-				indexTplContent, err := io.ReadAll(indexTplFile)
-				if err != nil {
-					log.Printf("failed to read template: %v", err)
-					http.Error(w, "failed to read template", http.StatusInternalServerError)
-					return
-				}
-
-				t, err := template.ParseFiles("server/templates/layout.html.tpl", "firebase/authui/auth_ui.html.tpl")
-				if err != nil {
-					log.Printf("failed to parse layout templates: %v", err)
-					http.Error(w, "failed to parse layout templates", http.StatusInternalServerError)
-					return
-				}
-
-				t, err = t.Parse(string(indexTplContent))
-				if err != nil {
-					log.Printf("failed to parse index template: %v", err)
-					http.Error(w, "failed to parse index template", http.StatusInternalServerError)
-					return
-				}
-
-				data := struct {
-					Title          string
-					FirebaseConfig any
-				}{
-					Title:          name,
-					FirebaseConfig: config.Firebase,
-				}
-				if err := t.ExecuteTemplate(w, "layout.html.tpl", data); err != nil {
-					log.Printf("template execute error: %v", err)
-				}
-				return
-			}
-		}
-
-		// Check if the requested file exists in the zip archive
-		f, err := zipReader.Open(requestedFile)
-		if err == nil {
-			// File exists, serve it
-			defer f.Close()
-			fileServer.ServeHTTP(w, r)
-			return
-		}
-
-		// File not found
-		http.NotFound(w, r)
-	})
+	http.Handle(fmt.Sprintf("/%s/", name), &appHandler{name: name, zipReader: zipReader, firebaseConfig: config.Firebase, templates: templates})
 
 	registeredApps = append(registeredApps, name)
 	log.Printf("Registered app '%s' from %s", name, zipPath)

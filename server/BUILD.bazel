@@ -1,4 +1,4 @@
-load("@rules_go//go:def.bzl", "go_binary", "go_library")
+load("@rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
 
 go_binary(
     name = "server",
@@ -25,5 +25,16 @@ go_library(
     deps = [
         "//apps/explorers/data",
         "//secretmanager",
+        
+    ],
+)
+
+go_test(
+    name = "server_test",
+    srcs = ["server_test.go"],
+    embed = [":server_lib"],
+    data = [
+        "//server/templates:layout",
+        "//firebase/authui:auth_templates",
     ],
 )
