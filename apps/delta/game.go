@@ -2,21 +2,49 @@ package delta
 
 import "github.com/cshabsin/thegrid/cardkit/card"
 
-type GameStatus string
+type GameStatus int
 
 const (
-	GameStatusAcceptingPlayers GameStatus = "still accepting new players"
-	GameStatusInProgress      GameStatus = "in progress"
+	GameStatusUnknown GameStatus = iota
+	GameStatusAcceptingPlayers
+	GameStatusInProgress
 )
 
-type GameState string
+func (s GameStatus) String() string {
+	switch s {
+	case GameStatusAcceptingPlayers:
+		return "still accepting new players"
+	case GameStatusInProgress:
+		return "in progress"
+	default:
+		return "unknown"
+	}
+}
+
+type GameState int
 
 const (
-	GameStateInitialDeal GameState = "initial deal"
-	GameStateAfterFlop   GameState = "after flop"
-	GameStateAfterTurn   GameState = "after turn"
-	GameStateAfterRiver  GameState = "after river"
+	GameStateUnknown GameState = iota
+	GameStateInitialDeal
+	GameStateAfterFlop
+	GameStateAfterTurn
+	GameStateAfterRiver
 )
+
+func (s GameState) String() string {
+	switch s {
+	case GameStateInitialDeal:
+		return "initial deal"
+	case GameStateAfterFlop:
+		return "after flop"
+	case GameStateAfterTurn:
+		return "after turn"
+	case GameStateAfterRiver:
+		return "after river"
+	default:
+		return "unknown"
+	}
+}
 
 type Game struct {
 	ID            int                  `firestore:"id"`
