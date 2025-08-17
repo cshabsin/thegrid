@@ -3,7 +3,7 @@ load("@rules_pkg//:pkg.bzl", "pkg_zip")
 
 go_binary(
     name = "delta.wasm",
-    embed = [":delta_lib"],
+    embed = [":main"],
     goarch = "wasm",
     goos = "js",
     visibility = ["//visibility:public"],
@@ -23,11 +23,18 @@ pkg_zip(
 )
 
 go_library(
-    name = "delta_lib",
-    srcs = ["delta.go"],
+    name = "delta",
+    srcs = ["game.go"],
     importpath = "github.com/cshabsin/thegrid/apps/delta",
-    visibility = ["//visibility:private"],
+    visibility = ["//visibility:public"],
+    deps = ["//cardkit/card"],
+)
+
+go_library(
+    name = "main",
+    srcs = ["delta.go"],
     deps = [
+        ":delta",
         "//cardkit/card",
         "//cardkit/deck",
         "//cardkit/pile",
