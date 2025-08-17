@@ -30,12 +30,28 @@ func registerApp(name, zipPath string) {
 
 	fileServer := http.FileServer(http.FS(&zipReader.Reader))
 	http.HandleFunc(fmt.Sprintf("/%s/", name), func(w http.ResponseWriter, r *http.Request) {
-		if strings.HasSuffix(r.URL.Path, "/") || strings.HasSuffix(r.URL.Path, "/index.html") {
-			// Look for body.html.tpl
-			bodyTplFile, err := zipReader.Open("body.html.tpl")
+		requestedFile := strings.TrimPrefix(r.URL.Path, fmt.Sprintf("/%s/", name))
+		if requestedFile == "" {
+			requestedFile = "index.html"
+		}
+
+		// Check if the requested file exists in the zip archive
+		f, err := zipReader.Open(requestedFile)
+		if err == nil {
+			// File exists, serve it
+			defer f.Close()
+			// Use the fileServer to serve the file, so we get content-type headers, etc.
+			fileServer.ServeHTTP(w, r)
+			return
+		}
+
+		// File does not exist. If it's an html file, try to render it with the template.
+		if strings.HasSuffix(r.URL.Path, ".html") {
+			// Look for index.html.tpl
+			indexTplFile, err := zipReader.Open("index.html.tpl")
 			if err == nil {
-				defer bodyTplFile.Close()
-				bodyTplContent, err := io.ReadAll(bodyTplFile)
+				defer indexTplFile.Close()
+				indexTplContent, err := io.ReadAll(indexTplFile)
 				if err != nil {
 					log.Printf("failed to read template: %v", err)
 					http.Error(w, "failed to read template", http.StatusInternalServerError)
@@ -49,27 +65,10 @@ func registerApp(name, zipPath string) {
 					return
 				}
 
-				headTplFile, err := zipReader.Open("head.html.tpl")
-				if err == nil {
-					defer headTplFile.Close()
-					headTplContent, err := io.ReadAll(headTplFile)
-					if err != nil {
-						log.Printf("failed to read head template: %v", err)
-						http.Error(w, "failed to read head template", http.StatusInternalServerError)
-						return
-					}
-					t, err = t.Parse(string(headTplContent))
-					if err != nil {
-						log.Printf("failed to parse head template: %v", err)
-						http.Error(w, "failed to parse head template", http.StatusInternalServerError)
-						return
-					}
-				}
-
-				t, err = t.Parse(string(bodyTplContent))
+				t, err = t.Parse(string(indexTplContent))
 				if err != nil {
-					log.Printf("failed to parse body template: %v", err)
-					http.Error(w, "failed to parse body template", http.StatusInternalServerError)
+					log.Printf("failed to parse index template: %v", err)
+					http.Error(w, "failed to parse index template", http.StatusInternalServerError)
 					return
 				}
 
@@ -87,8 +86,8 @@ func registerApp(name, zipPath string) {
 			}
 		}
 
-		// Fallback to serving files from the zip archive
-		http.StripPrefix(fmt.Sprintf("/%s/", name), fileServer).ServeHTTP(w, r)
+		// File not found
+		http.NotFound(w, r)
 	})
 
 	registeredApps = append(registeredApps, name)

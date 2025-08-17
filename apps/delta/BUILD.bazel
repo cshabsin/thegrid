@@ -13,7 +13,7 @@ pkg_zip(
     name = "delta_pkg",
     srcs = [
         "delta.css",
-        "body.html.tpl",
+        "index.html.tpl",
         ":delta.wasm",
         "//cardkit/ui:css",
         "//firebase/auth:js",
