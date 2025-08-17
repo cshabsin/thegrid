@@ -47,7 +47,7 @@ func registerApp(name, zipPath string) {
 					return
 				}
 
-				t, err = t.New("body").Parse(string(bodyTplContent))
+				t, err = t.Parse(string(bodyTplContent))
 				if err != nil {
 					http.Error(w, "failed to parse body template", http.StatusInternalServerError)
 					return
@@ -60,7 +60,7 @@ func registerApp(name, zipPath string) {
 					Title:          name,
 					FirebaseConfig: config.Firebase,
 				}
-				if err := t.ExecuteTemplate(w, "layout", data); err != nil {
+				if err := t.ExecuteTemplate(w, "layout.html.tpl", data); err != nil {
 					log.Printf("template execute error: %v", err)
 				}
 				return
