@@ -31,46 +31,36 @@ func registerApp(name, zipPath string) {
 	fileServer := http.FileServer(http.FS(&zipReader.Reader))
 	http.HandleFunc(fmt.Sprintf("/%s/", name), func(w http.ResponseWriter, r *http.Request) {
 		if strings.HasSuffix(r.URL.Path, "/") || strings.HasSuffix(r.URL.Path, "/index.html") {
-			// Look for index.html.tpl
-			indexTplFile, err := zipReader.Open("index.html.tpl")
+			// Look for body.html.tpl
+			bodyTplFile, err := zipReader.Open("body.html.tpl")
 			if err == nil {
-				defer indexTplFile.Close()
-				indexTplContent, err := io.ReadAll(indexTplFile)
+				defer bodyTplFile.Close()
+				bodyTplContent, err := io.ReadAll(bodyTplFile)
 				if err != nil {
 					http.Error(w, "failed to read template", http.StatusInternalServerError)
 					return
 				}
 
-				authTplFile, err := zipReader.Open("auth.html.tpl")
+				t, err := template.ParseFiles("server/templates/layout.html.tpl", "firebase/authui/auth_ui.html.tpl")
 				if err != nil {
-					http.Error(w, "failed to open auth template", http.StatusInternalServerError)
-					return
-				}
-								defer authTplFile.Close()
-				authTplContent, err := io.ReadAll(authTplFile)
-				if err != nil {
-					http.Error(w, "failed to read auth template", http.StatusInternalServerError)
+					http.Error(w, "failed to parse layout templates", http.StatusInternalServerError)
 					return
 				}
 
-				t, err := template.New("index").Parse(string(authTplContent))
+				t, err = t.New("body").Parse(string(bodyTplContent))
 				if err != nil {
-					http.Error(w, "failed to parse auth template", http.StatusInternalServerError)
-					return
-				}
-
-				t, err = t.Parse(string(indexTplContent))
-				if err != nil {
-					http.Error(w, "failed to parse index template", http.StatusInternalServerError)
+					http.Error(w, "failed to parse body template", http.StatusInternalServerError)
 					return
 				}
 
 				data := struct {
+					Title          string
 					FirebaseConfig any
 				}{
+					Title:          name,
 					FirebaseConfig: config.Firebase,
 				}
-				if err := t.Execute(w, data); err != nil {
+				if err := t.ExecuteTemplate(w, "layout", data); err != nil {
 					log.Printf("template execute error: %v", err)
 				}
 				return
@@ -124,9 +114,6 @@ func main() {
 			<html>
 				<head>
 					<title>The Grid</title>
-					<script>
-						var firebaseConfig = {{.FirebaseConfig}};
-					</script>
 				</head>
 				<body>
 					<h1>Available Services</h1>
@@ -145,10 +132,8 @@ func main() {
 		}
 		data := struct {
 			RegisteredApps []string
-			FirebaseConfig any
 		}{
 			RegisteredApps: registeredApps,
-			FirebaseConfig: config.Firebase,
 		}
 
 		if err := t.Execute(w, data); err != nil {

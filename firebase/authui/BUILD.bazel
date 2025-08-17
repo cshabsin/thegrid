@@ -2,7 +2,7 @@ load("@rules_go//go:def.bzl", "go_library")
 
 filegroup(
     name = "auth_templates",
-    srcs = ["auth.html.tpl"],
+    srcs = ["auth_ui.html.tpl"],
     visibility = ["//visibility:public"],
 )
 

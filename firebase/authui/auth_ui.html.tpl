@@ -1,3 +1,4 @@
+{{define "auth_ui"}}
 <div id="auth-container">
     <div id="logged-out-view">
         <button id="login-button">Login</button>
@@ -7,3 +8,4 @@
         <button id="logout-button">Logout</button>
     </div>
 </div>
+{{end}}
