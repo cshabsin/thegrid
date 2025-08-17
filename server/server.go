@@ -31,22 +31,9 @@ func registerApp(name, zipPath string) {
 	fileServer := http.FileServer(http.FS(&zipReader.Reader))
 	http.HandleFunc(fmt.Sprintf("/%s/", name), func(w http.ResponseWriter, r *http.Request) {
 		requestedFile := strings.TrimPrefix(r.URL.Path, fmt.Sprintf("/%s/", name))
-		if requestedFile == "" {
-			requestedFile = "index.html"
-		}
 
-		// Check if the requested file exists in the zip archive
-		f, err := zipReader.Open(requestedFile)
-		if err == nil {
-			// File exists, serve it
-			defer f.Close()
-			// Use the fileServer to serve the file, so we get content-type headers, etc.
-			fileServer.ServeHTTP(w, r)
-			return
-		}
-
-		// File does not exist. If it's an html file, try to render it with the template.
-		if strings.HasSuffix(r.URL.Path, ".html") {
+		// If the request is for the root or for index.html, try to render the template.
+		if requestedFile == "" || requestedFile == "index.html" {
 			// Look for index.html.tpl
 			indexTplFile, err := zipReader.Open("index.html.tpl")
 			if err == nil {
@@ -84,6 +71,15 @@ func registerApp(name, zipPath string) {
 				}
 				return
 			}
+		}
+
+		// Check if the requested file exists in the zip archive
+		f, err := zipReader.Open(requestedFile)
+		if err == nil {
+			// File exists, serve it
+			defer f.Close()
+			fileServer.ServeHTTP(w, r)
+			return
 		}
 
 		// File not found
