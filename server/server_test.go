@@ -3,14 +3,46 @@ package main
 import (
 	"archive/zip"
 	"bytes"
-	
+	"html/template"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"strings"
 	"testing"
-	"testing/fstest"
 )
+
+const layoutTpl = `
+<html>
+<head>
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="/firebase/authui/auth.css">
+    <script>
+        var firebaseConfig = {{.FirebaseConfig}};
+    </script>
+    {{template "head" .}}
+</head>
+<body>
+    {{template "auth_ui" .}}
+    <div id="content">
+        {{template "body" .}}
+    </div>
+</body>
+</html>
+`
+
+const authUiTpl = `
+{{define "auth_ui"}}
+<div id="auth-container">
+    <div id="logged-out-view">
+        <button id="login-button">Login</button>
+    </div>
+    <div id="logged-in-view" style="display: none;">
+        <span id="user-name"></span>
+        <button id="logout-button">Logout</button>
+    </div>
+</div>
+{{end}}
+`
 
 func TestAppHandler_Static(t *testing.T) {
 	// Create a test zip archive with a static index.html
@@ -42,7 +74,7 @@ func TestAppHandler_Static(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	h := &appHandler{name: "testapp", zipReader: zipReader, firebaseConfig: nil, templates: nil}
+	h := &appHandler{name: "testapp", zipReader: zipReader, firebaseConfig: nil}
 
 	req, err := http.NewRequest("GET", "/testapp/", nil)
 	if err != nil {
@@ -94,15 +126,17 @@ func TestAppHandler_Templated(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	templates := fstest.MapFS{
-		"layout.html.tpl": &fstest.MapFile{
-			Data: []byte("{{template \"auth_ui\" .}}{{template \"body\" .}}"),
-		},
-		"auth_ui.html.tpl": &fstest.MapFile{
-			Data: []byte("{{define \"auth_ui\"}}<div id=\"auth-container\">auth ui</div>{{end}}"),
-		},
+	h := &appHandler{name: "testapp", zipReader: zipReader, firebaseConfig: nil}
+
+	// The test needs to parse the templates itself.
+	tpl, err := template.New("layout").Parse(layoutTpl)
+	if err != nil {
+		t.Fatal(err)
 	}
-	h := &appHandler{name: "testapp", zipReader: zipReader, firebaseConfig: nil, templates: templates}
+	tpl, err = tpl.Parse(authUiTpl)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	req, err := http.NewRequest("GET", "/testapp/", nil)
 	if err != nil {

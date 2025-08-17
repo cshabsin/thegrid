@@ -2,20 +2,17 @@ package main
 
 import (
 	"archive/zip"
-	
 	"context"
 	"encoding/json"
 	"fmt"
 	"html/template"
 	"io"
-	"io/fs"
 	"log"
 	"mime"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
-	
 
 	"github.com/cshabsin/thegrid/apps/explorers/data"
 	"github.com/cshabsin/thegrid/secretmanager"
@@ -27,7 +24,6 @@ type appHandler struct {
 	name           string
 	zipReader      *zip.ReadCloser
 	firebaseConfig any
-	templates      fs.FS
 }
 
 func (h *appHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -49,10 +45,10 @@ func (h *appHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			t, err := template.ParseFS(h.templates, "layout.html.tpl", "auth_ui.html.tpl")
+			t, err := template.ParseFiles("server/templates/layout.html.tpl", "firebase/authui/auth_ui.html.tpl")
 			if err != nil {
 				log.Printf("failed to parse layout templates: %v", err)
-				http.Error(w, "failed to parse layout templates", http.StatusInternalServerError)
+				http.Error(w, fmt.Sprintf("failed to parse layout templates: %v", err), http.StatusInternalServerError)
 				return
 			}
 
@@ -99,12 +95,7 @@ func registerApp(name, zipPath string) {
 		return
 	}
 
-	templates, err := fs.Sub(os.DirFS("."), "server/templates")
-	if err != nil {
-		log.Fatalf("failed to create templates fs: %v", err)
-	}
-
-	http.Handle(fmt.Sprintf("/%s/", name), &appHandler{name: name, zipReader: zipReader, firebaseConfig: config.Firebase, templates: templates})
+	http.Handle(fmt.Sprintf("/%s/", name), &appHandler{name: name, zipReader: zipReader, firebaseConfig: config.Firebase})
 
 	registeredApps = append(registeredApps, name)
 	log.Printf("Registered app '%s' from %s", name, zipPath)

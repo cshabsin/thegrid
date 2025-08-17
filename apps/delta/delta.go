@@ -109,7 +109,6 @@ func (g *Game) NewGame()                    {}
 func main() {
 	setup := func() {
 		fmt.Println("Hello, Delta!")
-		game := New(0)
 		doc := js.Document()
 		configVal := js.Global().Get("firebaseConfig")
 		firebaseConfig := &auth.Config{
@@ -121,8 +120,28 @@ func main() {
 			AppID:             configVal.Get("appId").String(),
 		}
 		authui.Initialize(firebaseConfig)
-		boardDiv := doc.GetElementByID("game-board")
-		ui.NewBoard(game, doc, boardDiv)
+
+		startupScreen := doc.GetElementByID("startup-screen")
+		gameScreen := doc.GetElementByID("game-screen")
+
+		hostGameButton := doc.GetElementByID("host-game")
+		hostGameButton.AddEventListener("click", func(_ js.DOMElement, _ js.DOMEvent) {
+			startupScreen.Style().SetProperty("display", "none")
+			gameScreen.Style().SetProperty("display", "block")
+			game := New(0)
+			boardDiv := doc.GetElementByID("game-board")
+			ui.NewBoard(game, doc, boardDiv)
+		})
+
+		connectToGameButton := doc.GetElementByID("connect-to-game")
+		connectToGameButton.AddEventListener("click", func(_ js.DOMElement, _ js.DOMEvent) {
+			// TODO: Implement connect to game
+		})
+
+		acceptInvitationButton := doc.GetElementByID("accept-invitation")
+		acceptInvitationButton.AddEventListener("click", func(_ js.DOMElement, _ js.DOMEvent) {
+			// TODO: Implement accept invitation
+		})
 	}
 
 	doc := js.Document()
