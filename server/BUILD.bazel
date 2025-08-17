@@ -10,6 +10,8 @@ go_binary(
         "//apps/lissajous:lissajous_pkg",
         "//apps/solitaire:solitaire_pkg",
         "//firebase/auth:bundle",
+        "//firebase/authui:auth_templates",
+        "//server/templates:layout",
     ],
     embed = [":server_lib"],
     visibility = ["//visibility:public"],

@@ -1,0 +1,5 @@
+filegroup(
+    name = "layout",
+    srcs = ["layout.html.tpl"],
+    visibility = ["//visibility:public"],
+)
