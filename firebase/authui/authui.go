@@ -3,11 +3,12 @@ package authui
 import (
 	"fmt"
 
+	"github.com/cshabsin/thegrid/firebase"
 	"github.com/cshabsin/thegrid/firebase/auth"
 	"github.com/cshabsin/thegrid/js"
 )
 
-func Initialize(config *auth.Config) {
+func Initialize(config *firebase.Config) {
 	auth.InitializeApp(config)
 
 	doc := js.Document()

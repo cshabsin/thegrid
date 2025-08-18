@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"math"
 
-	
 	"github.com/cshabsin/thegrid/cardkit/card"
 	"github.com/cshabsin/thegrid/cardkit/deck"
 	"github.com/cshabsin/thegrid/cardkit/pile"
 	"github.com/cshabsin/thegrid/cardkit/ui"
-	"github.com/cshabsin/thegrid/firebase/auth"
+	"github.com/cshabsin/thegrid/firebase"
 	"github.com/cshabsin/thegrid/firebase/authui"
+	"github.com/cshabsin/thegrid/firebase/firestore"
 	"github.com/cshabsin/thegrid/js"
 )
 
@@ -112,7 +112,7 @@ func main() {
 		fmt.Println("Hello, Delta!")
 		doc := js.Document()
 		configVal := js.Global().Get("firebaseConfig")
-		firebaseConfig := &auth.Config{
+		firebaseConfig := &firebase.Config{
 			APIKey:            configVal.Get("apiKey").String(),
 			AuthDomain:        configVal.Get("authDomain").String(),
 			ProjectID:         configVal.Get("projectId").String(),
@@ -121,6 +121,7 @@ func main() {
 			AppID:             configVal.Get("appId").String(),
 		}
 		authui.Initialize(firebaseConfig)
+		firestore.InitializeApp(firebaseConfig)
 
 		startupScreen := doc.GetElementByID("startup-screen")
 		gameScreen := doc.GetElementByID("game-screen")
@@ -129,7 +130,8 @@ func main() {
 		hostGameButton.AddEventListener("click", func(_ js.DOMElement, _ js.DOMEvent) {
 			startupScreen.Style().SetProperty("display", "none")
 			gameScreen.Style().SetProperty("display", "block")
-			game := New(0)
+			game := &Game{} //delta.Game{ID: 12345}
+			firestore.CreateGame(game)
 			boardDiv := doc.GetElementByID("game-board")
 			ui.NewBoard(game, doc, boardDiv)
 		})

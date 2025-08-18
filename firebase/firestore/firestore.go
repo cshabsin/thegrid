@@ -1,23 +1,16 @@
 package firestore
 
 import (
-	"context"
+	"syscall/js"
 
-	"cloud.google.com/go/firestore"
-	"google.golang.org/api/option"
+	"github.com/cshabsin/thegrid/firebase"
 )
 
-// Client is a client for interacting with Firebase Firestore.
-
-type Client struct {
-	*firestore.Client
+func InitializeApp(config *firebase.Config) {
+	js.Global().Get("theGrid").Get("firebase").Get("firestore").Call("initialize", config.ToJS())
 }
 
-// NewClient creates a new Firestore client.
-func NewClient(ctx context.Context, projectID string, opts ...option.ClientOption) (*Client, error) {
-	client, err := firestore.NewClient(ctx, projectID, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return &Client{client}, nil
+// returns a promise?
+func CreateGame(game any) js.Value {
+	return js.Global().Get("theGrid").Get("firebase").Get("firestore").Call("createGame", js.ValueOf(game))
 }

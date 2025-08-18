@@ -16,5 +16,6 @@ go_library(
     name = "auth",
     srcs = ["auth.go"],
     importpath = "github.com/cshabsin/thegrid/firebase/auth",
+    deps = ["//firebase"],
     visibility = ["//visibility:public"],
 )

@@ -12,6 +12,7 @@ go_library(
     importpath = "github.com/cshabsin/thegrid/firebase/authui",
     visibility = ["//visibility:public"],
     deps = [
+        "//firebase",
         "//firebase/auth",
         "//js",
     ],

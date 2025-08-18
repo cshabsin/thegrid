@@ -18,6 +18,7 @@ pkg_zip(
         "//cardkit/ui:css",
         "//firebase/auth:js",
         "//firebase/authui:auth_templates",
+        "//firebase/firestore:bundle",
     ],
     visibility = ["//server:__pkg__"],
 )
@@ -39,8 +40,10 @@ go_library(
         "//cardkit/deck",
         "//cardkit/pile",
         "//cardkit/ui",
+        "//firebase",
         "//firebase/auth",
         "//firebase/authui",
+        "//firebase/firestore",
         "//js",
     ],
 )
