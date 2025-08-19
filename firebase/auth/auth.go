@@ -3,11 +3,11 @@ package auth
 import (
 	"syscall/js"
 
-	"github.com/cshabsin/thegrid/firebase"
+	
 )
 
-func InitializeApp(config *firebase.Config) {
-	js.Global().Get("firebaseAuth").Call("initializeApp", config.ToJS())
+func InitializeApp(app js.Value) {
+	js.Global().Get("firebaseAuth").Call("initialize", app)
 }
 
 func SignIn() {

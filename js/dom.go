@@ -214,3 +214,18 @@ func Confirm(message string) bool {
 func Null() DOMElement {
 	return DOMElement{Value: js.Null()}
 }
+
+type Promise struct {
+	js.Value
+}
+
+func (p Promise) Then(fn func(value js.Value)) {
+	p.Call("then", js.FuncOf(func(this js.Value, args []js.Value) any {
+		fn(args[0])
+		return nil
+	}))
+}
+
+func ValueOf(v any) js.Value {
+	return js.ValueOf(v)
+}

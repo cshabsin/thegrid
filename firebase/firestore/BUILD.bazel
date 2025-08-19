@@ -11,8 +11,5 @@ go_library(
     srcs = ["firestore.go"],
     importpath = "github.com/cshabsin/thegrid/firebase/firestore",
     visibility = ["//visibility:public"],
-    deps = [
-        "//firebase",
-        "//js",
-    ],
+    deps = ["//js"],
 )

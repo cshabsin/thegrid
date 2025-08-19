@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 
+	"github.com/cshabsin/thegrid/apps/delta"
 	"github.com/cshabsin/thegrid/cardkit/card"
 	"github.com/cshabsin/thegrid/cardkit/deck"
 	"github.com/cshabsin/thegrid/cardkit/pile"
@@ -120,8 +121,9 @@ func main() {
 			MessagingSenderID: configVal.Get("messagingSenderId").String(),
 			AppID:             configVal.Get("appId").String(),
 		}
-		authui.Initialize(firebaseConfig)
-		firestore.InitializeApp(firebaseConfig)
+		app := firebase.InitializeApp(firebaseConfig)
+		authui.Initialize(app)
+		firestore.InitializeApp(app)
 
 		startupScreen := doc.GetElementByID("startup-screen")
 		gameScreen := doc.GetElementByID("game-screen")
@@ -130,10 +132,10 @@ func main() {
 		hostGameButton.AddEventListener("click", func(_ js.DOMElement, _ js.DOMEvent) {
 			startupScreen.Style().SetProperty("display", "none")
 			gameScreen.Style().SetProperty("display", "block")
-			game := &Game{} //delta.Game{ID: 12345}
+			game := delta.Game{ID: 12345}
 			firestore.CreateGame(game)
 			boardDiv := doc.GetElementByID("game-board")
-			ui.NewBoard(game, doc, boardDiv)
+			// ui.NewBoard(game, doc, boardDiv)
 		})
 
 		connectToGameButton := doc.GetElementByID("connect-to-game")
