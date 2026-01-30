@@ -1,0 +1,66 @@
+name: Deploy Solitaire to GitHub Pages
+
+on:
+  push:
+    branches:
+      - ai
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.25'
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Build
+        run: |
+          mkdir -p dist/solitaire
+          
+          # Copy Landing Page
+          cp index.html dist/
+          
+          # Copy Solitaire Assets
+          cp apps/solitaire/index.html dist/solitaire/
+          cp apps/solitaire/solitaire.css dist/solitaire/
+          
+          # Copy CardKit UI CSS
+          cp cardkit/ui/ui.css dist/solitaire/
+          
+          # Copy WASM Exec (Loader)
+          cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" dist/solitaire/
+          
+          # Build WASM Binary
+          GOOS=js GOARCH=wasm go build -o dist/solitaire/solitaire.wasm github.com/cshabsin/thegrid/apps/solitaire
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'dist'
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
