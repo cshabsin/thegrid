@@ -1,0 +1,9 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "deck",
+    srcs = ["deck.go"],
+    importpath = "github.com/cshabsin/thegrid/cardkit/deck",
+    visibility = ["//visibility:public"],
+    deps = ["//cardkit/card"],
+)

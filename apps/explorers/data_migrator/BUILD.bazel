@@ -1,0 +1,18 @@
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "data_migrator_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/cshabsin/thegrid/apps/explorers/data_migrator",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//apps/explorers/data",
+        "//apps/explorers/dataservice",
+    ],
+)
+
+go_binary(
+    name = "data_migrator",
+    embed = [":data_migrator_lib"],
+    visibility = ["//visibility:public"],
+)

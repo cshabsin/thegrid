@@ -1,0 +1,18 @@
+@import url("../../firebase/authui/auth.css");
+
+body {
+    background-color: #f0f0f0;
+}
+
+#game-board {
+    margin: 0 auto;
+    width: 1024px;
+    height: 768px;
+    background-color: green;
+    border: 1px solid black;
+    position: relative;
+}
+
+.pile {
+    position: absolute;
+}

@@ -1,0 +1,5 @@
+# gazelle:prefix github.com/cshabsin/thegrid
+
+load("@gazelle//:def.bzl", "gazelle")
+
+gazelle(name = "gazelle")

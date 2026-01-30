@@ -1,0 +1,22 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+filegroup(
+    name = "css",
+    srcs = ["ui.css"],
+    visibility = ["//visibility:public"],
+)
+
+go_library(
+    name = "ui",
+    srcs = ["ui.go"],
+    importpath = "github.com/cshabsin/thegrid/cardkit/ui",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//cardkit/card",
+        "//cardkit/pile",
+        "//js",
+        "//js/attr",
+        "//js/dragdrop",
+        "//js/style",
+    ],
+)

@@ -1,0 +1,21 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "klondike",
+    srcs = ["klondike.go"],
+    importpath = "github.com/cshabsin/thegrid/apps/solitaire/klondike",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//cardkit/card",
+        "//cardkit/deck",
+        "//cardkit/pile",
+        "//cardkit/ui",
+    ],
+)
+
+go_test(
+    name = "klondike_test",
+    srcs = ["klondike_test.go"],
+    embed = [":klondike"],
+    deps = ["//cardkit/card"],
+)

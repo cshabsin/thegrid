@@ -63,3 +63,7 @@ type Element struct {
 
 	document js.DOMDocument
 }
+
+func (el Element) GetTotalLength() float64 {
+	return el.Call("getTotalLength").Float()
+}

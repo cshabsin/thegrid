@@ -1,0 +1,36 @@
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
+load("@rules_pkg//:pkg.bzl", "pkg_zip")
+
+go_library(
+    name = "explorers_lib",
+    srcs = ["explorers.go"],
+    importpath = "github.com/cshabsin/thegrid/apps/explorers",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//apps/explorers/data",
+        "//apps/explorers/model",
+        "//apps/explorers/view",
+        "//hexmap",
+        "//js",
+        "//js/attr",
+        "//js/svg",
+    ],
+)
+
+go_binary(
+    name = "explorers.wasm",
+    embed = [":explorers_lib"],
+    goarch = "wasm",
+    goos = "js",
+    visibility = ["//visibility:public"],
+)
+
+pkg_zip(
+    name = "explorers_pkg",
+    srcs = [
+        "index.html",
+        "map-display.css",
+        ":explorers.wasm",
+    ],
+    visibility = ["//server:__pkg__"],
+)

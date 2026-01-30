@@ -5,14 +5,11 @@ on:
     branches:
       - main
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -35,11 +32,22 @@ jobs:
       - name: Build
         run: |
           mkdir -p dist/solitaire
+          
+          # Copy Landing Page
           cp index.html dist/
-          cp solitaire/index.html dist/solitaire/
-          cp solitaire/solitaire.css dist/solitaire/
+          
+          # Copy Solitaire Assets
+          cp apps/solitaire/index.html dist/solitaire/
+          cp apps/solitaire/solitaire.css dist/solitaire/
+          
+          # Copy CardKit UI CSS
+          cp cardkit/ui/ui.css dist/solitaire/
+          
+          # Copy WASM Exec (Loader)
           cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" dist/solitaire/
-          GOOS=js GOARCH=wasm go build -o dist/solitaire/solitaire.wasm github.com/cshabsin/thegrid/solitaire
+          
+          # Build WASM Binary
+          GOOS=js GOARCH=wasm go build -o dist/solitaire/solitaire.wasm github.com/cshabsin/thegrid/apps/solitaire
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

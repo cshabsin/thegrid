@@ -1,0 +1,9 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "pile",
+    srcs = ["pile.go"],
+    importpath = "github.com/cshabsin/thegrid/cardkit/pile",
+    visibility = ["//visibility:public"],
+    deps = ["//cardkit/card"],
+)

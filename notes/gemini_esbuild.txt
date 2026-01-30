@@ -1,0 +1,36 @@
+✦ Now I'll run the build script to generate the new bundle.js file.
+ ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+ │ ✔  Shell npm install && npm run build                                                                        │
+ │                                                                                                              │
+ │                                                                                                              │
+ │    up to date, audited 89 packages in 1s                                                                     │
+ │                                                                                                              │
+ │    3 packages are looking for funding                                                                        │
+ │      run `npm fund` for details                                                                              │
+ │                                                                                                              │
+ │    found 0 vulnerabilities                                                                                   │
+ │                                                                                                              │
+ │    > thegrid@1.0.0 build                                                                                     │
+ │    > npm run build:auth && npm run build:firestore                                                           │
+ │                                                                                                              │
+ │                                                                                                              │
+ │    > thegrid@1.0.0 build:auth                                                                                │
+ │    > esbuild firebase/auth/auth.js --bundle --outfile=firebase/auth/bundle.js --format=iife                  │
+ │    --global-name=theGrid.firebase.auth                                                                       │
+ │                                                                                                              │
+ │                                                                                                              │
+ │    > thegrid@1.0.0 build:firestore                                                                           │
+ │    > esbuild firebase/firestore/firestore.js --bundle --outfile=firebase/firestore/bundle.js                 │
+ │    --format=iife --global-name=theGrid.firebase.firestore                                                    │
+ │                                                                                                              │
+ │                                                                                                              │
+ │                                                                                                              │
+ │      firebase/auth/bundle.js  291.5kb                                                                        │
+ │                                                                                                              │
+ │    ⚡ Done in 69ms                                                                                            │
+ │                                                                                                              │
+ │      firebase/firestore/bundle.js  492.8kb                                                                   │
+ │                                                                                                              │
+ │    ⚡ Done in 117ms                                                                                           │
+ │                                                                                                              │
+ ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────╯

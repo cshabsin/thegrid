@@ -1,0 +1,19 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+filegroup(
+    name = "auth_templates",
+    srcs = ["auth_ui.html.tpl"],
+    visibility = ["//visibility:public"],
+)
+
+go_library(
+    name = "authui",
+    srcs = ["authui.go"],
+    importpath = "github.com/cshabsin/thegrid/firebase/authui",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//firebase",
+        "//firebase/auth",
+        "//js",
+    ],
+)

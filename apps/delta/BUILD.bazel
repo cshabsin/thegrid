@@ -1,0 +1,49 @@
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
+load("@rules_pkg//:pkg.bzl", "pkg_zip")
+
+go_binary(
+    name = "delta.wasm",
+    embed = [":main"],
+    goarch = "wasm",
+    goos = "js",
+    visibility = ["//visibility:public"],
+)
+
+pkg_zip(
+    name = "delta_pkg",
+    srcs = [
+        "delta.css",
+        "index.html.tpl",
+        ":delta.wasm",
+        "//cardkit/ui:css",
+        "//firebase/auth:js",
+        "//firebase/authui:auth_templates",
+        "//firebase/firestore:bundle",
+    ],
+    visibility = ["//server:__pkg__"],
+)
+
+go_library(
+    name = "delta",
+    srcs = ["game.go"],
+    importpath = "github.com/cshabsin/thegrid/apps/delta",
+    visibility = ["//visibility:public"],
+    deps = ["//cardkit/card"],
+)
+
+go_library(
+    name = "main",
+    srcs = ["delta.go"],
+    deps = [
+        ":delta",
+        "//cardkit/card",
+        "//cardkit/deck",
+        "//cardkit/pile",
+        "//cardkit/ui",
+        "//firebase",
+        "//firebase/auth",
+        "//firebase/authui",
+        "//firebase/firestore",
+        "//js",
+    ],
+)

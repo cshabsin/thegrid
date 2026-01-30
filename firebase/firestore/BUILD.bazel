@@ -1,0 +1,15 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+filegroup(
+    name = "bundle",
+    srcs = ["bundle.js"],
+    visibility = ["//visibility:public"],
+)
+
+go_library(
+    name = "firestore",
+    srcs = ["firestore.go"],
+    importpath = "github.com/cshabsin/thegrid/firebase/firestore",
+    visibility = ["//visibility:public"],
+    deps = ["//js"],
+)

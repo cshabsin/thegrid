@@ -1,0 +1,20 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+filegroup(
+    name = "js",
+    srcs = ["auth.js"],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "bundle",
+    srcs = ["bundle.js"],
+    visibility = ["//visibility:public"],
+)
+
+go_library(
+    name = "auth",
+    srcs = ["auth.go"],
+    importpath = "github.com/cshabsin/thegrid/firebase/auth",
+    visibility = ["//visibility:public"],
+)
