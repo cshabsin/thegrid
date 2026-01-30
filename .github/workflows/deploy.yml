@@ -46,8 +46,29 @@ jobs:
           # Copy WASM Exec (Loader)
           cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" dist/solitaire/
           
-          # Build WASM Binary
+          # Build WASM Binary for Solitaire
           GOOS=js GOARCH=wasm go build -o dist/solitaire/solitaire.wasm github.com/cshabsin/thegrid/apps/solitaire
+
+          # --- AnimDemo ---
+          mkdir -p dist/animdemo
+          cp apps/animdemo/index.html dist/animdemo/
+          cp apps/animdemo/animdemo.css dist/animdemo/
+          cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" dist/animdemo/
+          GOOS=js GOARCH=wasm go build -o dist/animdemo/animdemo.wasm github.com/cshabsin/thegrid/apps/animdemo
+
+          # --- Explorers ---
+          mkdir -p dist/explorers
+          cp apps/explorers/index.html dist/explorers/
+          cp apps/explorers/map-display.css dist/explorers/
+          cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" dist/explorers/
+          GOOS=js GOARCH=wasm go build -o dist/explorers/explorers.wasm github.com/cshabsin/thegrid/apps/explorers
+
+          # --- Lissajous ---
+          mkdir -p dist/lissajous
+          cp apps/lissajous/index.html dist/lissajous/
+          cp apps/lissajous/lissajous.css dist/lissajous/
+          cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" dist/lissajous/
+          GOOS=js GOARCH=wasm go build -o dist/lissajous/lissajous.wasm github.com/cshabsin/thegrid/apps/lissajous
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

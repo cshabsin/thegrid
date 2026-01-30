@@ -2,7 +2,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <script src="/static/wasm_exec.js"></script>
+    <script src="wasm_exec.js"></script>
     <script>
         const go = new Go();
         WebAssembly.instantiateStreaming(fetch("animdemo.wasm"), go.importObject).then((result) => {
