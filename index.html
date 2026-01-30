@@ -75,7 +75,11 @@
     <div class="experiment-card">
         <h2>Explorers</h2>
         <p>
-            A system map visualization tool.
+            A WebAssembly version of the system map visualization tool. This was an experiment to see what it would be like to rewrite the SVG generation code from 
+            <a href="https://cshabsin.github.io/explorers/">the original Explorers project</a> in Go instead of TypeScript.
+        </p>
+        <p>
+            While the Go implementation worked well for logic and SVG generation, I eventually stayed with TypeScript for the main project because integrating other web ecosystem pieces (like Firebase libraries) through Go's WASM translation layers proved too cumbersome.
         </p>
         <a href="explorers/" class="btn">View Explorers</a>
     </div>
