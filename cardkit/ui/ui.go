@@ -228,7 +228,9 @@ func (b *Board) createCardElement(doc js.DOMDocument, c *card.Card) js.DOMElemen
 	cardDiv := createDiv(doc, attr.Class("card"))
 	dragdrop.NewDraggable(cardDiv, func(e js.DOMEvent) {
 		b.game.SetSelectedCard(c)
-		cardDiv.AddClass("dragging-source")
+		js.SetTimeout(func() {
+			cardDiv.AddClass("dragging-source")
+		}, 0)
 	}, func(e js.DOMEvent) {
 		cardDiv.RemoveClass("dragging-source")
 	})

@@ -229,3 +229,10 @@ func (p Promise) Then(fn func(value js.Value)) {
 func ValueOf(v any) js.Value {
 	return js.ValueOf(v)
 }
+
+func SetTimeout(fn func(), delay int) {
+	js.Global().Call("setTimeout", js.FuncOf(func(this js.Value, args []js.Value) any {
+		fn()
+		return nil
+	}), delay)
+}
