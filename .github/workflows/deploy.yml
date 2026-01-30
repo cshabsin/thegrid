@@ -35,6 +35,7 @@ jobs:
       - name: Build
         run: |
           mkdir -p dist/solitaire
+          cp index.html dist/
           cp solitaire/index.html dist/solitaire/
           cp solitaire/solitaire.css dist/solitaire/
           cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" dist/solitaire/
