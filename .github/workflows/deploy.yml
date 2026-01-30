@@ -1,0 +1,35 @@
+name: Deploy Solitaire to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.25'
+
+      - name: Build
+        run: |
+          mkdir -p dist/solitaire
+          cp solitaire/index.html dist/solitaire/
+          cp solitaire/solitaire.css dist/solitaire/
+          cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" dist/solitaire/
+          GOOS=js GOARCH=wasm go build -o dist/solitaire/solitaire.wasm github.com/cshabsin/thegrid/solitaire
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist
+          branch: gh-pages
