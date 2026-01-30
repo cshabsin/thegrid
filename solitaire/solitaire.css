@@ -1,0 +1,39 @@
+body {
+    background-color: #0a632d;
+    font-family: sans-serif;
+}
+
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: 1fr 3fr;
+    grid-gap: 10px;
+    padding: 10px;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.card {
+    width: 100px;
+    height: 140px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: white;
+    position: absolute;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.card .suit {
+    font-size: 24px;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+}
+
+.card .rank {
+    font-size: 36px;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
